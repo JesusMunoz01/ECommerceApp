@@ -1,0 +1,15 @@
+import "./navbar.css";
+
+const Navbar = () => 
+{
+    return (
+        <nav className="navbar">
+        <ul className="navbar-list">
+            <li className="navbar-list-item">Home</li>
+            <li className="navbar-list-item">Login</li>
+            <li className="navbar-list-item">Test</li>
+        </ul>
+        </nav>
+    );
+};
+export default Navbar;
