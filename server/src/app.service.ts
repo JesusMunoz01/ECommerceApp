@@ -22,8 +22,8 @@ export class AppService {
   //   });
   // }
 
-  getHello(): string {
-    return 'Hello World!';
+  getHello(): {data: string} {
+    return {data: 'Hello World!'};
   }
   
 }

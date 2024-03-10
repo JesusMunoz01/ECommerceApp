@@ -7,24 +7,30 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Injectable()
-export class Auth0Strategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
           secretOrKeyProvider: passportJwtSecret({
             cache: true,
             rateLimit: true,
-            jwksRequestsPerMinute: 5,
+            jwksRequestsPerMinute: 10,
             jwksUri: `${process.env.AUTH0_ISSUER_URL}.well-known/jwks.json`,
           }),
     
           jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
           audience: process.env.AUTH0_AUDIENCE,
-          issuer: `${process.env.AUTH0_ISSUER_URL}`,
+          issuer: process.env.AUTH0_ISSUER_URL,
           algorithms: ['RS256'],
         });
       }
 
-  async validate(accessToken: string, refreshToken: string, extraParams: any, profile: any) {
-    return profile;
+  async validate(payload: any) {
+      if(!payload) {
+          throw new Error('Invalid token');
+      }
+      if(payload.iss !== process.env.AUTH0_ISSUER_URL) {
+          throw new Error('Invalid issuer');
+      }
+      return payload;
   }
 }
