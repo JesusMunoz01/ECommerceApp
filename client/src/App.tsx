@@ -1,18 +1,21 @@
 import './App.css'
-import LoginButton from './components/Auth/auth0-login'
-import LogoutButton from './components/Auth/auth0-logout'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom' 
 import Test from './components/Auth/auth0-test'
 import Navbar from './components/Navbar/navbar'
+import HomePage from './pages/home'
 
 function App() {
 
   return (
     <>
       <div className='App'>
+      <Router>
         <Navbar />
-        <LoginButton />
-        <LogoutButton />
-        <Test />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/test" element={<Test />} />
+        </Routes>
+      </Router>
       </div>
     </>
   )
