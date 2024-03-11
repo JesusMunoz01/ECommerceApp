@@ -9,3 +9,12 @@ This project contains both a backend and a frontend. The backend will be found i
 
 - Nestjs
 - MySQL
+- Auth0
+
+### Frontend
+
+- Reactjs
+- Typescript
+- TailwindCSS
+- Auth0
+- React Query
