@@ -8,9 +8,9 @@ import { useMutation } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
 
 function App() {
-  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, user, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
   const createUser = useMutation({
-    mutationFn: async (data: {accessToken: string, newUser: string}) => {
+    mutationFn: async (data: {accessToken: string | undefined, newUser: string}) => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
         method: 'POST',
         headers: {

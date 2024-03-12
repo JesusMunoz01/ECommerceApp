@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, UseGuards, Headers, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -12,16 +12,30 @@ export class AppController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get("/protected")
-  async getHello2(@Headers('authorization') authorization: string): Promise<{ data: string; }> {
-    const token = authorization.split(' ')[1];
-    const userResponse = await fetch(`${process.env.AUTH0_ISSUER_URL}userinfo`, {
+  @Post("/user")
+  async getHello2(@Body() body: { data: string; test: string }): Promise<{ data: string; }> {
+    const formData = new URLSearchParams();
+      formData.append('grant_type', 'client_credentials');
+      formData.append('client_id', process.env.API_CLIENT_ID);
+      formData.append('client_secret', process.env.API_CLIENT_SECRET);
+      formData.append('audience', process.env.AUTH0_MANAGEMENT_AUDIENCE);
+    const getAPIToken = await fetch(`${process.env.AUTH0_ISSUER_URL}oauth/token`, {
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formData
+    });
+    const aToken = await getAPIToken.json();
+    const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${body.data}`, {
+      headers: {
+        authorization: `Bearer ${aToken.access_token}`,
       }
     });
-    console.log(await userResponse.json());
+    const userData = await userResponse.json();
+    if(userData.logins_count === 1) {
+      return { data: "First login" };
+    }
     return this.appService.getHello();
   }
 }

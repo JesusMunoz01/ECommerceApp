@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
+//import { useEffect, useState } from "react";
 
 const Account = () => {
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -8,11 +8,16 @@ const Account = () => {
     const sendRequest = async () => {
         try {
             const token = await getAccessTokenSilently();
-            console.log(token);
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/protected`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
+                method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
+                body: JSON.stringify({ 
+                  data: user?.sub,
+                  test: "test"
+                }),
             });
 
             const responseData = await response.json();
