@@ -17,7 +17,7 @@ const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
 };
 
 const Navbar = () => {
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated} = useAuth0();
 
     return (
         <nav className="navbar bg-slate-600">
@@ -29,7 +29,8 @@ const Navbar = () => {
                     <SelectedLink to="/">Home</SelectedLink>
                     <SelectedLink to="/test">Test</SelectedLink>
                 </div>
-                <div className="navbar-links">
+                <div className="flex items-center gap-4">
+                    <SelectedLink to="/cart">Cart</SelectedLink>
                     {isAuthenticated ? 
                     <div className="flex items-center gap-4">
                         <LogoutButton /> 
