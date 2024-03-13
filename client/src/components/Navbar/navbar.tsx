@@ -2,7 +2,7 @@ import { Link, useMatch } from "react-router-dom";
 import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 interface SelectedLinkProps {
     to: string;
     children: React.ReactNode;

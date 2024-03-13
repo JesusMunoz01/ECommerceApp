@@ -7,7 +7,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(@Headers('authorization') authorization: string): {data: string} {
+  getHello(): {data: string} {
     return this.appService.getHello();
   }
 
