@@ -2,6 +2,7 @@ import { Link, useMatch } from "react-router-dom";
 import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
+import { useEffect, useState } from "react";
 interface SelectedLinkProps {
     to: string;
     children: React.ReactNode;
@@ -18,6 +19,11 @@ const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
 
 const Navbar = () => {
     const { user, isAuthenticated} = useAuth0();
+    const [userMenu, setUserMenu] = useState(false);
+
+    const toggleUserMenu = () => {
+        setUserMenu(!userMenu);
+    };
 
     return (
         <nav className="navbar bg-slate-600">
@@ -33,8 +39,20 @@ const Navbar = () => {
                     <SelectedLink to="/cart">Cart</SelectedLink>
                     {isAuthenticated ? 
                     <div className="flex items-center gap-4">
-                        <LogoutButton /> 
-                        <img src={user?.picture} alt={user?.name} className="w-10 h-10 rounded-full" />
+                        <button onClick={toggleUserMenu} className="w-12 p-0 h-12 rounded-full bg-transparent">
+                            <img src={user?.picture} alt={user?.name} className="rounded-full"/>
+                        </button>
+                        {userMenu && 
+                            <div id="dropdownMenu" className={`absolute flex items-center justify-center flex-col top-20 right-0 mt-2 w-36 bg-white border border-gray-200 divide-y divide-gray-200`}>
+                            <div className="px-4 py-3">
+                                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                            </div>
+                            <div className="flex flex-col gap-1 py-1">
+                                <Link to="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Account</Link>
+                                <LogoutButton />
+                            </div>
+                            </div>
+                        }
                     </div>
                     : <LoginButton />}
                 </div>

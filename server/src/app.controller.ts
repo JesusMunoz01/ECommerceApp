@@ -34,8 +34,10 @@ export class AppController {
     });
     const userData = await userResponse.json();
     if(userData.logins_count === 1) {
+      console.log("First login")
       return { data: "First login" };
     }
+    console.log("Post Request Done")
     return this.appService.getHello();
   }
 }
