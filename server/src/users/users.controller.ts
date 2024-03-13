@@ -9,7 +9,7 @@ export class UsersController {
 
     @Post("/create")
     async createUser(@Body() body: { data: string; test: string }): Promise<{ message: string; }> {
-      return this.usersService.createUser();
+      return this.usersService.createUser(body.data);
     }
         
 }

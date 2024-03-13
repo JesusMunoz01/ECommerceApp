@@ -8,7 +8,7 @@ const Account = () => {
     const sendRequest = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/create`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

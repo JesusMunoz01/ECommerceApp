@@ -4,8 +4,9 @@ import { AppService } from 'src/app.service';
 @Injectable()
 export class UsersService {
     constructor(private appService: AppService) {}
+    private connection = this.appService.connection;
 
-    async createUser(userID: string): Promise<{ message: string; }> {
+    async getAccessToken() {
         const formData = new URLSearchParams();
         formData.append('grant_type', 'client_credentials');
         formData.append('client_id', process.env.API_CLIENT_ID);
@@ -19,15 +20,19 @@ export class UsersService {
             body: formData
         });
         const aToken = await getAPIToken.json();
+        return aToken.access_token;
+    }
+
+    async createUser(userID: string): Promise<{ message: string; }> {
         const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
             headers: {
-            authorization: `Bearer ${aToken.access_token}`,
+            authorization: `Bearer ${this.getAccessToken()}`,
             }
         });
         const userData = await userResponse.json();
         if(userData.logins_count === 1) {
             try{
-                this.appService.connection.query(`INSERT INTO users (id, email, name, picture, created_at, updated_at) VALUES 
+                this.connection.query(`INSERT INTO users (id, email, name, picture, created_at, updated_at) VALUES 
                 (?, ?, ?, ?, NOW(), NOW())`, [userData.user_id, userData.email, userData.name, userData.picture], (err, results) => {
                     if(err) {
                         console.log(err);
@@ -45,4 +50,8 @@ export class UsersService {
         console.log("Post Request Done")
         return { message: "User already exists" };
     }
+
+    // async getUser(userID: string): Promise<{ message: string; }> {
+    // }
+
 }
