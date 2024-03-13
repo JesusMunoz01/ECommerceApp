@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as mysql from 'mysql';
 @Injectable()
 export class AppService {
-  private connection;
+  public connection;
 
   // constructor() {
   //   this.connection = mysql.createConnection({
