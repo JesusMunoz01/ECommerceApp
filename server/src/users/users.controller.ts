@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -20,6 +20,11 @@ export class UsersController {
     @Post(":id/update")
     async updateUser(@Param("id") id: string, @Body() body: { data: string; test: string }): Promise<{ message: string; }> {
       return this.usersService.updateUser(id, body.data);
+    }
+
+    @Delete(":id/delete")
+    async deleteUser(@Param("id") id: string): Promise<{ message: string; }> {
+      return this.usersService.deleteUser(id);
     }
         
 }
