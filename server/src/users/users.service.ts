@@ -102,4 +102,29 @@ export class UsersService {
         return { message: "User already exists" };
     }
 
+    async deleteUser(userID: string): Promise<{ message: string; }> {
+        const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
+            headers: {
+            authorization: `Bearer ${this.getAccessToken()}`,
+            }
+        });
+        const userData = await userResponse.json();
+        const user = userData.user_id;
+        try{
+            this.connection.query(`DELETE FROM users WHERE id = ?`, [user], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error deleting user" };
+                }
+                console.log(results);
+                return { message: "User deleted successfully" };
+            });
+        }catch(err) {
+            console.log(err);
+            return { message: "Error deleting user" };
+        }
+        console.log("Post Request Done")
+        return { message: "User already exists" };
+    }
+
 }
