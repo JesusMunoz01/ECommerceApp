@@ -76,7 +76,7 @@ export class UsersService {
         return { message: "User already exists" };
     }
 
-    async updateUser(userID: string): Promise<{ message: string; }> {
+    async updateUser(userID: string, data): Promise<{ message: string; }> {
         const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
             headers: {
             authorization: `Bearer ${this.getAccessToken()}`,

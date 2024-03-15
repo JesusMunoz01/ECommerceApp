@@ -16,5 +16,10 @@ export class UsersController {
     async createUser(@Body() body: { data: string; test: string }): Promise<{ message: string; }> {
       return this.usersService.createUser(body.data);
     }
+
+    @Post(":id/update")
+    async updateUser(@Param("id") id: string, @Body() body: { data: string; test: string }): Promise<{ message: string; }> {
+      return this.usersService.updateUser(id, body.data);
+    }
         
 }
