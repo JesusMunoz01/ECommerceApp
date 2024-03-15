@@ -26,14 +26,15 @@ export class UsersService {
     async createUser(userID: string): Promise<{ message: string; }> {
         const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
             headers: {
-            authorization: `Bearer ${this.getAccessToken()}`,
+            authorization: `Bearer ${await this.getAccessToken()}`,
             }
         });
         const userData = await userResponse.json();
+
         if(userData.logins_count === 1) {
             try{
-                this.connection.query(`INSERT INTO users (id, email, name, picture, created_at, updated_at) VALUES 
-                (?, ?, ?, ?, NOW(), NOW())`, [userData.user_id, userData.email, userData.name, userData.picture], (err, results) => {
+                this.connection.query(`INSERT INTO users (id, email, name, created_at, updated_at) VALUES 
+                (?, ?, ?, NOW(), NOW())`, [userData.identities[0].user_id, userData.email, userData.given_name ], (err, results) => {
                     if(err) {
                         console.log(err);
                         return { message: "Error creating user" };
