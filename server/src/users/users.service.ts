@@ -51,7 +51,29 @@ export class UsersService {
         return { message: "User already exists" };
     }
 
-    // async getUser(userID: string): Promise<{ message: string; }> {
-    // }
+    async getUser(userID: string): Promise<{ message: string; }> {
+        const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
+            headers: {
+            authorization: `Bearer ${this.getAccessToken()}`,
+            }
+        });
+        const userData = await userResponse.json();
+        const user = userData.user_id;
+        try{
+            this.connection.query(`SELECT * FROM users WHERE id = ?`, [user], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error fetching user" };
+                }
+                console.log(results);
+                return { message: "User fetched successfully" };
+            });
+        }catch(err) {
+            console.log(err);
+            return { message: "Error fetching user" };
+        }
+        console.log("Post Request Done")
+        return { message: "User already exists" };
+    }
 
 }
