@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
-
-export type UserData = {
-    email?: string;
-    name?: string;
-    updated_at: string;
-}
+import { UserDto } from './dto/userUpdate.dto';
 
 @Injectable()
 export class UsersService {
@@ -83,7 +78,7 @@ export class UsersService {
         return { message: "User already exists" };
     }
 
-    async updateUser(userID: string, data: UserData): Promise<{ message: string; }> {
+    async updateUser(userID: string, data: UserDto): Promise<{ message: string; }> {
         const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
             headers: {
             authorization: `Bearer ${await this.getAccessToken()}`,
