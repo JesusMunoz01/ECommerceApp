@@ -22,4 +22,21 @@ export class ProductsService {
             return { message: "Error getting products" };
         }
     }
+
+    async getProduct(id: string): Promise<{ message: string; }> {
+        try{
+            this.connection.query(`SELECT * FROM products WHERE id = ?`, [id], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error getting product" };
+                }
+                console.log(results);
+                return { message: "Product retrieved successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error getting product" };
+        }
+    }
 }
