@@ -36,7 +36,7 @@ export class UsersService {
         // Checks if the user has logged in before, if not, adds the user to the database
         if(userData.logins_count === 1) {
             try{
-                this.connection.query(`INSERT INTO users (id, email, name, created_at, updated_at) VALUES 
+                await this.connection.query(`INSERT INTO users (id, email, name, created_at, updated_at) VALUES 
                 (?, ?, ?, NOW(), NOW())`, [userData.identities[0].user_id, userData.email, userData.given_name ], (err, results) => {
                     if(err) {
                         console.log(err);
@@ -63,7 +63,7 @@ export class UsersService {
         const userData = await userResponse.json();
         const user = userData.user_id;
         try{
-            this.connection.query(`SELECT * FROM users WHERE id = ?`, [user], (err, results) => {
+            await this.connection.query(`SELECT * FROM users WHERE id = ?`, [user], (err, results) => {
                 if(err) {
                     console.log(err);
                     return { message: "Error fetching user" };
@@ -98,7 +98,7 @@ export class UsersService {
         const sqlData = [...filledFields.map(key => data[key]), user];
 
         try{
-            this.connection.query(sqlQuery, sqlData, (err, results) => {
+            await this.connection.query(sqlQuery, sqlData, (err, results) => {
                 if(err) {
                     console.log(err);
                     return { message: "Error updating user" };
@@ -122,7 +122,7 @@ export class UsersService {
         const userData = await userResponse.json();
         const user = userData.user_id;
         try{
-            this.connection.query(`DELETE FROM users WHERE id = ?`, [user], (err, results) => {
+            await this.connection.query(`DELETE FROM users WHERE id = ?`, [user], (err, results) => {
                 if(err) {
                     console.log(err);
                     return { message: "Error deleting user" };

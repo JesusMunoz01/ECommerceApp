@@ -18,17 +18,17 @@ export class ProductsController {
     }
 
     @Post("/create")
-    async createProduct(@Param("id") userID: string, @Body() createProduct: ProductDto): Promise<{ message: string; }> {
-      return this.productsService.createProduct(userID, createProduct);
+    async createProduct(@Body() createProduct: ProductDto): Promise<{ message: string; }> {
+      return this.productsService.createProduct(createProduct);
     }
 
     @Patch(":id")
-    async updateProduct(@Param("id") id: string, @Body() updateProduct: UpdateProductDto): Promise<{ message: string; }> {
-      return this.productsService.updateProduct(id, updateProduct);
+    async updateProduct(@Param("id") itemID: string, @Body() updateProduct: UpdateProductDto): Promise<{ message: string; }> {
+      return this.productsService.updateProduct(itemID, updateProduct);
     }
 
-    @Delete(":id")
-    async deleteProduct(@Param("id") id: string): Promise<{ message: string; }> {
-      return this.productsService.deleteProduct(id);
+    @Delete(":id/:ownerID")
+    async deleteProduct(@Param("id") itemID: string, @Param("ownerID") ownerID: string): Promise<{ message: string; }> {
+      return this.productsService.deleteProduct(itemID, ownerID);
     }
 }
