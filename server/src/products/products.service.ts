@@ -77,4 +77,21 @@ export class ProductsService {
             return { message: "Error updating product" };
         }
     }
+
+    async deleteProduct(id: string): Promise<{ message: string; }> {
+        try{
+            this.connection.query(`DELETE FROM products WHERE id = ?`, [id], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error deleting product" };
+                }
+                console.log(results);
+                return { message: "Product deleted successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error deleting product" };
+        }
+    }
 }
