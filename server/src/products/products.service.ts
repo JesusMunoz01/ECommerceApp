@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
+import { ProductDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -40,7 +41,7 @@ export class ProductsService {
         }
     }
 
-    async createProduct(userID, productData: { name: string; description: string; price: number; stock: number; discountNumber: number; }): Promise<{ message: string; }> {
+    async createProduct(userID: string, productData: ProductDto): Promise<{ message: string; }> {
         try{
             this.connection.query(`INSERT INTO products (name, description, price, stock, discountNumber, created_at, updated_at) VALUES 
             (?, ?, ?, NOW(), NOW())`, [productData.name, productData.description, productData.price, productData.stock, productData.discountNumber], (err, results) => {
