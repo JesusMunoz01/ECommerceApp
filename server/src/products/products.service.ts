@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { ProductDto } from './dto/product.dto';
+import { UpdateProductDto } from './dto/updateProduct.dto';
 
 @Injectable()
 export class ProductsService {
@@ -56,6 +57,24 @@ export class ProductsService {
         catch(err) {
             console.log(err);
             return { message: "Error creating product" };
+        }
+    }
+
+    async updateProduct(id: string, data: UpdateProductDto): Promise<{ message: string; }> {
+        try{
+            this.connection.query(`UPDATE products SET name = ?, description = ?, price = ?, stock = ?, discountNumber = ?, updated_at = NOW() WHERE id = ?`, 
+            [data.name, data.description, data.price, data.stock, data.discountNumber, id], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error updating product" };
+                }
+                console.log(results);
+                return { message: "Product updated successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error updating product" };
         }
     }
 }
