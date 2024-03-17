@@ -8,6 +8,17 @@ export class ProductsService {
     constructor(private appService: AppService) {}
     private connection = this.appService.connection;
 
+    private async getUserRole(userID: string): Promise<string> {
+        try{
+            const userRole = await this.connection.query(`SELECT role FROM users WHERE id = ?`, [userID]);
+            return userRole[0].role;
+        }
+        catch(err) {
+            console.log(err);
+            return "error";
+        }
+    }
+
     async getProducts(): Promise<{ message: string; }> {
         try{
             await this.connection.query(`SELECT * FROM products`, (err, results) => {
@@ -44,15 +55,22 @@ export class ProductsService {
 
     async createProduct(productData: ProductDto): Promise<{ message: string; }> {
         try{
-            await this.connection.query(`INSERT INTO products (name, description, price, stock, discountNumber, ownerID, created_at, updated_at) VALUES 
-            (?, ?, ?, NOW(), NOW())`, [productData.name, productData.description, productData.price, productData.stock, productData.discountNumber, productData.ownerID], (err, results) => {
-                if(err) {
-                    console.log(err);
-                    return { message: "Error creating product" };
-                }
-                console.log(results);
-                return { message: "Product created successfully" };
-            });
+            const userRole = await this.getUserRole(productData.ownerID);
+            if(userRole === "error") {
+                return { message: "Error creating product" };
+            }
+            if(userRole === "seller" || userRole === "business") {
+                await this.connection.query(`INSERT INTO products (name, description, price, stock, discountNumber, ownerID, created_at, updated_at) VALUES 
+                (?, ?, ?, NOW(), NOW())`, [productData.name, productData.description, productData.price, productData.stock, productData.discountNumber, productData.ownerID], (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        return { message: "Error creating product" };
+                    }
+                    console.log(results);
+                    return { message: "Product created successfully" };
+                });
+            }
+            return { message: "You are not authorized to create a product" };
         }
         catch(err) {
             console.log(err);
