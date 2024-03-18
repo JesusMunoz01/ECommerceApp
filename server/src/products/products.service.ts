@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { ProductDto } from './dto/product.dto';
 import { UpdateProductDto } from './dto/updateProduct.dto';
+import { ReviewDto } from './dto/review.dto';
 
 @Injectable()
 export class ProductsService {
@@ -160,6 +161,24 @@ export class ProductsService {
         catch(err) {
             console.log(err);
             return { message: "Error getting product reviews" };
+        }
+    }
+
+    async createReview(itemID: string, reviewData: ReviewDto): Promise<{ message: string; }> {
+        try{
+            await this.connection.query(`INSERT INTO reviews (productID, userID, review, rating, created_at, updated_at) VALUES 
+            (?, ?, ?, ?, NOW(), NOW())`, [itemID, reviewData.userID, reviewData.review, reviewData.rating], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error creating review" };
+                }
+                console.log(results);
+                return { message: "Review created successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error creating review" };
         }
     }
 }

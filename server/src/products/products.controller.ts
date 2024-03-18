@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { ProductsService } from './products.service';
 import { ProductDto } from './dto/product.dto';
 import { UpdateProductDto } from './dto/updateProduct.dto';
+import { ReviewDto } from './dto/review.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -18,13 +19,18 @@ export class ProductsController {
     }
 
     @Get(":id/reviews")
-    async getProductReviews(@Param("id") id: string): Promise<{ message: string; }> {
-      return this.productsService.getProductReviews(id);
+    async getProductReviews(@Param("id") itemID: string): Promise<{ message: string; }> {
+      return this.productsService.getProductReviews(itemID);
     }
 
     @Post("/create")
     async createProduct(@Body() createProduct: ProductDto): Promise<{ message: string; }> {
       return this.productsService.createProduct(createProduct);
+    }
+
+    @Post(":id/reviews")
+    async createReview(@Param("id") itemID: string, @Body() reviewData: ReviewDto): Promise<{ message: string; }> {
+      return this.productsService.createReview(itemID, reviewData);
     }
 
     @Patch(":id")
