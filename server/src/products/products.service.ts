@@ -145,4 +145,21 @@ export class ProductsService {
           return { message: "Error deleting product" };
         }
     }
+
+    async getProductReviews(id: string): Promise<{ message: string; }> {
+        try{
+            await this.connection.query(`SELECT * FROM reviews WHERE productID = ?`, [id], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error getting product reviews" };
+                }
+                console.log(results);
+                return { message: "Product reviews retrieved successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error getting product reviews" };
+        }
+    }
 }

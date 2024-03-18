@@ -17,6 +17,11 @@ export class ProductsController {
       return this.productsService.getProduct(id);
     }
 
+    @Get(":id/reviews")
+    async getProductReviews(@Param("id") id: string): Promise<{ message: string; }> {
+      return this.productsService.getProductReviews(id);
+    }
+
     @Post("/create")
     async createProduct(@Body() createProduct: ProductDto): Promise<{ message: string; }> {
       return this.productsService.createProduct(createProduct);
