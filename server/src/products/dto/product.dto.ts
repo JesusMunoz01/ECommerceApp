@@ -4,4 +4,5 @@ export class ProductDto {
     price: number;
     stock: number;
     discountNumber: number;
+    ownerID: string;
 } 
