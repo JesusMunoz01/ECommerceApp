@@ -22,4 +22,21 @@ export class OrdersService {
             return { message: "Error getting orders" };
         }
     }
+
+    async getOrder(orderID: string): Promise<{ message: string; }> {
+        try{
+            await this.connection.query(`SELECT * FROM orders WHERE id = ?`, [orderID], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error getting order" };
+                }
+                console.log(results);
+                return { message: "Order retrieved successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error getting order" };
+        }
+    }
 }

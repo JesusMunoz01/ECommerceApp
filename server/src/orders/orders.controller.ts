@@ -8,7 +8,12 @@ export class OrdersController {
     constructor(private readonly ordersService: OrdersService) {}
 
     @Get()
-    async getOrders(@Req() req): Promise<string> {
+    async getOrders(@Req() req):  Promise<{ message: string; }>{
         return this.ordersService.getOrders(req.user);
+    }
+
+    @Get(":id")
+    async getOrder(@Req() req): Promise<{ message: string; }> {
+        return this.ordersService.getOrder(req.user);
     }
 }
