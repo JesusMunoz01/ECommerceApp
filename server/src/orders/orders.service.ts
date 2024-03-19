@@ -24,9 +24,9 @@ export class OrdersService {
         }
     }
 
-    async getOrder(orderID: string): Promise<{ message: string; }> {
+    async getOrder(userID: string, orderID: string): Promise<{ message: string; }> {
         try{
-            await this.connection.query(`SELECT * FROM orders WHERE id = ?`, [orderID], (err, results) => {
+            await this.connection.query(`SELECT * FROM orders WHERE user_id = ? AND id = ?`, [userID, orderID], (err, results) => {
                 if(err) {
                     console.log(err);
                     return { message: "Error getting order" };
@@ -56,6 +56,23 @@ export class OrdersService {
         catch(err) {
             console.log(err);
             return { message: "Error creating order" };
+        }
+    }
+
+    async cancelOrder(userID: string, orderID: string): Promise<{ message: string; }> {
+        try{
+            await this.connection.query(`UPDATE orders SET status = ? WHERE id = ? AND ownerID = ?`, ["cancelled", orderID, userID], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error cancelling order" };
+                }
+                console.log(results);
+                return { message: "Order cancelled successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error cancelling order" };
         }
     }
 }
