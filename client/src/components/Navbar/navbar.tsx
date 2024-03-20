@@ -31,9 +31,14 @@ const Navbar = () => {
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
                 </div> */}
-                <div className="flex text-xl text-white-100 gap-16">
+                <div className="flex text-xl text-white-100 gap-16 items-center justify-center">
+                    <span className="border-2 border-black p-2">Logo</span>
                     <SelectedLink to="/">Home</SelectedLink>
-                    <SelectedLink to="/test">Test</SelectedLink>
+                    <SelectedLink to="/test">Brands</SelectedLink>
+                </div>
+                <div className="flex items-center gap-4 w-2/4">
+                    <input type="text" placeholder="Search" className="border border-gray-300 p-2 rounded-lg w-5/6"/>
+                    <button className="bg-green-500 text-white p-2 rounded-lg md:w-1/6 sm:w-fit">Search</button>
                 </div>
                 <div className="flex items-center gap-4">
                     <SelectedLink to="/cart">Cart</SelectedLink>
