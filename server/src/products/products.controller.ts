@@ -9,8 +9,9 @@ export class ProductsController {
     constructor(private readonly productsService: ProductsService) {};
 
     @Get()
-    async getProducts(): Promise<{ message: string; }> {
-      return this.productsService.getProducts();
+    async getProducts(): Promise<{ message: string, products?: ProductDto }> {
+      const products = await this.productsService.getProducts();
+      return products
     }
 
     @Get(":id")

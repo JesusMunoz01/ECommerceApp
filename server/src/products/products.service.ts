@@ -20,16 +20,19 @@ export class ProductsService {
         }
     }
 
-    async getProducts(): Promise<{ message: string; }> {
+    async getProducts(): Promise<{ message: string, products?: ProductDto }> {
         try{
-            await this.connection.query(`SELECT * FROM products`, (err, results) => {
-                if(err) {
-                    console.log(err);
-                    return { message: "Error getting products" };
-                }
-                console.log(results);
-                return { message: "Products retrieved successfully" };
+            const products = await new Promise<ProductDto>((resolve, reject) => {
+                this.connection.query(`SELECT * FROM products`, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        reject({ message: "Error getting products" });
+                    } else {
+                        resolve(results);
+                    }
+                });
             });
+            return { message: "Products retrieved successfully", products: products};
         }
         catch(err) {
             console.log(err);

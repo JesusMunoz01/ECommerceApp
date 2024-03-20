@@ -1,6 +1,22 @@
+import { useEffect } from "react";
 import ProductCard from "../components/Products/productCard";
+import { useQuery } from "@tanstack/react-query";
 
 const HomePage = () => {
+    // Fetch db data using react-query
+    const productQuery = useQuery({
+        queryKey: ['products'], 
+        queryFn: async (obj) => {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products`);
+            const data = await response.json();
+            console.log(obj)
+            console.log(data);
+            return data;
+        }});
+    useEffect(() => {
+        console.log(productQuery);
+    }, [productQuery]);
+
     return (
         <div className="flex justify-center items-center flex-col w-full">
             <div className="mt-2">
