@@ -31,9 +31,21 @@ const Navbar = () => {
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
                 </div> */}
-                <div className="flex text-xl text-white-100 gap-16">
+                <div className="flex text-xl text-white-100 gap-16 items-center justify-center">
+                    <span className="border-2 border-black p-2">Logo</span>
                     <SelectedLink to="/">Home</SelectedLink>
-                    <SelectedLink to="/test">Test</SelectedLink>
+                    <SelectedLink to="/test">Brands</SelectedLink>
+                </div>
+                <div className="flex items-center gap-4 w-2/4">
+                    <div className="flex border border-gray-300 bg-neutral-700 h-10 rounded-lg w-5/6 divide-x divide-white">
+                    <input type="text" placeholder="Search" className="w-5/6 h-full rounded-l-lg"/>
+                    <select className="w-1/6 rounded-r-lg">
+                        <option value="all">All</option>
+                        <option value="brands">Brands</option>
+                        <option value="products">Products</option>
+                    </select>
+                    </div>
+                    <button className="bg-green-500 text-white p-2 rounded-lg md:w-1/6 sm:w-fit">Search</button>
                 </div>
                 <div className="flex items-center gap-4">
                     <SelectedLink to="/cart">Cart</SelectedLink>
