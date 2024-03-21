@@ -7,7 +7,7 @@ type StripeProviderProps =
         children: ReactNode;
     };
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string)
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY as string)
 
 const StripeProvider = ({ children }: StripeProviderProps) => {
   return (
