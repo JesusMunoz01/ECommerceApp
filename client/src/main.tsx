@@ -4,10 +4,8 @@ import App from './App.tsx'
 import './index.css'
 import { Auth0Provider } from '@auth0/auth0-react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Elements } from '@stripe/react-stripe-js'
-import { loadStripe } from '@stripe/stripe-js'
+import StripeProvider from './components/Stripe/StripeProvider.tsx'
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string)
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -22,9 +20,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           scope: "openid profile email"
         }}
       >
-        <Elements stripe={stripePromise}>
+        <StripeProvider>
           <App />
-        </Elements>
+        </StripeProvider>
       </Auth0Provider>
     </QueryClientProvider>
   </React.StrictMode>,
