@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Res } from '@nestjs/common';
 import { StripeService } from './payment.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -13,5 +13,9 @@ export class PaymentController {
     return { clientSecret };
   }
 
-  // Controllers
+  @Post('create-checkout-session')
+  async createCheckoutSession(@Body() body: { amount: number }, @Res() response): Promise<void> {
+    const sessionId = await this.stripeService.createCheckoutSession(body.amount);
+    response.redirect(303, `https://localhost:8080/checkout/${sessionId}`);
+  }
 }
