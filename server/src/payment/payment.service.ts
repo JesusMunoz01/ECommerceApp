@@ -11,14 +11,6 @@ export class StripeService {
     });
   }
 
-  async createPaymentIntent(amount: number): Promise<string> {
-    const paymentIntent = await this.stripe.paymentIntents.create({
-      amount,
-      currency: 'usd',
-    });
-    return paymentIntent.client_secret;
-  }
-
   async createCheckoutSession(items): Promise<string> {
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
