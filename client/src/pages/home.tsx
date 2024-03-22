@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import ProductCard, { Product } from "../components/Products/productCard";
 import { useQuery } from "@tanstack/react-query";
 
-const HomePage = () => {
+type HomePageProps = {
+    setCart: React.Dispatch<React.SetStateAction<Product[]>>;
+};
+
+const HomePage = ({setCart}: HomePageProps) => {
     const [products, setProducts] = useState<Product[]>([]);
     const productQuery = useQuery({
         queryKey: ['products'], 
@@ -18,6 +22,10 @@ const HomePage = () => {
         }
     }, [productQuery]);
 
+    const addToCart = (product: Product) => {
+        setCart((prevCart) => [...prevCart, product]);
+    };
+
     if(productQuery.isLoading) return <div>Loading...</div>;
     if(productQuery.isError) return <div>Error fetching products</div>;
 
@@ -30,7 +38,7 @@ const HomePage = () => {
                 <h2>Featured Products</h2>
                 <div className="grid grid-cols-5 gap-4 w-full">
                     {products.map((product) => (
-                        <ProductCard key={product.id} product={product}/>
+                        <ProductCard key={product.id} product={product} addToCart={addToCart}/>
                     ))}
                 </div>
             </div>
