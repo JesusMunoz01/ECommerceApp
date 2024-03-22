@@ -14,8 +14,8 @@ export class PaymentController {
   }
 
   @Post('create-checkout-session')
-  async createCheckoutSession(@Body() items, @Res() response): Promise<void> {
-    const url = await this.stripeService.createCheckoutSession(items);
+  async createCheckoutSession(@Body() data, @Res() response): Promise<void> {
+    const url = await this.stripeService.createCheckoutSession(data.items);
     response.json({ url });
   }
 }

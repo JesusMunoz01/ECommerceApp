@@ -37,7 +37,6 @@ export class StripeService {
       success_url: `${process.env.CLIENT_URL}`,
       cancel_url:  `${process.env.CLIENT_URL}`,
     });
-    console.log(session.url);
     return session.url;
   }
 

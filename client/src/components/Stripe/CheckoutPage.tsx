@@ -27,20 +27,10 @@ const CheckoutPage = () => {
                 }),
             });
             const data = await response.json();
-            return data;
+            window.location = data.url;
         },
     })
 
-    useEffect(() => {
-        if (checkoutQuery.isSuccess) {
-            const { id } = checkoutQuery.data;
-            loadStripe(`${import.meta.env.VITE_STRIPE_PUBLIC_KEY}`).then((stripe) => {
-              if (stripe) {
-                stripe.redirectToCheckout({ sessionId: id });
-              }
-            });
-          }
-      }, [checkoutQuery.isSuccess, checkoutQuery.data]);
 
     if (checkoutQuery.isPending) {
         return <div>Loading...</div>;
