@@ -10,9 +10,15 @@ export type Product ={
 
 type ProductCardProps = {
     product: Product
+    addToCart: (product: Product) => void
 };
 
-const ProductCard = ({product}: ProductCardProps) => {
+const ProductCard = ({product, addToCart}: ProductCardProps) => {
+
+    const addProduct = () => {
+        addToCart(product);
+    };
+
     return (
         <div className="bg-slate-300 shadow-lg rounded-lg overflow-hidden">
             {/* <img src={product.image} alt={product.name} className="w-full h-64 object-cover object-center"/> */}
@@ -20,7 +26,7 @@ const ProductCard = ({product}: ProductCardProps) => {
                 <h3 className="text-gray-900 text-xl font-medium mb-2">{product.name}</h3>
                 <p className="text-gray-600 text-sm mb-2">{product.description}</p>
                 <p className="text-gray-900 text-xl font-medium mb-2">${product.price}</p>
-                <button className="bg-green-600 text-white p-2 rounded-lg w-3/4">Add to cart</button>
+                <button className="bg-green-600 text-white p-2 rounded-lg w-3/4" onClick={addProduct}>Add to cart</button>
             </div>
         </div>
     );

@@ -1,20 +1,34 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 
 const CheckoutPage = () => {
+    const { getAccessTokenSilently } = useAuth0();
+
     const checkoutQuery = useMutation({
         mutationKey: ['checkout'],
         mutationFn: async () => {
-            const response = await fetch('/api/payments/create-checkout-session', {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/payments/create-checkout-session`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ amount: 1000 }),
+                body: JSON.stringify({
+                    items: [
+                        {
+                            name: 'T-shirt',
+                            price: 20000,
+                            quantity: 1,
+                        },
+                    ],
+                }),
             });
             const data = await response.json();
-            return data;
+            window.location = data.url;
         },
     })
+
 
     if (checkoutQuery.isPending) {
         return <div>Loading...</div>;

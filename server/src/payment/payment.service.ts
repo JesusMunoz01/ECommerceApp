@@ -11,34 +11,25 @@ export class StripeService {
     });
   }
 
-  async createPaymentIntent(amount: number): Promise<string> {
-    const paymentIntent = await this.stripe.paymentIntents.create({
-      amount,
-      currency: 'usd',
-    });
-    return paymentIntent.client_secret;
-  }
-
-  async createCheckoutSession(amount: number): Promise<string> {
+  async createCheckoutSession(items): Promise<string> {
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Your Product',
-            },
-            unit_amount: amount,
+      line_items: items.map(item => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.name,
+            //images: [item.image],
           },
-          quantity: 1,
+          unit_amount: item.price,
         },
-      ],
+        quantity: item.quantity,
+      })),
       mode: 'payment',
-      success_url: 'https://localhost:8080/success',
-      cancel_url: 'https://localhost:8080/cancel',
+      success_url: `${process.env.CLIENT_URL}`,
+      cancel_url:  `${process.env.CLIENT_URL}`,
     });
-    return session.id;
+    return session.url;
   }
 
 }
