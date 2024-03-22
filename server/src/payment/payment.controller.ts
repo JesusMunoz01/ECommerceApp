@@ -14,8 +14,8 @@ export class PaymentController {
   }
 
   @Post('create-checkout-session')
-  async createCheckoutSession(@Body() body: { amount: number }, @Res() response): Promise<void> {
-    const sessionId = await this.stripeService.createCheckoutSession(body.amount);
-    response.redirect(303, `https://localhost:8080/checkout/${sessionId}`);
+  async createCheckoutSession(@Body() items, @Res() response): Promise<void> {
+    const url = await this.stripeService.createCheckoutSession(items);
+    response.json({ url });
   }
 }

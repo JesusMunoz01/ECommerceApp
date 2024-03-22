@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ProductCard, { Product } from "../components/Products/productCard";
 import { useQuery } from "@tanstack/react-query";
-import CheckoutForm from "../components/Stripe/CheckoutForm";
 
 const HomePage = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -33,7 +32,6 @@ const HomePage = () => {
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product}/>
                     ))}
-                    <CheckoutForm />
                 </div>
             </div>
         </div>
