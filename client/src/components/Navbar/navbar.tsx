@@ -38,7 +38,7 @@ const Navbar = () => {
                 </div>
                 <div className="flex items-center gap-4 w-2/4">
                     <div className="flex border border-gray-300 bg-neutral-700 h-10 rounded-lg w-5/6 divide-x divide-white">
-                    <input type="text" placeholder="Search" className="w-5/6 h-full rounded-l-lg"/>
+                    <input type="text" placeholder="Search" className="w-5/6 h-full rounded-l-lg pl-2"/>
                     <select className="w-1/6 rounded-r-lg">
                         <option value="all">All</option>
                         <option value="brands">Brands</option>
