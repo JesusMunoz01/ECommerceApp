@@ -23,7 +23,7 @@ const CheckoutPage = ({cart}: CheckoutProps) => {
                     items: cart.map((product) => ({
                         name: product.name,
                         price: product.price,
-                        quantity: 1,
+                        quantity: product.quantity,
                     })),
                 }),
             });
