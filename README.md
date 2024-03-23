@@ -4,12 +4,15 @@ An Ecommerce Project
 ## Features
 
 This project contains both a backend and a frontend. The backend will be found in the server folder, while the frontend will be found in the client folder. The list of tools used and instructions on how to run the project will be listed in their respective section.
-The application requires both the backend and frontend to be running to function properly.
+The application requires both the backend and frontend to be running to function properly and the respective packages to be installed.
 
 ### Backend
 To initialize the backend, navigate to the backend folder 
-> cd server
-> npm run start:dev
+```
+cd server
+npm i
+npm run start:dev
+```
 
 - Nestjs
 - Typescript
@@ -19,8 +22,11 @@ To initialize the backend, navigate to the backend folder
 
 ### Frontend
 To initialize the frontend, navigate to the frontend folder 
-> cd client
-> npm run dev
+```
+cd client
+npm i
+npm run dev
+```
 
 - Reactjs + Vite
 - Typescript
