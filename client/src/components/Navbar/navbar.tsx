@@ -26,7 +26,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar bg-slate-600">
+        <nav className="navbar bg-slate-600 h-24">
             <div className="p-6 max-w mx-auto flex items-center justify-between">
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
