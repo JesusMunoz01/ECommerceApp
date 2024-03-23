@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { CartItem } from "../../pages/cart";
 
 export type Product ={
     id: number
@@ -10,13 +12,22 @@ export type Product ={
 
 type ProductCardProps = {
     product: Product
-    addToCart: (product: Product) => void
+    addToCart?: (product: CartItem) => void
 };
 
 const ProductCard = ({product, addToCart}: ProductCardProps) => {
+    const [quantity, setQuantity] = useState(1);
 
     const addProduct = () => {
-        addToCart(product);
+        if(addToCart){
+            addToCart({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: quantity,
+            });
+            setQuantity(1);
+        }
     };
 
     return (
@@ -26,7 +37,14 @@ const ProductCard = ({product, addToCart}: ProductCardProps) => {
                 <h3 className="text-gray-900 text-xl font-medium mb-2">{product.name}</h3>
                 <p className="text-gray-600 text-sm mb-2">{product.description}</p>
                 <p className="text-gray-900 text-xl font-medium mb-2">${product.price}</p>
-                <button className="bg-green-600 text-white p-2 rounded-lg w-3/4" onClick={addProduct}>Add to cart</button>
+                <div className="flex justify-between items-center gap-1">
+                    {addToCart && <button className="bg-green-600 text-white p-2 rounded-lg w-3/4" onClick={addProduct}>Add to cart</button>}
+                    <div className="flex items-center">
+                        <button className="size-1 flex justify-center items-center focus:border-none" onClick={() => setQuantity((prev) => prev - 1)}>-</button>
+                        <p className="mx-2">{quantity}</p>
+                        <button className="size-1 flex justify-center items-center" onClick={() => setQuantity((prev) => prev + 1)}>+</button>
+                    </div>
+                </div>
             </div>
         </div>
     );
