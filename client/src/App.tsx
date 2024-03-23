@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<HomePage setCart={setCart}/>} />
           <Route path="/account" element={<Account />} />
           <Route path="/cart" element={<Cart cart={cart}/>} />
-          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/checkout" element={<CheckoutPage cart={cart}/>} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </Router>

@@ -6,25 +6,25 @@ type HomePageProps = {
     setCart: React.Dispatch<React.SetStateAction<Product[]>>;
 };
 
-const mockProducts: Product[] = [
-    {
-        id: 1,
-        name: "T-shirt",
-        price: 2000,
-        description: "A nice t-shirt",
-        category: "clothing",
-    },
-    {
-        id: 2,
-        name: "Jacket",
-        price: 5000,
-        description: "A nice jacket",
-        category: "clothing",
-    },
-];
+// const mockProducts: Product[] = [
+//     {
+//         id: 1,
+//         name: "T-shirt",
+//         price: 2000,
+//         description: "A nice t-shirt",
+//         category: "clothing",
+//     },
+//     {
+//         id: 2,
+//         name: "Jacket",
+//         price: 5000,
+//         description: "A nice jacket",
+//         category: "clothing",
+//     },
+// ];
 
 const HomePage = ({setCart}: HomePageProps) => {
-    const [products, setProducts] = useState<Product[]>(mockProducts);
+    const [products, setProducts] = useState<Product[]>([]);
     const productQuery = useQuery({
         queryKey: ['products'], 
         queryFn: async () => {
@@ -33,18 +33,18 @@ const HomePage = ({setCart}: HomePageProps) => {
             return data;
         }});
 
-    // useEffect(() => {
-    //     if(productQuery.isSuccess) {
-    //         setProducts(productQuery.data.products);
-    //     }
-    // }, [productQuery]);
+    useEffect(() => {
+        if(productQuery.isSuccess) {
+            setProducts(productQuery.data.products);
+        }
+    }, [productQuery]);
 
     const addToCart = (product: Product) => {
         setCart((prevCart) => [...prevCart, product]);
     };
 
-    // if(productQuery.isLoading) return <div>Loading...</div>;
-    // if(productQuery.isError) return <div>Error fetching products</div>;
+    if(productQuery.isLoading) return <div>Loading...</div>;
+    if(productQuery.isError) return <div>Error fetching products</div>;
 
     return (
         <div className="flex justify-center items-center flex-col w-full">

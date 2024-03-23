@@ -1,7 +1,12 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
+import { Product } from "../Products/productCard";
 
-const CheckoutPage = () => {
+type CheckoutProps = {
+    cart: Product[];
+};
+
+const CheckoutPage = ({cart}: CheckoutProps) => {
     const { getAccessTokenSilently } = useAuth0();
 
     const checkoutQuery = useMutation({
@@ -15,13 +20,11 @@ const CheckoutPage = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    items: [
-                        {
-                            name: 'T-shirt',
-                            price: 20000,
-                            quantity: 1,
-                        },
-                    ],
+                    items: cart.map((product) => ({
+                        name: product.name,
+                        price: product.price,
+                        quantity: 1,
+                    })),
                 }),
             });
             const data = await response.json();
