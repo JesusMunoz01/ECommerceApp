@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import ProductCard, { Product } from "../components/Products/productCard";
 import { useQuery } from "@tanstack/react-query";
+import { CartItem } from "./cart";
 
 type HomePageProps = {
-    setCart: React.Dispatch<React.SetStateAction<Product[]>>;
+    setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
 };
 
 // const mockProducts: Product[] = [
@@ -39,8 +40,8 @@ const HomePage = ({setCart}: HomePageProps) => {
         }
     }, [productQuery]);
 
-    const addToCart = (product: Product) => {
-        setCart((prevCart) => [...prevCart, product]);
+    const addToCart = (cartProduct: CartItem) => {
+        setCart((prevCart) => [...prevCart, cartProduct]);
     };
 
     if(productQuery.isLoading) return <div>Loading...</div>;

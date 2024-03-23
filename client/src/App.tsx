@@ -4,12 +4,11 @@ import Navbar from './components/Navbar/navbar'
 import HomePage from './pages/home.tsx'
 import Account from './components/Auth/auth0-profile'
 import CheckoutPage from './components/Stripe/CheckoutPage.tsx'
-import Cart from './pages/cart.tsx'
+import Cart, { CartItem } from './pages/cart.tsx'
 import { useState } from 'react'
-import { Product } from './components/Products/productCard.tsx'
 
 function App() {
-  const [cart, setCart] = useState<Product[]>([])
+  const [cart, setCart] = useState<CartItem[]>([])
 
   return (
     <>
