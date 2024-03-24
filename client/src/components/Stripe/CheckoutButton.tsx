@@ -6,7 +6,7 @@ type CheckoutProps = {
     cart: CartItem[];
 };
 
-const CheckoutPage = ({cart}: CheckoutProps) => {
+const CheckoutButton = ({cart}: CheckoutProps) => {
     const { getAccessTokenSilently } = useAuth0();
 
     const checkoutQuery = useMutation({
@@ -22,7 +22,7 @@ const CheckoutPage = ({cart}: CheckoutProps) => {
                 body: JSON.stringify({
                     items: cart.map((product) => ({
                         name: product.name,
-                        price: product.price,
+                        price: product.price * 100,
                         quantity: product.quantity,
                     })),
                 }),
@@ -43,10 +43,10 @@ const CheckoutPage = ({cart}: CheckoutProps) => {
 
     return (
         <div>
-            <h1>Checkout</h1>
-            <button onClick={() => checkoutQuery.mutate()} disabled={checkoutQuery.isPending}>Checkout</button>
+            <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none" 
+                onClick={() => checkoutQuery.mutate()} disabled={checkoutQuery.isPending || cart.length < 1}>Checkout</button>
         </div>
     );
 };
 
-export default CheckoutPage;
+export default CheckoutButton;
