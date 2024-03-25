@@ -33,18 +33,16 @@ export class StripeService {
   }
 
   async checkoutListener(req): Promise<Stripe.Checkout.Session> {
-    const sig = req.headers['stripe-signature'];
+    const signature = req.headers['stripe-signature'];
     let event;
     try {
-      event = this.stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+      event = this.stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
       throw new Error(`Webhook Error: ${err.message}`);
     }
 
     switch (event.type) {
       case 'checkout.session.completed':
-        console.log('Payment was successful');
-        console.log(event.data.object);
         return event.data.object as Stripe.Checkout.Session;
       default:
         throw new Error(`Unhandled event type: ${event.type}`);
