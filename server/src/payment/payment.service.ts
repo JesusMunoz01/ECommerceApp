@@ -43,6 +43,8 @@ export class StripeService {
 
     switch (event.type) {
       case 'checkout.session.completed':
+        console.log('Payment was successful!');
+        console.log(event.data.object);
         return event.data.object as Stripe.Checkout.Session;
       default:
         throw new Error(`Unhandled event type: ${event.type}`);
