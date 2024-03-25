@@ -12,4 +12,11 @@ export class PaymentController {
     const url = await this.stripeService.createCheckoutSession(data.items);
     response.json({ url });
   }
+
+  @Post('webhook')
+  async stripeWebhook(@Body() req, @Res() response): Promise<void> {
+    const session = await this.stripeService.checkoutListener(req);
+    response.json(session);
+  }
+
 }
