@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Res, Header, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Res, Header, Req, RawBodyRequest } from '@nestjs/common';
 import { StripeService } from './payment.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -15,12 +15,10 @@ export class PaymentController {
 
   @Post('webhook')
   @Header('Content-Type', 'application/json')
-  async stripeWebhook(@Req() req, @Res() response): Promise<void> {
-    console.log(req.body)
-    const rawBody = req.body;
-    console.log(rawBody);
+  async stripeWebhook(@Req() req: RawBodyRequest<Request>, @Res() response): Promise<void> {
+    const rawBody = req.rawBody;
     const signature = req.headers['stripe-signature'];
-    const session = await this.stripeService.checkoutListener(rawBody.toString(), signature);
+    const session = await this.stripeService.checkoutListener(rawBody, signature);
     response.json(session);
   }
 

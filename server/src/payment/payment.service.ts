@@ -35,22 +35,15 @@ export class StripeService {
   }
 
   async checkoutListener(req, signature): Promise<Stripe.Checkout.Session> {
-    //const signature = req.headers['stripe-signature'];
     let event;
     try {
-      event = this.stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
+      event = this.stripe.webhooks.constructEvent(req, signature, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
       throw new Error(`Webhook Error: ${err.message}`);
     }
 
     switch (event.type) {
       case 'checkout.session.completed':
-        const session = event.data.object as Stripe.Checkout.Session;
-        const userId = session.client_reference_id;
-        console.log('Payment was successful!');
-        console.log(session);
-        console.log(userId);
-        console.log(event.data.object);
         return event.data.object as Stripe.Checkout.Session;
       case 'checkout.session.failed':
         console.log('Payment failed');
