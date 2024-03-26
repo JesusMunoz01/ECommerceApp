@@ -17,7 +17,7 @@ export class PaymentController {
   @Post('webhook')
   @Header('Content-Type', 'application/json')
   async stripeWebhook(@Req() req, @Res() response): Promise<void> {
-    const session = await this.stripeService.checkoutListener(req);
+    const session = await this.stripeService.checkoutListener(req, response);
     response.json(session);
   }
 
