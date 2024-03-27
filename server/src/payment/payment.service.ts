@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { AppService } from 'src/app.service';
 import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
   private readonly stripe: Stripe;
+  private connection = this.appService.connection;
 
-  constructor() {
+  constructor(private appService: AppService) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-10-16',
     });
@@ -41,9 +43,27 @@ export class StripeService {
     } catch (err) {
       throw new Error(`Webhook Error: ${err.message}`);
     }
-
+    
     switch (event.type) {
       case 'checkout.session.completed':
+        const session = event.data.object as Stripe.Checkout.Session;
+        const orderId = session.id;
+        const userId = session.client_reference_id;
+        const total = session.amount_total;
+        const currency = session.currency;
+        const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
+        console.log(lineItems);
+        // Create order in database
+        // const order = await new Promise((resolve, reject) => {
+        //   this.connection.query(`INSERT INTO orders (id, user_id, total, currency) VALUES (?, ?, ?, ?)`, [orderId, userId, total, currency], (err, results) => {
+        //     if (err) {
+        //       console.log(err);
+        //       reject({ message: "Error creating order" });
+        //     } else {
+        //       resolve(results);
+        //     }
+        //   });
+        // });
         return event.data.object as Stripe.Checkout.Session;
       case 'checkout.session.failed':
         console.log('Payment failed');
