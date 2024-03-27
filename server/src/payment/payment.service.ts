@@ -23,9 +23,8 @@ export class StripeService {
           product_data: {
             name: item.name,
             metadata: {
-              productId: `${item.id}`,
-              test: 'test',
-            },
+              productId: item.id,
+            }
             //images: [item.image],
           },
           unit_amount: item.price,
@@ -36,9 +35,6 @@ export class StripeService {
       success_url: `${process.env.CLIENT_URL}`,
       cancel_url:  `${process.env.CLIENT_URL}`,
       client_reference_id: userId,
-      metadata: {
-        productsId: `${items.map(item => item.id)}`,
-      }
     });
     return session.url;
   }
@@ -59,8 +55,20 @@ export class StripeService {
         const total = session.amount_total;
         const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
-        console.log(lineItems);
-        console.log(session.metadata.productsId.split(',') );
+        // console.log(lineItems);
+        // console.log(session.metadata.productsId.split(',') );
+
+        console.log('Line Items:', lineItems);
+
+        const productIds = await Promise.all(lineItems.data.map(async (item) => {
+          const product = await this.stripe.products.retrieve(item.price.product.toString());
+          const productId = product.metadata.productId;
+          const intId = parseInt(productId);
+          return intId;
+        }));
+        
+        console.log('Product IDs:', productIds);
+
         // Create order in database
         // const order = await new Promise((resolve, reject) => {
         //   this.connection.query(`INSERT INTO orders (id, user_id, total, currency) VALUES (?, ?, ?, ?)`, [orderId, userId, total, currency], (err, results) => {
