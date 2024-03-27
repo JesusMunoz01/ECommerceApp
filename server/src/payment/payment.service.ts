@@ -55,10 +55,8 @@ export class StripeService {
         const total = session.amount_total;
         const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
-        // console.log(lineItems);
-        // console.log(session.metadata.productsId.split(',') );
 
-        console.log('Line Items:', lineItems);
+        // console.log('Line Items:', lineItems);
 
         const productIds = await Promise.all(lineItems.data.map(async (item) => {
           const product = await this.stripe.products.retrieve(item.price.product.toString());
@@ -67,19 +65,19 @@ export class StripeService {
           return intId;
         }));
         
-        console.log('Product IDs:', productIds);
+        // console.log('Product IDs:', productIds);
 
         // Create order in database
-        // const order = await new Promise((resolve, reject) => {
-        //   this.connection.query(`INSERT INTO orders (id, user_id, total, currency) VALUES (?, ?, ?, ?)`, [orderId, userId, total, currency], (err, results) => {
-        //     if (err) {
-        //       console.log(err);
-        //       reject({ message: "Error creating order" });
-        //     } else {
-        //       resolve(results);
-        //     }
-        //   });
-        // });
+        const order = await new Promise((resolve, reject) => {
+          this.connection.query(`INSERT INTO orders (productsID, ownerID, price, status) VALUES (?, ?, ?, "Pending")`, [productIds, userId, total], (err, results) => {
+            if (err) {
+              console.log(err);
+              reject({ message: "Error creating order" });
+            } else {
+              resolve(results);
+            }
+          });
+        });
         return event.data.object as Stripe.Checkout.Session;
       case 'checkout.session.failed':
         console.log('Payment failed');
