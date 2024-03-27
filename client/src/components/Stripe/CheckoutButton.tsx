@@ -7,6 +7,7 @@ type CheckoutProps = {
 };
 
 const CheckoutButton = ({cart}: CheckoutProps) => {
+    console.log(cart)
     const { getAccessTokenSilently, user } = useAuth0();
 
     const checkoutQuery = useMutation({
@@ -29,6 +30,7 @@ const CheckoutButton = ({cart}: CheckoutProps) => {
                         name: product.name,
                         price: product.price * 100,
                         quantity: product.quantity,
+                        id: product.id,
                     })),
                     userId: userId,
                 }),
