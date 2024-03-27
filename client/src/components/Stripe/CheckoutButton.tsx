@@ -7,6 +7,7 @@ type CheckoutProps = {
 };
 
 const CheckoutButton = ({cart}: CheckoutProps) => {
+    console.log(cart)
     const { getAccessTokenSilently, user } = useAuth0();
 
     const checkoutQuery = useMutation({
@@ -14,9 +15,9 @@ const CheckoutButton = ({cart}: CheckoutProps) => {
         mutationFn: async () => {
 
             let userId = null;
-            if(user)
-                userId = user.sub;
-
+            if(user?.sub)
+                userId = user.sub.split('|')[1];
+            console.log(userId);
             const token = await getAccessTokenSilently();
             const response = await fetch(`${import.meta.env.VITE_API_URL}/payments/create-checkout-session`, {
                 method: 'POST',
@@ -29,6 +30,7 @@ const CheckoutButton = ({cart}: CheckoutProps) => {
                         name: product.name,
                         price: product.price * 100,
                         quantity: product.quantity,
+                        id: product.id,
                     })),
                     userId: userId,
                 }),

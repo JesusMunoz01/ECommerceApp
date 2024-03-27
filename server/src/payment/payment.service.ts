@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { AppService } from 'src/app.service';
+import { ProductDto } from 'src/products/dto/product.dto';
 import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
   private readonly stripe: Stripe;
+  private connection = this.appService.connection;
 
-  constructor() {
+  constructor(private appService: AppService) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-10-16',
     });
   }
 
-  async createCheckoutSession(items): Promise<string> {
+  async createCheckoutSession(items, userId): Promise<string> {
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: items.map(item => ({
@@ -19,6 +22,10 @@ export class StripeService {
           currency: 'usd',
           product_data: {
             name: item.name,
+            metadata: {
+              productId: `${item.id}`,
+              test: 'test',
+            },
             //images: [item.image],
           },
           unit_amount: item.price,
@@ -28,27 +35,43 @@ export class StripeService {
       mode: 'payment',
       success_url: `${process.env.CLIENT_URL}`,
       cancel_url:  `${process.env.CLIENT_URL}`,
+      client_reference_id: userId,
+      metadata: {
+        productsId: `${items.map(item => item.id)}`,
+      }
     });
     return session.url;
   }
 
-  async checkoutListener(req, response): Promise<Stripe.Checkout.Session> {
-    const signature = req.headers['stripe-signature'];
+  async checkoutListener(req, signature): Promise<Stripe.Checkout.Session> {
     let event;
-    let userId;
     try {
-      event = this.stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
-      if(response.req.body.userId) {
-        userId = response.req.body.userId;
-      }
+      event = this.stripe.webhooks.constructEvent(req, signature, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
       throw new Error(`Webhook Error: ${err.message}`);
     }
-
+    
     switch (event.type) {
       case 'checkout.session.completed':
-        console.log('Payment was successful!');
-        console.log(event.data.object);
+        const session = event.data.object as Stripe.Checkout.Session;
+        const orderId = session.id;
+        const userId = session.client_reference_id;
+        const total = session.amount_total;
+        const currency = session.currency;
+        const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
+        console.log(lineItems);
+        console.log(session.metadata.productsId.split(',') );
+        // Create order in database
+        // const order = await new Promise((resolve, reject) => {
+        //   this.connection.query(`INSERT INTO orders (id, user_id, total, currency) VALUES (?, ?, ?, ?)`, [orderId, userId, total, currency], (err, results) => {
+        //     if (err) {
+        //       console.log(err);
+        //       reject({ message: "Error creating order" });
+        //     } else {
+        //       resolve(results);
+        //     }
+        //   });
+        // });
         return event.data.object as Stripe.Checkout.Session;
       case 'checkout.session.failed':
         console.log('Payment failed');
