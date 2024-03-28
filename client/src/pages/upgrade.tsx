@@ -15,6 +15,8 @@ const UpgradePage = () => {
                         <li>Buy Items</li>
                         <li>Sell Items {`(50 Max)`}</li>
                     </ul>
+                    <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none" 
+                       disabled={true}>Current</button>
                 </div>
             </div>
             <div className="mb-4 flex items-center flex-col bg-slate-500 rounded-md w-80">
@@ -26,6 +28,7 @@ const UpgradePage = () => {
                         <li>Buy Items</li>
                         <li>Sell Items {`(1000 Max)`}</li>
                     </ul>
+                    <SubscriptionButton tier={2}/>
                 </div>
             </div>
             <div className="mb-4 flex items-center flex-col bg-slate-500 rounded-md w-80">
@@ -38,10 +41,10 @@ const UpgradePage = () => {
                         <li>Sell Items {`(Infinite)`}</li>
                         <li>Create a Brand Page</li>
                     </ul>
+                    <SubscriptionButton tier={3}/>
                 </div>
             </div>
         </div>
-        <SubscriptionButton />
         </div>
     );
 
