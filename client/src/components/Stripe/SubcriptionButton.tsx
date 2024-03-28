@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 
 
-const SubscriptionButton = () => {
+const SubscriptionButton = ({tier}: {tier?: Number}) => {
     const { getAccessTokenSilently, user } = useAuth0();
 
     const subscribeQuery = useMutation({
@@ -22,6 +22,7 @@ const SubscriptionButton = () => {
                 },
                 body: JSON.stringify({
                     userId: userId,
+                    tier: tier,
                 }),
             });
             const data = await response.json();
