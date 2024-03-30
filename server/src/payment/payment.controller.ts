@@ -13,6 +13,13 @@ export class PaymentController {
     response.json({ url });
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Post("create-subscription")
+  async createSubscription(@Body() data, @Res() response): Promise<void> {
+    const url = await this.stripeService.createSubscription(data.planId, data.userId);
+    response.json({ url });
+  }
+
   @Post('webhook')
   @Header('Content-Type', 'application/json')
   async stripeWebhook(@Req() req: RawBodyRequest<Request>, @Res() response): Promise<void> {
