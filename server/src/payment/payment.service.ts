@@ -39,6 +39,33 @@ export class StripeService {
     return session.url;
   }
 
+  async createSubscription(planId, userId): Promise<string> {
+    let price;
+    if(planId === 1)
+      price = 'Free';
+    else if(planId === 2)
+      price = '9.99';
+    else if(planId === 3)
+      price = '19.99';
+    else
+      return 'Invalid plan ID';
+
+    const session = await this.stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: price,
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: `${process.env.CLIENT_URL}`,
+      cancel_url: `${process.env.CLIENT_URL}`,
+      client_reference_id: userId,
+    });
+    return session.url;
+  }
+
   async checkoutListener(req, signature): Promise<Stripe.Checkout.Session> {
     let event;
     try {
