@@ -41,6 +41,7 @@ export class StripeService {
 
   async createSubscription(planId, userId): Promise<string> {
     let price;
+
     if(planId === 1)
       return 'Free plan does not require payment';
     else if(planId === 2)
@@ -77,14 +78,11 @@ export class StripeService {
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log('Payment was successful:', session.id);
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;
         const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
-
-        // console.log('Line Items:', lineItems);
 
         const productIds = await Promise.all(lineItems.data.map(async (item) => {
           const product = await this.stripe.products.retrieve(item.price.product.toString());
@@ -92,8 +90,6 @@ export class StripeService {
           const intId = parseInt(productId);
           return intId;
         }));
-        
-        // console.log('Product IDs:', productIds);
 
         // Create order in database
         const order = await new Promise((resolve, reject) => {

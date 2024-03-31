@@ -17,7 +17,8 @@ export class PaymentController {
   @Post("create-subscription")
   async createSubscription(@Body() data, @Res() response): Promise<void> {
     console.log("here")
-    const url = await this.stripeService.createSubscription(data.planId, data.userId);
+    console.log(data)
+    const url = await this.stripeService.createSubscription(data.tier, data.userId);
     response.json({ url });
   }
 
