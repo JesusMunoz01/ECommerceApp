@@ -14,7 +14,7 @@ const SubscriptionButton = ({tier}: {tier?: Number}) => {
                 userId = user.sub;
 
             const token = await getAccessTokenSilently();
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/payments/subscriptions`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/payments/create-subscription`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

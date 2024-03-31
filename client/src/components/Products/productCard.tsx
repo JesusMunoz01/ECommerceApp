@@ -33,16 +33,18 @@ const ProductCard = ({product, addToCart}: ProductCardProps) => {
     return (
         <div className="bg-slate-300 shadow-lg rounded-lg overflow-hidden">
             {/* <img src={product.image} alt={product.name} className="w-full h-64 object-cover object-center"/> */}
-            <div className="p-6">
-                <h3 className="text-gray-900 text-xl font-medium mb-2">{product.name}</h3>
-                <p className="text-gray-600 text-sm mb-2">{product.description}</p>
-                <p className="text-gray-900 text-xl font-medium mb-2">${product.price}</p>
-                <div className="flex justify-between items-center gap-1">
+            <div className="p-6 flex flex-col h-full justify-between">
+                <div>
+                    <h3 className="text-gray-900 text-xl font-medium mb-2">{product.name}</h3>
+                    <p className="text-gray-600 text-sm mb-2">{product.description}</p>
+                    <p className="text-gray-900 text-xl font-medium mb-2">${product.price}</p>
+                </div>
+                <div className="flex justify-between items-center gap-1 flex-col-reverse">
                     {addToCart && <button className="bg-green-600 text-white p-2 rounded-lg w-3/4" onClick={addProduct}>Add to cart</button>}
-                    <div className="flex items-center">
-                        <button className="size-1 flex justify-center items-center focus:border-none" onClick={() => setQuantity((prev) => prev - 1)}>-</button>
+                    <div className="flex items-center justify-center">
+                        <button className="size-1 flex justify-center items-center w-fit h-6 overflow-hidden" onClick={() => setQuantity((prev) => prev - 1)}>-</button>
                         <p className="mx-2">{quantity}</p>
-                        <button className="size-1 flex justify-center items-center" onClick={() => setQuantity((prev) => prev + 1)}>+</button>
+                        <button className="size-1 flex justify-center items-center w-fit h-6 overflow-hidden" onClick={() => setQuantity((prev) => prev + 1)}>+</button>
                     </div>
                 </div>
             </div>

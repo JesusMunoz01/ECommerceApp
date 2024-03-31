@@ -41,12 +41,13 @@ export class StripeService {
 
   async createSubscription(planId, userId): Promise<string> {
     let price;
+
     if(planId === 1)
-      price = 'Free';
+      return 'Free plan does not require payment';
     else if(planId === 2)
-      price = '9.99';
+      price = "price_1P076aIaMlkIlLqjzNNVBPcH"
     else if(planId === 3)
-      price = '19.99';
+      price = "price_1P077DIaMlkIlLqjeZXgNdMF"
     else
       return 'Invalid plan ID';
 
@@ -83,16 +84,12 @@ export class StripeService {
         const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
 
-        // console.log('Line Items:', lineItems);
-
         const productIds = await Promise.all(lineItems.data.map(async (item) => {
           const product = await this.stripe.products.retrieve(item.price.product.toString());
           const productId = product.metadata.productId;
           const intId = parseInt(productId);
           return intId;
         }));
-        
-        // console.log('Product IDs:', productIds);
 
         // Create order in database
         const order = await new Promise((resolve, reject) => {
