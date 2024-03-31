@@ -16,6 +16,7 @@ export class PaymentController {
   @UseGuards(AuthGuard('jwt'))
   @Post("create-subscription")
   async createSubscription(@Body() data, @Res() response): Promise<void> {
+    console.log("here")
     const url = await this.stripeService.createSubscription(data.planId, data.userId);
     response.json({ url });
   }

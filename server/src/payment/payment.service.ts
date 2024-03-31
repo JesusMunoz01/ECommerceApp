@@ -42,11 +42,11 @@ export class StripeService {
   async createSubscription(planId, userId): Promise<string> {
     let price;
     if(planId === 1)
-      price = 'Free';
+      return 'Free plan does not require payment';
     else if(planId === 2)
-      price = '9.99';
+      price = "price_1P076aIaMlkIlLqjzNNVBPcH"
     else if(planId === 3)
-      price = '19.99';
+      price = "price_1P077DIaMlkIlLqjeZXgNdMF"
     else
       return 'Invalid plan ID';
 
@@ -77,6 +77,7 @@ export class StripeService {
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object as Stripe.Checkout.Session;
+        console.log('Payment was successful:', session.id);
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;
