@@ -63,6 +63,9 @@ export class StripeService {
       success_url: `${process.env.CLIENT_URL}`,
       cancel_url: `${process.env.CLIENT_URL}`,
       client_reference_id: userId,
+      metadata: {
+        userId: userId,
+      }
     });
     return session.url;
   }
@@ -76,7 +79,29 @@ export class StripeService {
     }
     
     switch (event.type) {
+      case 'customer.subscription.updated':
+        const subscription = event.data.object as Stripe.Subscription;
+        const userSubId = subscription.customer;
+        const planId = subscription.items.data[0].price.id;
+        const plan = await this.stripe.plans.retrieve(planId);
+        const userSID = subscription.metadata.userId;
+        console.log(subscription.metadata);
+
+        // Update user plan in database
+        const user = await new Promise((resolve, reject) => {
+          this.connection.query(`UPDATE users SET plan = ?, pid = ? WHERE id = ?`, [plan.nickname, userSubId, userId], (err, results) => {
+            if (err) {
+              console.log(err);
+              reject({ message: "Error updating user" });
+            } else {
+              resolve(results);
+            }
+          });
+        });
+        return event.data.object as Stripe.Checkout.Session;
       case 'checkout.session.completed':
+        if(!event.data.object.client_reference_id)
+          break;
         const session = event.data.object as Stripe.Checkout.Session;
         const orderId = session.id;
         const userId = session.client_reference_id;
