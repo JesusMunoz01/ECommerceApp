@@ -53,6 +53,8 @@ export class StripeService {
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      customer: userId,
+      metadata: {"userId": userId, "planId": planId, "priceId": price, "plan": "Premium"},
       line_items: [
         {
           price: price,
@@ -62,10 +64,6 @@ export class StripeService {
       mode: 'subscription',
       success_url: `${process.env.CLIENT_URL}`,
       cancel_url: `${process.env.CLIENT_URL}`,
-      client_reference_id: userId,
-      metadata: {
-        userId: userId,
-      }
     });
     return session.url;
   }
@@ -130,6 +128,10 @@ export class StripeService {
         return event.data.object as Stripe.Checkout.Session;
       case 'checkout.session.failed':
         console.log('Payment failed');
+        console.log(event.data.object);
+        return event.data.object as Stripe.Checkout.Session;
+      case 'subscription_schedule.canceled':
+        console.log('Subscription canceled');
         console.log(event.data.object);
         return event.data.object as Stripe.Checkout.Session;
       default:
