@@ -41,20 +41,25 @@ export class StripeService {
 
   async createSubscription(planId, userId): Promise<string> {
     let price;
+    let planName;
 
-    if(planId === 1)
-      return 'Free plan does not require payment';
-    else if(planId === 2)
+    const dbUserId = userId.split('|')[1]
+
+    if(planId === 1){
+      return 'Free plan does not require payment';}
+    else if(planId === 2){
       price = "price_1P076aIaMlkIlLqjzNNVBPcH"
-    else if(planId === 3)
+      planName = "Premium"
+    }
+    else if(planId === 3){
       price = "price_1P077DIaMlkIlLqjeZXgNdMF"
+      planName = "Enterprise"
+    }
     else
       return 'Invalid plan ID';
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      customer: userId,
-      metadata: {"userId": userId, "planId": planId, "priceId": price, "plan": "Premium"},
       line_items: [
         {
           price: price,
@@ -64,7 +69,14 @@ export class StripeService {
       mode: 'subscription',
       success_url: `${process.env.CLIENT_URL}`,
       cancel_url: `${process.env.CLIENT_URL}`,
+      subscription_data: {
+        metadata: {
+          userId: dbUserId,
+          planName: planName
+        }
+      },
     });
+
     return session.url;
   }
 
@@ -78,16 +90,15 @@ export class StripeService {
     
     switch (event.type) {
       case 'customer.subscription.updated':
+        const userSID = event.data.object.metadata.userId;
+        const planName = event.data.object.metadata.planName;
         const subscription = event.data.object as Stripe.Subscription;
         const userSubId = subscription.customer;
         const planId = subscription.items.data[0].price.id;
-        const plan = await this.stripe.plans.retrieve(planId);
-        const userSID = subscription.metadata.userId;
-        console.log(subscription.metadata);
 
         // Update user plan in database
         const user = await new Promise((resolve, reject) => {
-          this.connection.query(`UPDATE users SET plan = ?, pid = ? WHERE id = ?`, [plan.nickname, userSubId, userId], (err, results) => {
+          this.connection.query(`UPDATE users SET sname = ?, pid = ? WHERE id = ?`, [planName, userSubId, userSID], (err, results) => {
             if (err) {
               console.log(err);
               reject({ message: "Error updating user" });
