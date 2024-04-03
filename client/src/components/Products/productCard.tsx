@@ -42,9 +42,9 @@ const ProductCard = ({product, addToCart}: ProductCardProps) => {
                 <div className="flex justify-between items-center gap-1 flex-col-reverse">
                     {addToCart && <button className="bg-green-600 text-white p-2 rounded-lg w-3/4" onClick={addProduct}>Add to cart</button>}
                     <div className="flex items-center justify-center">
-                        <button className="size-1 flex justify-center items-center w-fit h-6 overflow-hidden" onClick={() => setQuantity((prev) => prev - 1)}>-</button>
+                        <button className="flex justify-center items-center w-12 h-6" onClick={() => setQuantity((prev) => prev - 1)}>-</button>
                         <p className="mx-2">{quantity}</p>
-                        <button className="size-1 flex justify-center items-center w-fit h-6 overflow-hidden" onClick={() => setQuantity((prev) => prev + 1)}>+</button>
+                        <button className="flex justify-center items-center w-12 h-6" onClick={() => setQuantity((prev) => prev + 1)}>+</button>
                     </div>
                 </div>
             </div>

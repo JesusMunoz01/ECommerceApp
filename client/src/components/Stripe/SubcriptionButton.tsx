@@ -41,7 +41,7 @@ const SubscriptionButton = ({tier}: {tier?: Number}) => {
 
     return (
         <div>
-            <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none" 
+            <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none p-2 w-24" 
                 onClick={() => subscribeQuery.mutate()} disabled={subscribeQuery.isPending}>Subscribe</button>
         </div>
     );
