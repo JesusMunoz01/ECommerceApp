@@ -80,6 +80,58 @@ export class StripeService {
     return session.url;
   }
 
+  async createUpgradeSubscription(planId, userId): Promise<string> {
+    let price;
+    let planName;
+
+    const dbUserId = userId.split('|')[1]
+
+    const userStripeId = await new Promise((resolve, reject) => {
+      this.connection.query(`SELECT sid FROM users WHERE id = ?`, [dbUserId], (err, results) => {
+        if (err) {
+          console.log(err);
+          reject({ message: "Error getting user" });
+        } else {
+          resolve(results[0].sid);
+        }
+      });
+    });
+
+
+    if(planId === 2){
+      price = "price_1P076aIaMlkIlLqjzNNVBPcH"
+      planName = "Premium"
+    }
+    else if(planId === 3){
+      price = "price_1P077DIaMlkIlLqjeZXgNdMF"
+      planName = "Enterprise"
+    }
+    else
+      return 'Invalid plan ID';
+    
+    const session = await this.stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      customer: userStripeId as string,
+      line_items: [
+        {
+          price: price,
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: `${process.env.CLIENT_URL}`,
+      cancel_url: `${process.env.CLIENT_URL}`,
+      subscription_data: {
+        metadata: {
+          userId: dbUserId,
+          planName: planName
+        }
+      },
+    });
+
+    return session.url;
+  }
+
   async checkoutListener(req, signature): Promise<Stripe.Checkout.Session> {
     let event;
     try {
@@ -89,16 +141,18 @@ export class StripeService {
     }
     
     switch (event.type) {
+      // Subscription created or updated
       case 'customer.subscription.updated':
         const userSID = event.data.object.metadata.userId;
         const planName = event.data.object.metadata.planName;
         const subscription = event.data.object as Stripe.Subscription;
         const userSubId = subscription.customer;
-        const planId = subscription.items.data[0].price.id;
+        const endingDate = subscription.current_period_end;
+        // const planId = subscription.items.data[0].price.id;
 
         // Update user plan in database
-        const user = await new Promise((resolve, reject) => {
-          this.connection.query(`UPDATE users SET sname = ?, pid = ? WHERE id = ?`, [planName, userSubId, userSID], (err, results) => {
+        await new Promise((resolve, reject) => {
+          this.connection.query(`UPDATE users SET sname = ?, endingDate = ?, pid = ? WHERE id = ?`, [planName, endingDate, userSubId, userSID], (err, results) => {
             if (err) {
               console.log(err);
               reject({ message: "Error updating user" });
@@ -108,6 +162,7 @@ export class StripeService {
           });
         });
         return event.data.object as Stripe.Checkout.Session;
+      // Order completed
       case 'checkout.session.completed':
         if(!event.data.object.client_reference_id)
           break;
@@ -115,7 +170,7 @@ export class StripeService {
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;
-        const currency = session.currency;
+        // const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
 
         const productIds = await Promise.all(lineItems.data.map(async (item) => {
@@ -141,7 +196,7 @@ export class StripeService {
         console.log('Payment failed');
         console.log(event.data.object);
         return event.data.object as Stripe.Checkout.Session;
-      // subcription ended and not renewed
+      // Subcription ended and not renewed
       case 'invoice.payment_failed':
         const invoice = event.data.object as Stripe.Invoice;
 
