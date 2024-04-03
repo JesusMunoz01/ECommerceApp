@@ -22,6 +22,13 @@ export class PaymentController {
     response.json({ url });
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Post('upgrade-subscription')
+  async upgradeSubscription(@Body() data, @Res() response): Promise<void> {
+    const url = await this.stripeService.createUpgradeSubscription(data.tier, data.userId);
+    response.json({ url });
+  }
+
   @Post('webhook')
   @Header('Content-Type', 'application/json')
   async stripeWebhook(@Req() req: RawBodyRequest<Request>, @Res() response): Promise<void> {
