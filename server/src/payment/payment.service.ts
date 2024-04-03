@@ -108,7 +108,7 @@ export class StripeService {
     }
     else
       return 'Invalid plan ID';
-    
+
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       customer: userStripeId as string,
@@ -141,7 +141,7 @@ export class StripeService {
     }
     
     switch (event.type) {
-      // Subscription created or updated
+      // Subscription created or updated --------------------------------------
       case 'customer.subscription.updated':
         const userSID = event.data.object.metadata.userId;
         const planName = event.data.object.metadata.planName;
@@ -162,7 +162,7 @@ export class StripeService {
           });
         });
         return event.data.object as Stripe.Checkout.Session;
-      // Order completed
+      // Order completed --------------------------------------
       case 'checkout.session.completed':
         if(!event.data.object.client_reference_id)
           break;
@@ -192,11 +192,12 @@ export class StripeService {
           });
         });
         return event.data.object as Stripe.Checkout.Session;
+      // Payment failed --------------------------------------
       case 'checkout.session.failed':
         console.log('Payment failed');
         console.log(event.data.object);
         return event.data.object as Stripe.Checkout.Session;
-      // Subcription ended and not renewed
+      // Subcription ended and not renewed --------------------------------------
       case 'invoice.payment_failed':
         const invoice = event.data.object as Stripe.Invoice;
 
@@ -216,11 +217,8 @@ export class StripeService {
           });
         }
         return event.data.object as Stripe.Checkout.Session;
-
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
-
   }
-
 }
