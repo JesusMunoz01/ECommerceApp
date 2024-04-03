@@ -141,10 +141,27 @@ export class StripeService {
         console.log('Payment failed');
         console.log(event.data.object);
         return event.data.object as Stripe.Checkout.Session;
-      case 'subscription_schedule.canceled':
-        console.log('Subscription canceled');
-        console.log(event.data.object);
+      // subcription ended and not renewed
+      case 'invoice.payment_failed':
+        const invoice = event.data.object as Stripe.Invoice;
+
+        if(invoice.billing_reason === 'subscription_cycle' && invoice.status !== 'paid'){
+          const userStripeId = event.data.object.customer;
+
+          // Update user plan in database
+          await new Promise((resolve, reject) => {
+            this.connection.query(`UPDATE users SET sname = Free WHERE sid = ?`, [userStripeId], (err, results) => {
+              if (err) {
+                console.log(err);
+                reject({ message: "Error updating user" });
+              } else {
+                resolve(results);
+              }
+            });
+          });
+        }
         return event.data.object as Stripe.Checkout.Session;
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
