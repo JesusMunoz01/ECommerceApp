@@ -3,4 +3,6 @@ export class UserDto {
     name?: string;
     updated_at: string;
     plan?: "Free" | "Premium" | "Enterprise";
+    sid?: string;
+    endingDate?: Date;
 }

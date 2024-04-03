@@ -51,6 +51,27 @@ export class UsersService {
                 return { message: "Error creating user" };
             }
         }
+        else {
+            // Check the user's plan end date and update the user's plan if necessary
+            const userEndDate = await this.connection.query(`SELECT endingDate FROM users WHERE id = ?`, [userData.identities[0].user_id]);
+            if(userEndDate[0].endingDate && userEndDate[0].endingDate < new Date()) {
+                // set plan to free and remove the ending date
+                try{
+                    await this.connection.query(`UPDATE users SET plan = ?, endingDate = NULL, updated_at = NOW() WHERE id = ?`, 
+                    ["Free", userData.identities[0].user_id], (err, results) => {
+                        if(err) {
+                            console.log(err);
+                            return { message: "Error updating user" };
+                        }
+                        console.log(results);
+                        return { message: "User updated successfully" };
+                    });
+                }catch(err) {
+                    console.log(err);
+                    return { message: "Error updating user" };
+                }
+            }
+        }
         return { message: "User already exists" };
     }
 
