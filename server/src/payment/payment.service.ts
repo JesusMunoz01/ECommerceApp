@@ -219,6 +219,7 @@ export class StripeService {
       // Order refunded --------------------------------------
       case 'charge.refunded':
         const charge = event.data.object as Stripe.Charge;
+        // Order refunded
         const refund = await new Promise((resolve, reject) => {
           this.connection.query(`UPDATE orders SET status = "Cancelled" WHERE id = ?`, [charge.metadata.orderId], (err, results) => {
             if (err) {
@@ -228,6 +229,15 @@ export class StripeService {
               resolve(results);
             }
           });
+        // Subcription refunded
+          this.connection.query(`UPDATE users SET sname = Free WHERE sid = ?`, [charge.customer], (err, results) => {
+            if (err) {
+              console.log(err);
+              reject({ message: "Error refunding subscription" });
+            } else {
+              resolve(results);
+            }
+          })
         });
         return event.data.object as Stripe.Checkout.Session;
       default:
