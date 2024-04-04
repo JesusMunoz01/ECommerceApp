@@ -97,7 +97,6 @@ export class StripeService {
       });
     });
 
-
     if(planId === 2){
       price = "price_1P076aIaMlkIlLqjzNNVBPcH"
       planName = "Premium"
@@ -216,6 +215,20 @@ export class StripeService {
             });
           });
         }
+        return event.data.object as Stripe.Checkout.Session;
+      // Order refunded --------------------------------------
+      case 'charge.refunded':
+        const charge = event.data.object as Stripe.Charge;
+        const refund = await new Promise((resolve, reject) => {
+          this.connection.query(`UPDATE orders SET status = "Cancelled" WHERE id = ?`, [charge.metadata.orderId], (err, results) => {
+            if (err) {
+              console.log(err);
+              reject({ message: "Error refunding order" });
+            } else {
+              resolve(results);
+            }
+          });
+        });
         return event.data.object as Stripe.Checkout.Session;
       default:
         console.log(`Unhandled event type: ${event.type}`);
