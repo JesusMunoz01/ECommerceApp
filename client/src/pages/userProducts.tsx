@@ -18,7 +18,7 @@ const UserProducts = () => {
     
     return (
         <div>
-        <UserProductList />
+            <UserProductList />
         </div>
     );
 };
