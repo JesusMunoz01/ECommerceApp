@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
-import { Product } from "../components/Products/productCard";
+import UserProductList from "../components/Products/userProductList";
 
 const UserProducts = () => {
     const { user } = useAuth0();
@@ -18,12 +18,7 @@ const UserProducts = () => {
     
     return (
         <div>
-        <h1>Your Products</h1>
-        <ul>
-            {data.products.map((product: Product) => (
-            <li key={product.id}>{product.name}</li>
-            ))}
-        </ul>
+            <UserProductList />
         </div>
     );
 };
