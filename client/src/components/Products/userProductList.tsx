@@ -1,9 +1,12 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Product } from "./productCard";
+import { useState } from "react";
+import EditForm from "./editForm";
 
 const UserProductList = () => {
     const { user } = useAuth0();
+    const [toggleEdit, setToggleEdit] = useState(false);
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
@@ -44,6 +47,7 @@ const UserProductList = () => {
     };
 
     const handleEdit = async (product: Product) => {
+        setToggleEdit(!toggleEdit);
         await editMutation.mutateAsync(product);
     };
     
@@ -59,6 +63,10 @@ const UserProductList = () => {
                 <h2>{product.name}</h2>
                 <button onClick={() => handleEdit(product)}>Edit</button>
                 <button onClick={() => handleDelete(product.id)}>Delete</button>
+
+                {toggleEdit && (
+                    <EditForm product={product} />
+                )}
             </div>
             ))}
         </ul>
