@@ -20,7 +20,7 @@ const UserProductList = () => {
         mutationKey: ['deleteProduct'],
         mutationFn: async (id: number) => {
             const token = await getAccessTokenSilently()
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${id}/${user?.sub}`, {
                 method: 'DELETE',  headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ const UserProductList = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(product)
+                body: JSON.stringify({product: product, uid: user?.sub})
             });
             const data = await response.json();
             return data;
