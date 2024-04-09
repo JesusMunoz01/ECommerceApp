@@ -5,7 +5,7 @@ import { useState } from "react";
 import EditForm from "./editForm";
 
 const UserProductList = () => {
-    const { user } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
     const [toggleEdit, setToggleEdit] = useState(false);
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
@@ -19,8 +19,12 @@ const UserProductList = () => {
     const deleteMutation = useMutation({
         mutationKey: ['deleteProduct'],
         mutationFn: async (id: number) => {
+            const token = await getAccessTokenSilently()
             const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
             });
             const data = await response.json();
             return data;
@@ -30,10 +34,12 @@ const UserProductList = () => {
     const editMutation = useMutation({
         mutationKey: ['editProduct'],
         mutationFn: async (product: Product) => {
+            const token = await getAccessTokenSilently()
             const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${product.id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(product)
             });
