@@ -1,8 +1,9 @@
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 interface SelectedLinkProps {
     to: string;
     children: React.ReactNode;
@@ -20,6 +21,15 @@ const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
 const Navbar = () => {
     const { user, isAuthenticated} = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
+    const navigate = useNavigate();
+    const userData = useQuery({
+        queryKey: ['user', user?.sub],
+        queryFn: async () => {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`);
+            const data = await response.json();
+            return data;
+        }
+    });
 
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
@@ -65,6 +75,8 @@ const Navbar = () => {
                             </div>
                             </div>
                         }
+                        {userData.data.role !== "enterprise" && <button className="bg-green-500 text-white p-2 rounded-lg"
+                            onClick={() => navigate("/upgrade")}>Upgrade</button>}
                     </div>
                     : <LoginButton />}
                 </div>
