@@ -22,7 +22,7 @@ const Navbar = () => {
     const { user, isAuthenticated} = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
     const navigate = useNavigate();
-    const { data, isLoading} = useQuery({
+    const userData = useQuery({
         queryKey: ['user', user?.sub],
         queryFn: async () => {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`);
@@ -34,9 +34,6 @@ const Navbar = () => {
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
     };
-
-    // Get user data from DB
-
 
     return (
         <nav className="navbar bg-slate-600 h-24">
@@ -78,7 +75,7 @@ const Navbar = () => {
                             </div>
                             </div>
                         }
-                        {data.data.role !== "enterprise" && <button className="bg-green-500 text-white p-2 rounded-lg"
+                        {userData.data.role !== "enterprise" && <button className="bg-green-500 text-white p-2 rounded-lg"
                             onClick={() => navigate("/upgrade")}>Upgrade</button>}
                     </div>
                     : <LoginButton />}
