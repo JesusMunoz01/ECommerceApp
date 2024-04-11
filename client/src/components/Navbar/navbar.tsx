@@ -82,7 +82,7 @@ const Navbar = () => {
                             </div>
                             </div>
                         }
-                        {userData.data?.role !== "enterprise" && <button className="bg-green-500 text-white p-2 rounded-lg"
+                        {userData.data?.role !== "enterprise" && <button className="bg-slate-900 text-white p-2 rounded-lg"
                             onClick={() => navigate("/upgrade")}>Upgrade</button>}
                     </div>
                     : <LoginButton />}
