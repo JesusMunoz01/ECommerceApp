@@ -19,13 +19,18 @@ const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
 };
 
 const Navbar = () => {
-    const { user, isAuthenticated} = useAuth0();
+    const { user, isAuthenticated, getAccessTokenSilently} = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
     const navigate = useNavigate();
     const userData = useQuery({
         queryKey: ['user', user?.sub],
         queryFn: async () => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`);
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             const data = await response.json();
             return data;
         }
@@ -34,6 +39,8 @@ const Navbar = () => {
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
     };
+
+    console.log(userData)
 
     return (
         <nav className="navbar bg-slate-600 h-24">
@@ -65,17 +72,18 @@ const Navbar = () => {
                             <img src={user?.picture} alt={user?.name} className="rounded-full"/>
                         </button>
                         {userMenu && 
-                            <div id="dropdownMenu" className={`absolute flex items-center justify-center flex-col top-20 right-0 mt-2 w-36 bg-white border border-gray-200 divide-y divide-gray-200`}>
-                            <div className="px-4 py-3">
-                                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                            <div id="dropdownMenu" className={`absolute flex items-center justify-center flex-col top-20 right-0 mt-4 w-64 bg-white border border-gray-200 divide-y divide-gray-200`}>
+                            <div className="px-4 py-3 flex items-center justify-center flex-col">
+                                <p className="text-md font-medium text-gray-900">{user?.name}</p>
+                                <p className="text-sm text-gray-500">{user?.email}</p>
                             </div>
-                            <div className="flex flex-col gap-1 py-1">
-                                <Link to="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Account</Link>
+                            <div className="flex flex-col gap-1 py-1 w-32 items-center justify-center">
+                                <Link to="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">Account</Link>
                                 <LogoutButton />
                             </div>
                             </div>
                         }
-                        {userData.data.role !== "enterprise" && <button className="bg-green-500 text-white p-2 rounded-lg"
+                        {userData.data?.role !== "enterprise" && <button className="bg-slate-900 text-white p-2 rounded-lg"
                             onClick={() => navigate("/upgrade")}>Upgrade</button>}
                     </div>
                     : <LoginButton />}

@@ -31,16 +31,19 @@ const Account = () => {
     return (
       <div>
         {isAuthenticated ? 
-          <div>
+          <div className="flex">
             <img src={user?.picture} alt={user?.name} />
-            <h2>{user?.name}</h2>
-            <p>{user?.email}</p>
-            <h3>User Metadata</h3>
-            {/* {userMetadata ? (
-              <pre>{JSON.stringify(userMetadata, null, 2)}</pre>
-              ) : (
-                "No user metadata defined"
-                )} */}
+            <div className="flex flex-col ml-2 justify-center gap-2">
+              <h2>Username: {user?.name}</h2>
+              <p>Email: {user?.email}</p>
+              {/* <h3>User Metadata</h3>
+              {userMetadata ? (
+                <pre>{JSON.stringify(userMetadata, null, 2)}</pre>
+                ) : (
+                  "No user metadata defined"
+                  )} */}
+            <button onClick={sendRequest}>Send Request</button>
+            </div>
             <br></br>
           </div>
          : 
@@ -49,7 +52,6 @@ const Account = () => {
             <p>Please log in to see your account details</p>
           </div>
         }
-        <button onClick={sendRequest}>Send Request</button>
       </div>
       );
 };

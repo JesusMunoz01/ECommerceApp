@@ -51,7 +51,7 @@ const CheckoutButton = ({cart}: CheckoutProps) => {
 
     return (
         <div>
-            <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none" 
+            <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none w-24 p-2" 
                 onClick={() => checkoutQuery.mutate()} disabled={checkoutQuery.isPending || cart.length < 1}>Checkout</button>
         </div>
     );

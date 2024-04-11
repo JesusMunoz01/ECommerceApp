@@ -27,9 +27,9 @@ const subscriptionData = [
 const UpgradePage = () => {
     return (
         <div className="flex items-center flex-col" style={{height: "calc(100vh - 6rem)"}}>
-            <h1 className="h-20">Upgrade your Account</h1>
+            <h1 className="h-20">Subscriptions</h1>
             <p>Upgrade your account to access premium features</p>
-            <div className="flex gap-5">
+            <div className="flex gap-5 mt-4">
                 {subscriptionData.map((subscription) => (
                     <SubscriptionCard tier={subscription.tier} benefits={subscription.benefits} 
                         name={subscription.name} price={subscription.price} active={subscription.active}/>
