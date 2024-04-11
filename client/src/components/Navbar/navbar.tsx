@@ -35,6 +35,8 @@ const Navbar = () => {
         setUserMenu(!userMenu);
     };
 
+    console.log(userData)
+
     return (
         <nav className="navbar bg-slate-600 h-24">
             <div className="p-6 max-w mx-auto flex items-center justify-between">
@@ -75,7 +77,7 @@ const Navbar = () => {
                             </div>
                             </div>
                         }
-                        {userData.data.role !== "enterprise" && <button className="bg-green-500 text-white p-2 rounded-lg"
+                        {userData.data?.role !== "enterprise" && <button className="bg-green-500 text-white p-2 rounded-lg"
                             onClick={() => navigate("/upgrade")}>Upgrade</button>}
                     </div>
                     : <LoginButton />}

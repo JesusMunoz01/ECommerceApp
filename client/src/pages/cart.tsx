@@ -31,7 +31,7 @@ const Cart = ({cart, setCart}: CartProps) => {
                             <p>Amount: {product.quantity}</p>
                             <button className="bg-red-500 text-white p-1" onClick={() => removeFromCart(product.id)}>Remove</button>
                         </div>
-                    )) : (<p>No items in cart</p>)}
+                    )) : (<p className="m-2">No items in your cart</p>)}
                 </div>
             </div>
             <div className="flex flex-col w-1/4 bg-slate-800 h-full gap-2 justify-between items-center">
