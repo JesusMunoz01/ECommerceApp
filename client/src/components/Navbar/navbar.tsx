@@ -19,13 +19,18 @@ const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
 };
 
 const Navbar = () => {
-    const { user, isAuthenticated} = useAuth0();
+    const { user, isAuthenticated, getAccessTokenSilently} = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
     const navigate = useNavigate();
     const userData = useQuery({
         queryKey: ['user', user?.sub],
         queryFn: async () => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`);
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             const data = await response.json();
             return data;
         }
