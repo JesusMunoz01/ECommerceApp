@@ -71,6 +71,9 @@ const Navbar = () => {
                         <button onClick={toggleUserMenu} className="w-12 p-0 h-12 rounded-full bg-transparent">
                             <img src={user?.picture} alt={user?.name} className="rounded-full"/>
                         </button>
+                        <div className="flex flex-col gap-1 py-1 w-32 items-center justify-center">
+                                <Link to="/sell" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium">Sell</Link>
+                        </div>
                         {userMenu && 
                             <div id="dropdownMenu" className={`absolute flex items-center justify-center flex-col top-20 right-0 mt-4 w-64 bg-white border border-gray-200 divide-y divide-gray-200`}>
                             <div className="px-4 py-3 flex items-center justify-center flex-col">
