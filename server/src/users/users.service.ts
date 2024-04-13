@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { UserDto } from './dto/userUpdate.dto';
+import { promisify } from 'util';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,7 @@ export class UsersService {
                         console.log(err);
                         return { message: "Error creating user" };
                     }
-                    console.log(results);
+                    // Pass created user data to the client
                     return { message: "User created successfully" };
                 });
             }
@@ -75,28 +76,26 @@ export class UsersService {
         return { message: "User already exists" };
     }
 
-    async getUser(userID: string): Promise<{ message: string; }> {
-        const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
-            headers: {
-            authorization: `Bearer ${await this.getAccessToken()}`,
-            }
-        });
-        const userData = await userResponse.json();
-        const user = userData.user_id;
+    async getUser(userID: string): Promise<{ message: string, plan?: string }> {
         try{
-            await this.connection.query(`SELECT * FROM users WHERE id = ?`, [user], (err, results) => {
-                if(err) {
-                    console.log(err);
-                    return { message: "Error fetching user" };
+            const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
+                headers: {
+                authorization: `Bearer ${await this.getAccessToken()}`,
                 }
-                console.log(results);
-                return { message: "User fetched successfully" };
             });
-        }catch(err) {
-            console.log(err);
+            const userData = await userResponse.json();
+            const queryAsync = promisify(this.connection.query).bind(this.connection);
+            const results = await queryAsync(`SELECT sname FROM users WHERE id = ?`, [userData.identities[0].user_id]);
+
+            if (results && results.length > 0) {
+                return { message: "User fetched successfully", plan: results[0].sname };
+            } else {
+                return { message: "User not found" };
+            }
+        } catch (error) {
+            console.log(error);
             return { message: "Error fetching user" };
         }
-        return { message: "User already exists" };
     }
 
     async updateUser(userID: string, data: UserDto): Promise<{ message: string; }> {
