@@ -2,7 +2,7 @@ import { Link, useMatch, useNavigate } from "react-router-dom";
 import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 interface SelectedLinkProps {
     to: string;
@@ -22,25 +22,27 @@ const Navbar = () => {
     const { user, isAuthenticated, getAccessTokenSilently} = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
     const navigate = useNavigate();
+
+    const getUser = useMemo(() => async () => {
+        const token = await getAccessTokenSilently();
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        return data;
+    }, [getAccessTokenSilently, user?.sub]);
+
     const userData = useQuery({
         queryKey: ['user', user?.sub],
-        queryFn: async () => {
-            const token = await getAccessTokenSilently();
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
-            return data;
-        }
+        queryFn: getUser,
+        enabled: !!user
     });
 
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
     };
-
-    console.log(userData)
 
     return (
         <nav className="navbar bg-slate-600 h-24">
