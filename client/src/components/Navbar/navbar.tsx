@@ -3,6 +3,7 @@ import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
 import { useState } from "react";
+import { BsCart4 } from "react-icons/bs";
 // import { useMemo, useState } from "react";
 // import { useQuery } from "@tanstack/react-query";
 
@@ -72,7 +73,7 @@ const Navbar = ({userData}: NavbarProps) => {
                     <button className="bg-green-500 text-white p-2 rounded-lg md:w-1/6 sm:w-fit">Search</button>
                 </div>
                 <div className="flex items-center gap-4">
-                    <SelectedLink to="/cart">Cart</SelectedLink>
+                    <SelectedLink to="/cart"><BsCart4 className="text-white text-2xl"/>Cart</SelectedLink>
                     {isAuthenticated ? 
                     <div className="flex items-center gap-4">
                         <button onClick={toggleUserMenu} className="w-12 p-0 h-12 rounded-full bg-transparent">
