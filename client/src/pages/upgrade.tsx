@@ -24,7 +24,24 @@ const subscriptionData = [
     }
 ];
 
-const UpgradePage = () => {
+type UpgradePageProps = {
+    role: string
+}
+
+const UpgradePage = ({role}: UpgradePageProps) => {
+
+    const modifyActive = () => {
+        // Iterate through all tiers and make them active until the user's tier is reached
+        for (let i = 0; i < subscriptionData.length; i++) {
+            subscriptionData[i].active = true;
+            if (subscriptionData[i].name === role) {
+                break;
+            }
+        }
+    }
+
+    if(role) modifyActive();
+
     return (
         <div className="flex items-center flex-col" style={{height: "calc(100vh - 6rem)"}}>
             <h1 className="h-20">Subscriptions</h1>

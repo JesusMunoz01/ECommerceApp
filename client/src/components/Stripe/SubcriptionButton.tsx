@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 
 
 const SubscriptionButton = ({tier}: {tier?: Number}) => {
-    const { getAccessTokenSilently, user } = useAuth0();
+    const { loginWithPopup, getAccessTokenSilently, user } = useAuth0();
 
     const subscribeQuery = useMutation({
         mutationKey: ['subscription'],
@@ -30,6 +30,13 @@ const SubscriptionButton = ({tier}: {tier?: Number}) => {
         },
     })
 
+    const handleSubscription = async () => {
+        if(user && tier)
+            subscribeQuery.mutate();
+        else
+            loginWithPopup()
+    }
+
 
     if (subscribeQuery.isPending) {
         return <div>Loading...</div>;
@@ -42,7 +49,7 @@ const SubscriptionButton = ({tier}: {tier?: Number}) => {
     return (
         <div>
             <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none p-2 w-24" 
-                onClick={() => subscribeQuery.mutate()} disabled={subscribeQuery.isPending}>Subscribe</button>
+                onClick={() => handleSubscription()} disabled={subscribeQuery.isPending}>Subscribe</button>
         </div>
     );
 };
