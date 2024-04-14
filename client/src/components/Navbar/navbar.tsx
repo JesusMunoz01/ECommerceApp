@@ -2,8 +2,13 @@ import { Link, useMatch, useNavigate } from "react-router-dom";
 import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+// import { useMemo, useState } from "react";
+// import { useQuery } from "@tanstack/react-query";
+
+type NavbarProps = {
+    userData: any;
+}
 interface SelectedLinkProps {
     to: string;
     children: React.ReactNode;
@@ -18,33 +23,31 @@ const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
     );
 };
 
-const Navbar = () => {
-    const { user, isAuthenticated, getAccessTokenSilently} = useAuth0();
+const Navbar = ({userData}: NavbarProps) => {
+    const { user, isAuthenticated } = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
     const navigate = useNavigate();
 
-    const getUser = useMemo(() => async () => {
-        const token = await getAccessTokenSilently();
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        const data = await response.json();
-        return data;
-    }, [getAccessTokenSilently, user?.sub]);
+    // const getUser = useMemo(() => async () => {
+    //     const token = await getAccessTokenSilently();
+    //     const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`,
+    //         },
+    //     });
+    //     const data = await response.json();
+    //     return data;
+    // }, [getAccessTokenSilently, user?.sub]);
 
-    const userData = useQuery({
-        queryKey: ['user', user?.sub],
-        queryFn: getUser,
-        enabled: !!user
-    });
+    // const userData = useQuery({
+    //     queryKey: ['user', user?.sub],
+    //     queryFn: getUser,
+    //     enabled: !!user
+    // });
 
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
     };
-
-    console.log(userData)
 
     return (
         <nav className="navbar bg-slate-600 h-24">
