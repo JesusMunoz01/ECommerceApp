@@ -4,8 +4,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
 import { useState } from "react";
 import { BsCart4 } from "react-icons/bs";
-// import { useMemo, useState } from "react";
-// import { useQuery } from "@tanstack/react-query";
 
 type NavbarProps = {
     userData: any;
@@ -28,23 +26,6 @@ const Navbar = ({userData}: NavbarProps) => {
     const { user, isAuthenticated } = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
     const navigate = useNavigate();
-
-    // const getUser = useMemo(() => async () => {
-    //     const token = await getAccessTokenSilently();
-    //     const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`,
-    //         },
-    //     });
-    //     const data = await response.json();
-    //     return data;
-    // }, [getAccessTokenSilently, user?.sub]);
-
-    // const userData = useQuery({
-    //     queryKey: ['user', user?.sub],
-    //     queryFn: getUser,
-    //     enabled: !!user
-    // });
 
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);

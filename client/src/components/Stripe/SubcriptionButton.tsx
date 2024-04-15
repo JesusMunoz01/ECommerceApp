@@ -1,7 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 
-
 const SubscriptionButton = ({tier}: {tier?: Number}) => {
     const { loginWithPopup, getAccessTokenSilently, user } = useAuth0();
 
@@ -36,7 +35,6 @@ const SubscriptionButton = ({tier}: {tier?: Number}) => {
         else
             loginWithPopup()
     }
-
 
     if (subscribeQuery.isPending) {
         return <div>Loading...</div>;
