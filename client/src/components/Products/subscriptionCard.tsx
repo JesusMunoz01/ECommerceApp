@@ -25,7 +25,8 @@ const SubscriptionCard = ({tier, benefits, name, price, active}: SubscriptionCar
                         </ul>
                     </div>
                     <div>
-                        {tier !== 1 && !active ? <SubscriptionButton tier={tier}/> : <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none p-2 w-24" 
+                        {tier !== 1 && !active ? <SubscriptionButton tier={tier}/> : 
+                        <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none p-2 w-24" 
                             disabled={true}>Active</button>}
                     </div>
                 </div>

@@ -7,7 +7,6 @@ type CheckoutProps = {
 };
 
 const CheckoutButton = ({cart}: CheckoutProps) => {
-    console.log(cart)
     const { getAccessTokenSilently, user } = useAuth0();
 
     const checkoutQuery = useMutation({

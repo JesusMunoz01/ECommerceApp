@@ -7,23 +7,6 @@ type HomePageProps = {
     setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
 };
 
-// const mockProducts: Product[] = [
-//     {
-//         id: 1,
-//         name: "T-shirt",
-//         price: 2000,
-//         description: "A nice t-shirt",
-//         category: "clothing",
-//     },
-//     {
-//         id: 2,
-//         name: "Jacket",
-//         price: 5000,
-//         description: "A nice jacket",
-//         category: "clothing",
-//     },
-// ];
-
 const HomePage = ({setCart}: HomePageProps) => {
     const [products, setProducts] = useState<Product[]>([]);
     const productQuery = useQuery({

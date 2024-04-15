@@ -34,7 +34,7 @@ export class UsersService {
             }
         });
         const userData = await userResponse.json();
-        // Checks if the user has logged in before, if not, adds the user to the database
+        // Checks if the user has logged in before, if not, adds the user to the database with the OAuth id
         if(userData.logins_count === 1) {
             try{
                 await this.connection.query(`INSERT INTO users (id, email, name, created_at, updated_at) VALUES 
@@ -84,6 +84,8 @@ export class UsersService {
                 }
             });
             const userData = await userResponse.json();
+
+            // Fetch user plan name from the database and return it to the client
             const queryAsync = promisify(this.connection.query).bind(this.connection);
             const results = await queryAsync(`SELECT sname FROM users WHERE id = ?`, [userData.identities[0].user_id]);
 
@@ -130,7 +132,6 @@ export class UsersService {
             console.log(err);
             return { message: "Error updating user" };
         }
-        return { message: "User already exists" };
     }
 
     async deleteUser(userID: string): Promise<{ message: string; }> {
@@ -154,7 +155,6 @@ export class UsersService {
             console.log(err);
             return { message: "Error deleting user" };
         }
-        return { message: "User already exists" };
     }
 
 }

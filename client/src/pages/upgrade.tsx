@@ -11,7 +11,7 @@ const subscriptionData = [
     {
         tier: 2,
         benefits: ["Buy Items", "Sell Items (1000 Max)"],
-        name: "Pro",
+        name: "Premium",
         price: 9.99,
         active: false
     },
