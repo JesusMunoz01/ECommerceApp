@@ -10,10 +10,14 @@ const AccountPage = () => {
   };
 
   return (
-    <div className="m-2">
-      <button onClick={toggleSidebar}>Toggle Sidebar</button>
-      <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
-      <Profile />
+    <div className="flex gap-2" style={{ height: 'calc(100vh - 6rem)' }}>
+      <div className="flex flex-col h-full">
+        {!isSidebarOpen && <button onClick={toggleSidebar}>Toggle Sidebar</button>}
+          <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+      </div>
+      <div className="mt-2">
+        <Profile />
+      </div>
     </div>
   );
 }
