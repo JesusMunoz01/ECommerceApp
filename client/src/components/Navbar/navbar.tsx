@@ -1,26 +1,14 @@
-import { Link, useMatch, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
 import { useState } from "react";
 import { BsCart4 } from "react-icons/bs";
+import SelectedLink from "../Links/selectedLink";
 
 type NavbarProps = {
     userData: any;
 }
-interface SelectedLinkProps {
-    to: string;
-    children: React.ReactNode;
-  }
-  
-const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
-    const match = useMatch(to);
-    return (
-        <Link to={to} className={match ? "text-green-500" : "hover:text-green-500"}>
-        {children}
-        </Link>
-    );
-};
 
 const Navbar = ({userData}: NavbarProps) => {
     const { user, isAuthenticated } = useAuth0();
