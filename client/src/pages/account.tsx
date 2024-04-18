@@ -26,6 +26,7 @@ const AccountPage = () => {
               <li>Product 1</li>
               <li>Product 2</li>
             </ul> */}
+            <h2 className="text-xl border-b border-slate-500 w-full">Your Products</h2>
             <UserProductList />
           </div>
           <div className="mt-2 ml-2 w-6/12">

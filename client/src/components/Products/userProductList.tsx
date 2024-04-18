@@ -58,11 +58,10 @@ const UserProductList = () => {
     };
     
     if (isLoading) return <p>Loading...</p>;
-    if (!data) return <p>No data</p>;
+    if (!data) return <p>No Products Found</p>;
     
     return (
         <div>
-        <h1>Your Products</h1>
         <ul>
             {data.products.map((product: Product) => (
             <div key={product.id}>

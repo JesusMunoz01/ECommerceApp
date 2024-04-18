@@ -11,13 +11,15 @@ const SellPage = () => {
 
     return (
         <div className="flex gap-2 w-full" style={{ height: 'calc(100vh - 6rem)' }}>
-        <div className="flex flex-col h-full">
-          {!isSidebarOpen && <button onClick={toggleSidebar}>Toggle Sidebar</button>}
-            <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
-        </div>
-            <h1>Sell Page</h1>
-            <p>Create A Product to Sell</p>
-            <ProductForm />
+            <div className="flex flex-col h-full">
+                {!isSidebarOpen && <button onClick={toggleSidebar}>Toggle Sidebar</button>}
+                    <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+            </div>
+            <div className="mt-2 w-11/12 flex flex-col items-center">
+                <h1>Sell Page</h1>
+                <p>Create A Product to Sell</p>
+                <ProductForm />
+            </div>
         </div>
     );
 };
