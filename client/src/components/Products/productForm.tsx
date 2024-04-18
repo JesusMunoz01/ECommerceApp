@@ -56,8 +56,8 @@ const ProductForm = () => {
 
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="flex flex-col">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                 <input type="text" placeholder="Product Name" onChange={(e) => setProduct({...product, name: e.target.value})} /> 
                 <input type="text" placeholder="Product Description" onChange={(e) => setProduct({...product, description: e.target.value})} />
                 <input type="text" placeholder="Product Price" onChange={(e) => setProduct({...product, price: parseInt(e.target.value)})} />

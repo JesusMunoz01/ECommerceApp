@@ -13,8 +13,9 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
           <div className="mt-2">
             <h2 className="text-xl border-b border-slate-500 w-full">Account</h2>
             <ul className="flex flex-col mt-4 gap-4">
-              <li><SelectedLink to="/profile">Profile</SelectedLink></li>
+              <li><SelectedLink to="/account">Profile</SelectedLink></li>
               <li><SelectedLink to="/settings">Settings</SelectedLink></li>
+              <li><SelectedLink to="/sell">Sell</SelectedLink></li>
             </ul>
           </div>
           <div className="mb-2 flex items-center flex-col gap-2 border-t border-slate-500 w-fit pt-2">
