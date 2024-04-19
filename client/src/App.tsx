@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom' 
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom' 
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -9,6 +9,7 @@ import Cart, { CartItem } from './pages/cart.tsx'
 import UpgradePage from './pages/upgrade.tsx'
 import SellPage from './pages/seller.tsx'
 import AccountPage from './pages/account.tsx'
+import Sidebar from './components/Sidebar/sidebar.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
@@ -48,10 +49,22 @@ const userData = useQuery({
           </>
           : null}
         </Routes>
+        <SidebarController />
       </Router>
       </div>
     </>
   )
 }
+
+const SidebarController = () => {
+  const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  return ['/account', '/sell'].includes(location.pathname) && <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />;
+};
 
 export default App
