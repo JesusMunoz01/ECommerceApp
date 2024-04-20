@@ -1,21 +1,10 @@
-import { useState } from "react";
 import Profile from "../components/Auth/auth0-profile";
-import Sidebar from "../components/Sidebar/sidebar";
 import UserProductList from "../components/Products/userProductList";
 
 const AccountPage = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   return (
-    <div className="flex gap-2 w-full" style={{ height: 'calc(100vh - 6rem)' }}>
-      <div className="flex flex-col h-full">
-        {!isSidebarOpen && <button onClick={toggleSidebar}>Toggle Sidebar</button>}
-          <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
-      </div>
+    <div className="flex gap-2 w-1/2" style={{ height: 'calc(100vh - 6rem)' }}>
       <div className="mt-2 w-11/12">
         <h1 className="text-2xl border-b border-slate-500 w-full mb-2">Account Details</h1>
         <Profile />
