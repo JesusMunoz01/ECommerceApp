@@ -50,7 +50,7 @@ function App() {
           {isAuthenticated && (
                 <>
                   <Route path="/account" element={
-                  <div className='flex w-full gap-2' style={{ height: 'calc(100vh - 6rem)' }}>
+                  <div className='flex w-full gap-4' style={{ height: 'calc(100vh - 6rem)' }}>
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <AccountPage />
                   </div>} />
