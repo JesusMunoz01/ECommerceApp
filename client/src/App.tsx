@@ -10,6 +10,7 @@ import UpgradePage from './pages/upgrade.tsx'
 import SellPage from './pages/seller.tsx'
 import AccountPage from './pages/account.tsx'
 import Sidebar from './components/Sidebar/sidebar.tsx'
+import SettingsPage from './pages/settings.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
@@ -58,6 +59,11 @@ function App() {
                   <div className='flex w-full' style={{ height: 'calc(100vh - 6rem)' }}>
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <SellPage />
+                  </div>} />
+                  <Route path="/settings" element={
+                  <div className='flex w-full' style={{ height: 'calc(100vh - 6rem)' }}>
+                    <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+                    <SettingsPage />
                   </div>} />
                 </>
               )}
