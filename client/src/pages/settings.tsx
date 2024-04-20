@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import EditUserForm from '../components/Products/editUserForm';
 
 const SettingsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ const SettingsPage = () => {
         </button>
         {isOpen && (
             <div className="border-t">
-                <div>Test</div>
+                <EditUserForm />
             </div>
         )}
       </div>
