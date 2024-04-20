@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom' 
+import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom' 
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -10,10 +10,16 @@ import UpgradePage from './pages/upgrade.tsx'
 import SellPage from './pages/seller.tsx'
 import AccountPage from './pages/account.tsx'
 import Sidebar from './components/Sidebar/sidebar.tsx'
+import SettingsPage from './pages/settings.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
   const [cart, setCart] = useState<CartItem[]>([])
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const getUser = useMemo(() => async () => {
     const token = await getAccessTokenSilently();
@@ -24,13 +30,13 @@ function App() {
     });
     const data = await response.json();
     return data;
-}, [getAccessTokenSilently, user?.sub]);
+  }, [getAccessTokenSilently, user?.sub]);
 
-const userData = useQuery({
-    queryKey: ['user', user?.sub],
-    queryFn: getUser,
-    enabled: !!user
-});
+  const userData = useQuery({
+      queryKey: ['user', user?.sub],
+      queryFn: getUser,
+      enabled: !!user
+  });
 
   return (
     <>
@@ -42,29 +48,30 @@ const userData = useQuery({
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
           <Route path='/upgrade' element={<UpgradePage role={userData.data?.plan}/>} />
           <Route path="*" element={<h1>Not Found</h1>} />
-          {isAuthenticated ? 
-          <>
-            <Route path="/account" element={<AccountPage />} /> 
-            <Route path="/sell" element={<SellPage />} />
-          </>
-          : null}
+          {isAuthenticated && (
+                <>
+                  <Route path="/account" element={
+                  <div className='flex w-full gap-4' style={{ height: 'calc(100vh - 6rem)' }}>
+                    <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+                    <AccountPage />
+                  </div>} />
+                  <Route path="/sell" element={
+                  <div className='flex w-full' style={{ height: 'calc(100vh - 6rem)' }}>
+                    <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+                    <SellPage />
+                  </div>} />
+                  <Route path="/settings" element={
+                  <div className='flex w-full' style={{ height: 'calc(100vh - 6rem)' }}>
+                    <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+                    <SettingsPage />
+                  </div>} />
+                </>
+              )}
         </Routes>
-        <SidebarController />
       </Router>
       </div>
     </>
   )
-}
-
-const SidebarController = () => {
-  const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  return ['/account', '/sell'].includes(location.pathname) && <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />;
 };
 
 export default App
