@@ -2,6 +2,11 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
+type ProductFormProps = {
+    userProduct?: Product;
+    actionType: "Create" | "Update";
+};
+
 type Product = {
     name: string;
     description: string;
@@ -20,8 +25,8 @@ const initialProduct: Product = {
     //image: "",
 };
 
-const ProductForm = () => {
-    const [product, setProduct] = useState<Product>(initialProduct)
+const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
+    const [product, setProduct] = useState<Product>(userProduct ?? initialProduct);
     const {user, isAuthenticated, getAccessTokenSilently} = useAuth0()
 
     const createProduct = useMutation({
@@ -51,7 +56,15 @@ const ProductForm = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if(!isAuthenticated) return;
-        createProduct.mutate();
+
+        switch(actionType){
+            case "Create":
+                createProduct.mutate();
+                break;
+            case "Update":
+                //updateProduct.mutate();
+                break;
+        }
     }
 
 
@@ -64,7 +77,7 @@ const ProductForm = () => {
                 <input type="text" placeholder="Product Stock" onChange={(e) => setProduct({...product, stock: parseInt(e.target.value)})} />
                 <input type="text" placeholder="Product Discount" onChange={(e) => setProduct({...product, discountNumber: parseInt(e.target.value)})} />
                 {/* <input type="text" placeholder="Product Image" onChange={(e) => setProduct({...product, image: e.target.value})} /> */}
-                <button type="submit">Create Product</button>
+                <button type="submit">{actionType} Product</button>
             </form>
         </div>
     );
