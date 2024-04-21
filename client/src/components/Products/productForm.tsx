@@ -53,6 +53,13 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
         }
     });
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setProduct({
+            ...product,
+            [e.target.name]: e.target.value
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if(!isAuthenticated) return;
@@ -71,11 +78,11 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
     return (
         <div className="flex flex-col">
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                <input type="text" placeholder="Product Name" onChange={(e) => setProduct({...product, name: e.target.value})} /> 
-                <input type="text" placeholder="Product Description" onChange={(e) => setProduct({...product, description: e.target.value})} />
-                <input type="text" placeholder="Product Price" onChange={(e) => setProduct({...product, price: parseInt(e.target.value)})} />
-                <input type="text" placeholder="Product Stock" onChange={(e) => setProduct({...product, stock: parseInt(e.target.value)})} />
-                <input type="text" placeholder="Product Discount" onChange={(e) => setProduct({...product, discountNumber: parseInt(e.target.value)})} />
+                <input type="text" placeholder="Product Name" name="name" value={product.name} onChange={handleChange} />
+                <input type="text" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
+                <input type="number" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
+                <input type="number" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />
+                <input type="number" placeholder="Product Discount" name="discountNumber" min={0} value={product.discountNumber} onChange={handleChange} />
                 {/* <input type="text" placeholder="Product Image" onChange={(e) => setProduct({...product, image: e.target.value})} /> */}
                 <button type="submit">{actionType} Product</button>
             </form>
