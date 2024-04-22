@@ -10,7 +10,8 @@ const UserProductList = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${user?.id}`);
+            const userId = user?.sub?.split('|')[1];
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${userId}`);
             const data = await response.json();
             return data;
         }
