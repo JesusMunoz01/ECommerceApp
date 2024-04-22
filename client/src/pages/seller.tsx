@@ -8,7 +8,7 @@ const SellPage = () => {
             <div className="mt-2 w-11/12 flex flex-col items-center">
                 <h1>Sell Page</h1>
                 <p>Create A Product to Sell</p>
-                <ProductForm />
+                <ProductForm actionType="Create"/>
             </div>
         </div>
     );

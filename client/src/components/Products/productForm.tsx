@@ -8,6 +8,7 @@ type ProductFormProps = {
 };
 
 type Product = {
+    id?: string;
     name: string;
     description: string;
     price: number;
@@ -33,8 +34,32 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
         mutationKey: ['createProduct'],
         mutationFn: async () => {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/create`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/create`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: product.name,
+                    description: product.description,
+                    price: product.price,
+                    stock: product.stock,
+                    discountNumber: product.discountNumber,
+                    ownerID: user?.sub
+                })
+            });
+            const data = await response.json();
+            return data;
+        }
+    });
+
+    const updateProduct = useMutation({
+        mutationKey: ['updateProduct'],
+        mutationFn: async () => {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${userProduct?.id}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
@@ -69,7 +94,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
                 createProduct.mutate();
                 break;
             case "Update":
-                //updateProduct.mutate();
+                updateProduct.mutate();
                 break;
         }
     }
