@@ -14,7 +14,8 @@ const EditUserForm = () => {
     const editUser = useMutation({
         mutationKey: ['editUser'],
         mutationFn: async () => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/editUser`, {
+            const userId = user?.sub?.split("|")[1];
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,7 +24,6 @@ const EditUserForm = () => {
                     name: updatedUser.name,
                     email: updatedUser.email,
                     password: updatedUser.password,
-                    userID: user?.sub
                 })
             });
             const data = await response.json();
@@ -40,7 +40,7 @@ const EditUserForm = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(updatedUser);
+        editUser.mutate();
     };
 
     return (

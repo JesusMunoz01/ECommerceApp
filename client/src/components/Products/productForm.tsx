@@ -34,7 +34,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
         mutationKey: ['createProduct'],
         mutationFn: async () => {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/create`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
         mutationKey: ['updateProduct'],
         mutationFn: async () => {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/update`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${userProduct?.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,8 +70,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
                     price: product.price,
                     stock: product.stock,
                     discountNumber: product.discountNumber,
-                    ownerID: user?.sub,
-                    productID: userProduct?.id
+                    ownerID: user?.sub
                 })
             });
             const data = await response.json();
