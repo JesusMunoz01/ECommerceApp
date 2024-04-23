@@ -11,7 +11,7 @@ const UserProductList = () => {
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
             const userId = user?.sub?.split('|')[1];
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${userId}`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`);
             const data = await response.json();
             return data;
         }
