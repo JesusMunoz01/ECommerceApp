@@ -10,9 +10,17 @@ const UserProductList = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
+            const token = await getAccessTokenSilently();
             const userId = user?.sub?.split('|')[1];
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${userId}`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+            );
             const data = await response.json();
+            console.log(data);
             return data;
         }
     });

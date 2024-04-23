@@ -20,6 +20,12 @@ export class ProductsController {
       return this.productsService.getProduct(id);
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @Get("user/:id")
+    async getUserProducts(@Param("id") userID: string): Promise<{ message: string; }> {
+      return this.productsService.getUserProducts(userID);
+    }
+
     @Get(":id/reviews")
     async getProductReviews(@Param("id") itemID: string): Promise<{ message: string; }> {
       return this.productsService.getProductReviews(itemID);

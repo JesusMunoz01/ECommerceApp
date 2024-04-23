@@ -10,14 +10,18 @@ export class ProductsService {
     private connection = this.appService.connection;
 
     private async getUserRole(userID: string): Promise<string> {
-        try{
-            const userRole = await this.connection.query(`SELECT role FROM users WHERE id = ?`, [userID]);
-            return userRole[0].role;
-        }
-        catch(err) {
+        return new Promise<string>((resolve, reject) => {
+            this.connection.query(`SELECT sname FROM users WHERE id = ?`, [userID], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    reject("error");
+                }
+                resolve(results[0].sname);
+            });
+        }).catch(err => {
             console.log(err);
             return "error";
-        }
+        });
     }
 
     async getProducts(): Promise<{ message: string, products?: ProductDto }> {
@@ -57,15 +61,32 @@ export class ProductsService {
         }
     }
 
+    async getUserProducts(userID: string): Promise<{ message: string; products?: any; }> {
+        return new Promise<{ message: string; products?: any; }>((resolve, reject) => {
+            this.connection.query(`SELECT * FROM products WHERE ownerId = ?`, [userID], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    reject({ message: "Error getting user products" });
+                }
+                resolve({ message: "User products retrieved successfully", products: results });
+            });
+        }).catch(err => {
+            console.log(err);
+            return { message: "Error getting user products" };
+        });
+    }
+
     async createProduct(productData: ProductDto): Promise<{ message: string; }> {
         try{
-            const userRole = await this.getUserRole(productData.ownerID);
+            const userId = productData.ownerID.split('|')[1];
+            const userRole = await this.getUserRole(userId);
+            console.log(userRole)
             if(userRole === "error") {
                 return { message: "Error creating product" };
             }
-            if(userRole === "seller" || userRole === "business") {
-                await this.connection.query(`INSERT INTO products (name, description, price, stock, discountNumber, ownerID, created_at, updated_at) VALUES 
-                (?, ?, ?, NOW(), NOW())`, [productData.name, productData.description, productData.price, productData.stock, productData.discountNumber, productData.ownerID], (err, results) => {
+            if(userRole === "Free" || userRole === "Premium" || userRole === "Enterprise") {
+                await this.connection.query(`INSERT INTO products (name, description, price, stock, discountNum, ownerId, created_at, updated_at) VALUES 
+                (?, ?, ?, ?, ?, ?, NOW(), NOW())`, [productData.name, productData.description, productData.price, productData.stock, productData.discountNumber, userId], (err, results) => {
                     if(err) {
                         console.log(err);
                         return { message: "Error creating product" };
