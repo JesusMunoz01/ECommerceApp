@@ -70,8 +70,8 @@ export class ProductsService {
                 return { message: "Error creating product" };
             }
             if(userRole === "Free" || userRole === "Premium" || userRole === "Enterprise") {
-                await this.connection.query(`INSERT INTO products (name, description, price, stock, discountNumber, ownerID, created_at, updated_at) VALUES 
-                (?, ?, ?, NOW(), NOW())`, [productData.name, productData.description, productData.price, productData.stock, productData.discountNumber, productData.ownerID], (err, results) => {
+                await this.connection.query(`INSERT INTO products (name, description, price, stock, discountNum, ownerId, created_at, updated_at) VALUES 
+                (?, ?, ?, ?, ?, ?, NOW(), NOW())`, [productData.name, productData.description, productData.price, productData.stock, productData.discountNumber, userId], (err, results) => {
                     if(err) {
                         console.log(err);
                         return { message: "Error creating product" };
