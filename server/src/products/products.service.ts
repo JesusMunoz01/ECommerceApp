@@ -61,6 +61,21 @@ export class ProductsService {
         }
     }
 
+    async getUserProducts(userID: string): Promise<{ message: string; products?: any; }> {
+        return new Promise<{ message: string; products?: any; }>((resolve, reject) => {
+            this.connection.query(`SELECT * FROM products WHERE ownerId = ?`, [userID], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    reject({ message: "Error getting user products" });
+                }
+                resolve({ message: "User products retrieved successfully", products: results });
+            });
+        }).catch(err => {
+            console.log(err);
+            return { message: "Error getting user products" };
+        });
+    }
+
     async createProduct(productData: ProductDto): Promise<{ message: string; }> {
         try{
             const userId = productData.ownerID.split('|')[1];
