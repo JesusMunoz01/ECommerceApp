@@ -2,14 +2,15 @@ import { Product } from "./productCard";
 
 type EditFormProps = {
     product: Product;
+    handleEdit: (product: Product) => void;
 };
 
-const EditForm = ({product}: EditFormProps) => {
+const EditForm = ({product, handleEdit}: EditFormProps) => {
 
     return (
         <div>
             <h1>Edit Product</h1>
-            <form >
+            <form onSubmit={() => handleEdit(product)}>
                 <label htmlFor="name">Name</label>
                 <input type="text" id="name" name="name" defaultValue={product.name} />
                 <label htmlFor="price">Price</label>

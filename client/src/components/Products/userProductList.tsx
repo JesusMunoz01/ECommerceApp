@@ -6,7 +6,7 @@ import EditForm from "./editForm";
 
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
-    const [toggleEdit, setToggleEdit] = useState(false);
+    const [editingProductId, setEditingProductId] = useState<number | null>(null);
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
@@ -57,12 +57,19 @@ const UserProductList = () => {
         },
     });
 
+    const handleEditChange = (id: number) => {
+        if (editingProductId === id) 
+            setEditingProductId(null);
+        else
+            setEditingProductId(id);
+    }
+
     const handleDelete = async (id: number) => {
         await deleteMutation.mutateAsync(id);
     };
 
     const handleEdit = async (product: Product) => {
-        setToggleEdit(!toggleEdit);
+        setEditingProductId(null);
         await editMutation.mutateAsync(product);
     };
     
@@ -71,15 +78,20 @@ const UserProductList = () => {
     
     return (
         <div>
-        <ul>
+        <ul className="flex flex-col gap-2 w-fit">
             {data.products.map((product: Product) => (
-            <div key={product.id}>
-                <h2>{product.name}</h2>
-                <button onClick={() => handleEdit(product)}>Edit</button>
-                <button onClick={() => handleDelete(product.id)}>Delete</button>
-
-                {toggleEdit && (
-                    <EditForm product={product} />
+            <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
+                <div>
+                    <h2>{product.name}</h2>
+                    <p>{product.description}</p>
+                    <p>{product.price}</p>
+                </div>
+                <div className="flex gap-2">
+                    <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
+                    <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
+                </div>
+                {editingProductId === product.id && (
+                    <EditForm product={product} handleEdit={handleEdit} />
                 )}
             </div>
             ))}
