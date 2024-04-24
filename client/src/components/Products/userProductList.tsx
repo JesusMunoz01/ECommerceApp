@@ -6,7 +6,7 @@ import EditForm from "./editForm";
 
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
-    const [toggleEdit, setToggleEdit] = useState(false);
+    const [editingProductId, setEditingProductId] = useState<number | null>(null);
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
@@ -57,12 +57,19 @@ const UserProductList = () => {
         },
     });
 
+    const handleEditChange = (id: number) => {
+        if (editingProductId === id) 
+            setEditingProductId(null);
+        else
+            setEditingProductId(id);
+    }
+
     const handleDelete = async (id: number) => {
         await deleteMutation.mutateAsync(id);
     };
 
     const handleEdit = async (product: Product) => {
-        setToggleEdit(!toggleEdit);
+        setEditingProductId(null);
         await editMutation.mutateAsync(product);
     };
     
@@ -80,11 +87,11 @@ const UserProductList = () => {
                     <p>{product.price}</p>
                 </div>
                 <div className="flex gap-2">
-                    <button className="w-2/12" onClick={() => handleEdit(product)}>Edit</button>
+                    <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
                     <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
                 </div>
-                {toggleEdit && (
-                    <EditForm product={product} />
+                {editingProductId === product.id && (
+                    <EditForm product={product} handleEdit={handleEdit} />
                 )}
             </div>
             ))}
