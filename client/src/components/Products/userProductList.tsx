@@ -71,13 +71,18 @@ const UserProductList = () => {
     
     return (
         <div>
-        <ul>
+        <ul className="flex flex-col gap-2 w-fit">
             {data.products.map((product: Product) => (
-            <div key={product.id}>
-                <h2>{product.name}</h2>
-                <button onClick={() => handleEdit(product)}>Edit</button>
-                <button onClick={() => handleDelete(product.id)}>Delete</button>
-
+            <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
+                <div>
+                    <h2>{product.name}</h2>
+                    <p>{product.description}</p>
+                    <p>{product.price}</p>
+                </div>
+                <div className="flex gap-2">
+                    <button className="w-2/12" onClick={() => handleEdit(product)}>Edit</button>
+                    <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
+                </div>
                 {toggleEdit && (
                     <EditForm product={product} />
                 )}
