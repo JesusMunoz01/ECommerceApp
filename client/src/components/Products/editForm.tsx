@@ -8,15 +8,15 @@ type EditFormProps = {
 const EditForm = ({product, handleEdit}: EditFormProps) => {
 
     return (
-        <div>
+        <div className="flex flex-col">
             <h1>Edit Product</h1>
-            <form onSubmit={() => handleEdit(product)}>
+            <form onSubmit={() => handleEdit(product)} className="flex flex-col gap-2 bg">
                 <label htmlFor="name">Name</label>
                 <input type="text" id="name" name="name" defaultValue={product.name} />
-                <label htmlFor="price">Price</label>
+                <label htmlFor="price">Price {`(USD)`}</label>
                 <input type="number" id="price" name="price" defaultValue={product.price} />
                 <label htmlFor="description">Description</label>
-                <input type="text" id="description" name="description" defaultValue={product.description} />
+                <textarea rows={5} id="description" name="description" defaultValue={product.description} />
                 <button type="submit">Submit</button>
             </form>
         </div>
