@@ -80,7 +80,8 @@ const UserProductList = () => {
     return (
         <div>
             <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
-        <ul className="flex flex-col gap-2 w-fit">
+        <div className=" h-12/12" style={{maxHeight: "95%"}}>
+        <ul className="flex flex-col gap-2 w-10/12 overflow-y-auto">
             {data.products.filter((product: Product) => product.name.toLowerCase().includes(filter.toLowerCase())).map((product: Product) => (
             <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
                 <div className="flex flex-col gap-1">
@@ -98,6 +99,7 @@ const UserProductList = () => {
             </div>
             ))}
         </ul>
+        </div>
         </div>
     );
 };
