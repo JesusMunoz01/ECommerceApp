@@ -93,9 +93,11 @@ const UserProductList = () => {
                     <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
                     <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
                 </div>
-                {editingProductId === product.id && (
-                    <EditForm product={product} handleEdit={handleEdit} />
-                )}
+                <div>
+                    {editingProductId === product.id && (
+                        <EditForm product={product} handleEdit={handleEdit} />
+                    )}
+                </div>
             </div>
             ))}
         </ul>

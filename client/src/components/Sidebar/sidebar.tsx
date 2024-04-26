@@ -8,7 +8,7 @@ type SidebarProps = {
 
 const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
     return (
-      isOpen ? (
+      // isOpen ? (
         <div className="flex flex-col items-center bg-slate-700 h-full w-1/12 justify-between">
           <div className="mt-2">
             <h2 className="text-xl border-b border-slate-500 w-full">Account</h2>
@@ -23,9 +23,9 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
             <button onClick={toggle}>Close Sidebar</button>
           </div>
         </div>
-      )
-      :
-        <button className={"w-1/12"}onClick={toggle}>Open Sidebar</button>
+      // )
+      // :
+      //   <button className={"w-1/12"}onClick={toggle}>Open Sidebar</button>
     );
   };
 
