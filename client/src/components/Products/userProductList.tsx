@@ -81,10 +81,10 @@ const UserProductList = () => {
         <ul className="flex flex-col gap-2 w-fit">
             {data.products.map((product: Product) => (
             <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
-                <div>
-                    <h2>{product.name}</h2>
-                    <p>{product.description}</p>
-                    <p>{product.price}</p>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-xl">{product.name}</h2>
+                    <p className="text-lg">{product.description}</p>
+                    <p className="text-lg">${product.price}</p>
                 </div>
                 <div className="flex gap-2">
                     <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
