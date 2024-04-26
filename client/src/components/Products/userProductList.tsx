@@ -7,6 +7,7 @@ import EditForm from "./editForm";
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
+    const [filter, setFilter] = useState<string>('');
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
@@ -78,24 +79,29 @@ const UserProductList = () => {
     
     return (
         <div>
-        <ul className="flex flex-col gap-2 w-fit">
-            {data.products.map((product: Product) => (
+            <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
+        <div className=" h-12/12" style={{maxHeight: "95%"}}>
+        <ul className="flex flex-col gap-2 w-10/12 overflow-y-auto">
+            {data.products.filter((product: Product) => product.name.toLowerCase().includes(filter.toLowerCase())).map((product: Product) => (
             <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
-                <div>
-                    <h2>{product.name}</h2>
-                    <p>{product.description}</p>
-                    <p>{product.price}</p>
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-xl">{product.name}</h2>
+                    <p className="text-lg">{product.description}</p>
+                    <p className="text-lg">${product.price}</p>
                 </div>
                 <div className="flex gap-2">
                     <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
                     <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
                 </div>
-                {editingProductId === product.id && (
-                    <EditForm product={product} handleEdit={handleEdit} />
-                )}
+                <div>
+                    {editingProductId === product.id && (
+                        <EditForm product={product} handleEdit={handleEdit} />
+                    )}
+                </div>
             </div>
             ))}
         </ul>
+        </div>
         </div>
     );
 };
