@@ -7,6 +7,7 @@ import EditForm from "./editForm";
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
+    const [filter, setFilter] = useState<string>('');
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
@@ -78,8 +79,9 @@ const UserProductList = () => {
     
     return (
         <div>
+            <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
         <ul className="flex flex-col gap-2 w-fit">
-            {data.products.map((product: Product) => (
+            {data.products.filter((product: Product) => product.name.toLowerCase().includes(filter.toLowerCase())).map((product: Product) => (
             <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
                 <div className="flex flex-col gap-1">
                     <h2 className="text-xl">{product.name}</h2>
