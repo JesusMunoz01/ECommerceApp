@@ -80,28 +80,28 @@ const UserProductList = () => {
     return (
         <div>
             <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
-        <div className=" h-12/12" style={{maxHeight: "95%"}}>
-        <ul className="flex flex-col gap-2 w-10/12 overflow-y-auto">
-            {data.products.filter((product: Product) => product.name.toLowerCase().includes(filter.toLowerCase())).map((product: Product) => (
-            <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
-                <div className="flex flex-col gap-1">
-                    <h2 className="text-xl">{product.name}</h2>
-                    <p className="text-lg">{product.description}</p>
-                    <p className="text-lg">${product.price}</p>
-                </div>
-                <div className="flex gap-2">
-                    <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
-                    <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
-                </div>
-                <div>
-                    {editingProductId === product.id && (
-                        <EditForm product={product} handleEdit={handleEdit} />
-                    )}
-                </div>
+            <div className="border border-slate-500 p-1" style={{maxHeight: "60vh"}}>
+                <ul className="flex flex-col gap-4 w-10/12 overflow-y-auto">
+                    {data.products.filter((product: Product) => product.name.toLowerCase().includes(filter.toLowerCase())).map((product: Product) => (
+                    <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
+                        <div className="flex flex-col gap-1">
+                            <h2 className="text-xl">{product.name}</h2>
+                            <p className="text-lg">{product.description}</p>
+                            <p className="text-lg">${product.price}</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
+                            <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
+                        </div>
+                        <div>
+                            {editingProductId === product.id && (
+                                <EditForm product={product} handleEdit={handleEdit} />
+                            )}
+                        </div>
+                    </div>
+                    ))}
+                </ul>
             </div>
-            ))}
-        </ul>
-        </div>
         </div>
     );
 };
