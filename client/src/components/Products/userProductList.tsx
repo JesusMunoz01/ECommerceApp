@@ -1,30 +1,35 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Product } from "./productCard";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import EditForm from "./editForm";
 
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
     const [filter, setFilter] = useState<string>('');
+    const formRefs = useRef<{ [key: number]: React.RefObject<HTMLDivElement> | null }>({});
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
             const token = await getAccessTokenSilently();
             const userId = user?.sub?.split('|')[1];
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`,
-            {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            }
-            );
+            });
             const data = await response.json();
             console.log(data);
             return data;
         }
     });
+
+    useEffect(() => {
+        if (editingProductId !== null && formRefs.current[editingProductId]?.current) {
+            formRefs.current[editingProductId]?.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [editingProductId, formRefs]);
 
     const deleteMutation = useMutation({
         mutationKey: ['deleteProduct'],
@@ -93,7 +98,7 @@ const UserProductList = () => {
                             <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
                             <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
                         </div>
-                        <div>
+                        <div ref={(ref) => { formRefs.current[product.id] = ref ? { current: ref } : null; }}>
                             {editingProductId === product.id && (
                                 <EditForm product={product} handleEdit={handleEdit} />
                             )}
