@@ -114,21 +114,27 @@ export class ProductsService {
                 if (results.length === 0) {
                   return { message: "Product not found" };
                 }
-          
+
                 const product = results[0];
-          
-                if (product.ownerID !== data.ownerID) {
+
+                if (product.ownerId !== data.ownerID) {
                   return { message: "You are not authorized to delete this product" };
                 }
-
-            this.connection.query(`UPDATE products SET name = ?, description = ?, price = ?, stock = ?, discountNumber = ?, updated_at = NOW() WHERE id = ?`, 
-            [data.name, data.description, data.price, data.stock, data.discountNumber], (err, results) => {
-                if(err) {
-                    console.log(err);
-                    return { message: "Error updating product" };
-                }
-                console.log(results);
-                return { message: "Product updated successfully" };
+            
+            return new Promise<{ message: string; products?: any; }>((resolve, reject) => {
+                this.connection.query(`UPDATE products SET name = ?, description = ?, price = ?, stock = ?, discountNum = ?, updated_at = NOW() WHERE id = ?`, 
+                [data.name, data.description, data.price, data.stock, data.discountNumber, productID], (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        reject({ message: "Error updating product" });
+                    }
+                    console.log(results);
+                    resolve({ message: "Product updated successfully", products: results });
+                });
+            }
+            ).catch(err => {
+                console.log(err);
+                return { message: "Error updating product" };
             });
         })
         }

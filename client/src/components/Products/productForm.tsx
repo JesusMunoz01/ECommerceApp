@@ -51,19 +51,12 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
         mutationFn: async () => {
             const token = await getAccessTokenSilently();
             const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${userProduct?.id}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    name: product.name,
-                    description: product.description,
-                    price: product.price,
-                    stock: product.stock,
-                    discountNumber: product.discountNumber,
-                    ownerID: user?.sub
-                })
+                body: JSON.stringify({...product, ownerID: user?.sub?.split('|')[1]})
             });
             const data = await response.json();
             return data;
@@ -106,7 +99,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
                 <label htmlFor="discountNumber" className="text-lg">Product Discount:</label>
                 <input type="number" className="pl-1" placeholder="Product Discount" name="discountNumber" min={0} value={product.discountNumber} onChange={handleChange} />
                 {/* <input type="text" placeholder="Product Image" onChange={(e) => setProduct({...product, image: e.target.value})} /> */}
-                <button className="w-12/12 bg-zinc-900" type="submit">{actionType} Product</button>
+                <button className="w-12/12 bg-zinc-900 mt-2" type="submit">{actionType} Product</button>
             </form>
         </div>
     );
