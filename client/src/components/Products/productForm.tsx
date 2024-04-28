@@ -1,23 +1,15 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { Product } from "./productCard";
 
 type ProductFormProps = {
     userProduct?: Product;
     actionType: "Create" | "Update";
 };
 
-type Product = {
-    id?: string;
-    name: string;
-    description: string;
-    price: number;
-    stock: number;
-    discountNumber: number;
-    //image: string;
-};
-
 const initialProduct: Product = {
+    id: 0,
     name: "",
     description: "",
     price: 0,
@@ -101,9 +93,10 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
 
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col border border-slate-500 p-4">
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                <input type="text" placeholder="Product Name" name="name" value={product.name} onChange={handleChange} />
+                <label htmlFor="name">Product Name:</label>
+                <input type="text" placeholder="Enter a Product Name" name="name" value={product.name} onChange={handleChange} />
                 <input type="text" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
                 <input type="number" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
                 <input type="number" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />

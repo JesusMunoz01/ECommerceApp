@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { CartItem } from "../../pages/cart";
 
-export type Product ={
-    id: number
-    name: string
-    price: number
-    //image: string,
-    description: string,
-    category: string,
+export type Product = {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    discountNumber: number;
+    //image: string;
 };
 
 type ProductCardProps = {

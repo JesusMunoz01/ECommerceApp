@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Product } from "./productCard";
 import { useState, useRef, useEffect } from "react";
 import EditForm from "./editForm";
+import ProductForm from "./productForm";
 
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
@@ -100,7 +101,8 @@ const UserProductList = () => {
                         </div>
                         <div ref={(ref) => { formRefs.current[product.id] = ref ? { current: ref } : null; }}>
                             {editingProductId === product.id && (
-                                <EditForm product={product} handleEdit={handleEdit} />
+                                // <EditForm product={product} handleEdit={handleEdit} />
+                                <ProductForm actionType="Update" userProduct={product} />
                             )}
                         </div>
                     </div>
