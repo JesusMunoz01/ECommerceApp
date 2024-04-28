@@ -1,23 +1,15 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { Product } from "./productCard";
 
 type ProductFormProps = {
     userProduct?: Product;
     actionType: "Create" | "Update";
 };
 
-type Product = {
-    id?: string;
-    name: string;
-    description: string;
-    price: number;
-    stock: number;
-    discountNumber: number;
-    //image: string;
-};
-
 const initialProduct: Product = {
+    id: 0,
     name: "",
     description: "",
     price: 0,
@@ -59,26 +51,19 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
         mutationFn: async () => {
             const token = await getAccessTokenSilently();
             const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${userProduct?.id}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    name: product.name,
-                    description: product.description,
-                    price: product.price,
-                    stock: product.stock,
-                    discountNumber: product.discountNumber,
-                    ownerID: user?.sub
-                })
+                body: JSON.stringify({...product, ownerID: user?.sub?.split('|')[1]})
             });
             const data = await response.json();
             return data;
         }
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
         setProduct({
             ...product,
             [e.target.name]: e.target.value
@@ -101,15 +86,20 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
 
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-2">
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                <input type="text" placeholder="Product Name" name="name" value={product.name} onChange={handleChange} />
-                <input type="text" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
-                <input type="number" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
-                <input type="number" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />
-                <input type="number" placeholder="Product Discount" name="discountNumber" min={0} value={product.discountNumber} onChange={handleChange} />
+                <label htmlFor="name" className="text-lg">Product Name:</label>
+                <input type="text" className="pl-1" placeholder="Enter a Product Name" name="name" value={product.name} onChange={handleChange} />
+                <label htmlFor="description" className="text-lg">Product Description:</label>
+                <textarea rows={5} className="pl-1" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
+                <label htmlFor="price" className="text-lg">Product Price:</label>
+                <input type="number" className="pl-1" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
+                <label htmlFor="stock" className="text-lg">Product Stock:</label>
+                <input type="number" className="pl-1" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />
+                <label htmlFor="discountNumber" className="text-lg">Product Discount:</label>
+                <input type="number" className="pl-1" placeholder="Product Discount" name="discountNumber" min={0} value={product.discountNumber} onChange={handleChange} />
                 {/* <input type="text" placeholder="Product Image" onChange={(e) => setProduct({...product, image: e.target.value})} /> */}
-                <button type="submit">{actionType} Product</button>
+                <button className="w-12/12 bg-zinc-900 mt-2" type="submit">{actionType} Product</button>
             </form>
         </div>
     );

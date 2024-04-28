@@ -37,16 +37,19 @@ export class ProductsController {
       return this.productsService.createProduct(createProduct);
     }
 
+    @UseGuards(AuthGuard("jwt"))
     @Post(":id/reviews")
     async createReview(@Param("id") itemID: string, @Body() reviewData: ReviewDto): Promise<{ message: string; }> {
       return this.productsService.createReview(itemID, reviewData);
     }
 
+    @UseGuards(AuthGuard("jwt"))
     @Patch(":id")
     async updateProduct(@Param("id") itemID: string, @Body() updateProduct: UpdateProductDto): Promise<{ message: string; }> {
       return this.productsService.updateProduct(itemID, updateProduct);
     }
 
+    @UseGuards(AuthGuard("jwt"))
     @Delete(":id/:ownerID")
     async deleteProduct(@Param("id") itemID: string, @Param("ownerID") ownerID: string): Promise<{ message: string; }> {
       return this.productsService.deleteProduct(itemID, ownerID);
