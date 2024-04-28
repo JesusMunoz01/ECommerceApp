@@ -46,23 +46,6 @@ const UserProductList = () => {
         },
     });
 
-    const editMutation = useMutation({
-        mutationKey: ['editProduct'],
-        mutationFn: async (product: Product) => {
-            const token = await getAccessTokenSilently()
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${product.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({product: product, uid: user?.sub})
-            });
-            const data = await response.json();
-            return data;
-        },
-    });
-
     const handleEditChange = (id: number) => {
         if (editingProductId === id) 
             setEditingProductId(null);
@@ -72,11 +55,6 @@ const UserProductList = () => {
 
     const handleDelete = async (id: number) => {
         await deleteMutation.mutateAsync(id);
-    };
-
-    const handleEdit = async (product: Product) => {
-        setEditingProductId(null);
-        await editMutation.mutateAsync(product);
     };
     
     if (isLoading) return <p>Loading...</p>;
@@ -100,7 +78,6 @@ const UserProductList = () => {
                         </div>
                         <div ref={(ref) => { formRefs.current[product.id] = ref ? { current: ref } : null; }}>
                             {editingProductId === product.id && (
-                                // <EditForm product={product} handleEdit={handleEdit} />
                                 <div className="flex flex-col border-t mt-2">
                                     <h1>Edit Product</h1>
                                     <ProductForm actionType="Update" userProduct={product} />
