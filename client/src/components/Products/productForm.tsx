@@ -70,7 +70,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
         }
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
         setProduct({
             ...product,
             [e.target.name]: e.target.value
@@ -93,16 +93,20 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
 
 
     return (
-        <div className="flex flex-col border border-slate-500 p-4">
+        <div className="flex flex-col mt-2">
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                <label htmlFor="name">Product Name:</label>
-                <input type="text" placeholder="Enter a Product Name" name="name" value={product.name} onChange={handleChange} />
-                <input type="text" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
-                <input type="number" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
-                <input type="number" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />
-                <input type="number" placeholder="Product Discount" name="discountNumber" min={0} value={product.discountNumber} onChange={handleChange} />
+                <label htmlFor="name" className="text-lg">Product Name:</label>
+                <input type="text" className="pl-1" placeholder="Enter a Product Name" name="name" value={product.name} onChange={handleChange} />
+                <label htmlFor="description" className="text-lg">Product Description:</label>
+                <textarea rows={5} className="pl-1" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
+                <label htmlFor="price" className="text-lg">Product Price:</label>
+                <input type="number" className="pl-1" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
+                <label htmlFor="stock" className="text-lg">Product Stock:</label>
+                <input type="number" className="pl-1" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />
+                <label htmlFor="discountNumber" className="text-lg">Product Discount:</label>
+                <input type="number" className="pl-1" placeholder="Product Discount" name="discountNumber" min={0} value={product.discountNumber} onChange={handleChange} />
                 {/* <input type="text" placeholder="Product Image" onChange={(e) => setProduct({...product, image: e.target.value})} /> */}
-                <button type="submit">{actionType} Product</button>
+                <button className="w-12/12 bg-zinc-900" type="submit">{actionType} Product</button>
             </form>
         </div>
     );
