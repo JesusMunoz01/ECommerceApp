@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Product } from "./productCard";
 
@@ -21,6 +21,8 @@ const initialProduct: Product = {
 const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
     const [product, setProduct] = useState<Product>(userProduct ?? initialProduct);
     const {user, isAuthenticated, getAccessTokenSilently} = useAuth0()
+
+    const queryClient = useQueryClient();
 
     const createProduct = useMutation({
         mutationKey: ['createProduct'],
@@ -59,7 +61,23 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
                 body: JSON.stringify({...product, ownerID: user?.sub?.split('|')[1]})
             });
             const data = await response.json();
+            console.log(data)
             return data;
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData(['userProducts', user?.id], (oldData: any) => {
+                return { 
+                    message: oldData.message, products: oldData.products.map((product: Product) => {
+                        if(product.id === userProduct?.id) {
+                            return {
+                                ...product,
+                                ...data.product
+                            }
+                        }
+                        return product;
+                    })
+                }
+            });
         }
     });
 
