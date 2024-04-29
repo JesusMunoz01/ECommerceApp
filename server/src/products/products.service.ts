@@ -105,6 +105,7 @@ export class ProductsService {
 
     async updateProduct(productID: string, data: UpdateProductDto): Promise<{ message: string; }> {
         try{
+            return new Promise<{ message: string; product?: any; }>(async (resolve, reject) => {
             await this.connection.query(`SELECT * FROM products WHERE id = ?`, [productID], (err, results) => {
                 if (err) {
                   console.log(err);
@@ -120,8 +121,7 @@ export class ProductsService {
                 if (product.ownerId !== data.ownerID) {
                   return { message: "You are not authorized to delete this product" };
                 }
-            
-            return new Promise<{ message: string; products?: any; }>((resolve, reject) => {
+    
                 this.connection.query(`UPDATE products SET name = ?, description = ?, price = ?, stock = ?, discountNum = ?, updated_at = NOW() WHERE id = ?`, 
                 [data.name, data.description, data.price, data.stock, data.discountNumber, productID], (err, results) => {
                     if(err) {
@@ -129,14 +129,16 @@ export class ProductsService {
                         reject({ message: "Error updating product" });
                     }
                     console.log(results);
-                    resolve({ message: "Product updated successfully", products: results });
+                    resolve({ message: "Product updated successfully", product: {name: data.name, description: data.description, 
+                        price: data.price, stock: data.stock, discountNum: data.discountNumber}});
                 });
             }
-            ).catch(err => {
-                console.log(err);
-                return { message: "Error updating product" };
-            });
+            )
         })
+        .catch(err => {
+            console.log(err);
+            return { message: "Error updating product" };
+        });
         }
         catch(err) {
             console.log(err);
