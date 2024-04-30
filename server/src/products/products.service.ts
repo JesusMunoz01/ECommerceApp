@@ -148,31 +148,31 @@ export class ProductsService {
 
     async deleteProduct(productID: string, ownerID: string): Promise<{ message: string; }> {
         try {
-            await this.connection.query(`SELECT * FROM products WHERE id = ?`, [productID], (err, results) => {
-            if (err) {
-              console.log(err);
-              return { message: "Error retrieving product" };
-            }
-      
-            if (results.length === 0) {
-              return { message: "Product not found" };
-            }
-      
-            const product = results[0];
-      
-            if (product.ownerID !== ownerID) {
-              return { message: "You are not authorized to delete this product" };
-            }
-      
-            this.connection.query(`DELETE FROM products WHERE id = ?`, [productID], (err, results) => {
-              if (err) {
-                console.log(err);
-                return { message: "Error deleting product" };
-              }
-              console.log(results);
-              return { message: "Product deleted successfully" };
-            });
-          });
+            return new Promise<{ message: string; }>(async (resolve, reject) => {
+                await this.connection.query(`SELECT * FROM products WHERE id = ?`, [productID], (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        reject({ message: "Error retrieving product" });
+                    }
+            
+                    if (results.length === 0) {
+                        reject({ message: "Product not found" });
+                    }
+            
+                    const product = results[0];
+                    if (product.ownerId !== ownerID.split('|')[1]) {
+                        reject({ message: "You are not authorized to delete this product" });
+                    }
+            
+                    this.connection.query(`DELETE FROM products WHERE id = ?`, [productID], (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        reject({ message: "Error deleting product" });
+                    }
+                        resolve({ message: "Product deleted successfully" });
+                    });
+                });
+            })
         } catch (err) {
           console.log(err);
           return { message: "Error deleting product" };

@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product } from "./productCard";
 import { useState, useRef, useEffect } from "react";
 import ProductForm from "./productForm";
@@ -9,6 +9,7 @@ const UserProductList = () => {
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
     const [filter, setFilter] = useState<string>('');
     const formRefs = useRef<{ [key: number]: React.RefObject<HTMLDivElement> | null }>({});
+    const queryClient = useQueryClient();
     const { data, isLoading } = useQuery({
         queryKey: ['userProducts', user?.id],
         queryFn: async () => {
@@ -43,6 +44,11 @@ const UserProductList = () => {
             const data = await response.json();
             return data;
         },
+        onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: ['userProducts', user?.id]
+                });
+        }
     });
 
     const handleEditChange = (id: number) => {
