@@ -61,7 +61,7 @@ const UserBrandPagesList = () => {
     };
     
     if (isLoading) return <p>Loading...</p>;
-    if (!data) return <p>No Products Found</p>;
+    if (!data) return <p>No Brand Pages Found</p>;
     
     return (
         <div>

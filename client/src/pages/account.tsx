@@ -1,4 +1,5 @@
 import Profile from "../components/Auth/auth0-profile";
+import UserBrandPagesList from "../components/Brands/userBrandList";
 import UserProductList from "../components/Products/userProductList";
 
 const AccountPage = () => {
@@ -15,10 +16,7 @@ const AccountPage = () => {
           </div>
           <div className="mt-2 ml-2 w-6/12">
             <h2 className="text-xl border-b border-slate-500 w-full">Your Brand</h2>
-            <ul className="flex flex-col mt-4 gap-4">
-              <li>Product 1</li>
-              <li>Product 2</li>
-            </ul>
+            <UserBrandPagesList />
           </div>
         </div>
       </div>
