@@ -27,14 +27,14 @@ describe('Navbar', () => {
     cy.url().should('include', '/cart');
   });
 
-  // it("clicks on the login button and logs in with test account", () => {
-  //   cy.get('button').contains('Login').click();
-  //   cy.url().should('include', '/login');
-  //   cy.get('input[name="email"]').type("Test");
-  //   cy.get('input[name="password"]').type("Test");
-  //   cy.get('button').contains('Submit').click();
-  //   cy.url().should('include', '/');
-  // })
+  it("clicks on the login button and logs in with test account", () => {
+    cy.get('button').contains('Login').click();
+    cy.url().should('include', '/login');
+    cy.get('input[name="email"]').type(`${process.env.TEST_EMAIL}`);
+    cy.get('input[name="password"]').type(`${process.env.TEST_PASSWORD}`);
+    cy.get('button').contains('Submit').click();
+    cy.url().should('include', '/');
+  })
 
   // it('navigates to upgrade when upgrade button is clicked', () => {
   //   cy.get('button').contains('Upgrade').click();
