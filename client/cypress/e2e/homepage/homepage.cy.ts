@@ -16,7 +16,7 @@ describe('Homepage', () => {
         cy.get('button').contains('Add to cart').click();
         cy.get('a').contains('Cart').click();
         cy.url().should('include', '/cart');
-        cy.get('h1').should('have.text', 'Cart');
+        cy.get('h1').eq(0).should('have.text', 'Your Cart');
         cy.get('button').contains('Remove').should('exist');
     });
 
@@ -26,7 +26,7 @@ describe('Homepage', () => {
         cy.get('button').contains('Add to cart').click();
         cy.get('a').contains('Cart').click();
         cy.url().should('include', '/cart');
-        cy.get('h1').should('have.text', 'Cart');
+        cy.get('h1').eq(0).should('have.text', 'Your Cart');
         cy.get('button').contains('Remove').should('exist');
     });
 });
