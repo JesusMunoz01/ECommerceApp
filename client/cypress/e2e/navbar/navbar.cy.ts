@@ -28,15 +28,6 @@ describe('Navbar', () => {
   });
 
   it("clicks on the login button and logs in with test account", () => {
-    // cy.get('button').contains('Log In').click();
-    // //cy.url().should('include', '/login');
-    // //cy.intercept('GET', )
-    // cy.origin('https://dev-4rk7o1cuxvewyedu.us.auth0.com', () => {
-    // cy.get('input[name="email"]').type(`${process.env.TEST_EMAIL}`);
-    // cy.get('input[name="password"]').type(`${process.env.TEST_PASSWORD}`);
-    // cy.get('button').contains('Continue').click();
-    // });
-    // cy.url().should('include', '/');
     cy.login();
   })
 
