@@ -10,4 +10,13 @@ describe('Homepage', () => {
         cy.get('h2').should('have.text', 'Featured Products');
         cy.get('button').contains('Add to cart').should('exist');
       });
+
+    it('should click on a product and add it to cart', () => {
+        cy.visit('http://localhost:5173/');
+        cy.get('button').contains('Add to cart').click();
+        cy.get('a').contains('Cart').click();
+        cy.url().should('include', '/cart');
+        cy.get('h1').should('have.text', 'Cart');
+        cy.get('button').contains('Remove').should('exist');
+    });
 });
