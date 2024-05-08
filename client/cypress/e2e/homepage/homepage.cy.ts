@@ -19,4 +19,14 @@ describe('Homepage', () => {
         cy.get('h1').should('have.text', 'Cart');
         cy.get('button').contains('Remove').should('exist');
     });
+
+    it("should select multiple products with multiple quantities and add them to cart", () => {
+        cy.visit('http://localhost:5173/');
+        cy.get('button').contains('Add to cart').click();
+        cy.get('button').contains('Add to cart').click();
+        cy.get('a').contains('Cart').click();
+        cy.url().should('include', '/cart');
+        cy.get('h1').should('have.text', 'Cart');
+        cy.get('button').contains('Remove').should('exist');
+    });
 });
