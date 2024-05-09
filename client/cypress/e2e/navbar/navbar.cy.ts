@@ -31,8 +31,11 @@ describe('Navbar', () => {
     cy.login();
   })
 
-  // it('navigates to upgrade when upgrade button is clicked', () => {
-  //   cy.get('button').contains('Upgrade').click();
-  //   cy.url().should('include', '/upgrade');
-  // });
+  it("checks for the new upgrade button and navigates when clicked", () => {
+    cy.login()
+    cy.get('button').contains('Upgrade').should('exist');
+    cy.get('button').contains('Upgrade').click();
+    cy.url().should('include', '/upgrade');
+  });
+
 });

@@ -45,7 +45,7 @@ const Navbar = ({userData}: NavbarProps) => {
                     <SelectedLink to="/cart"><BsCart4 className="text-white text-2xl"/>Cart</SelectedLink>
                     {isAuthenticated ? 
                     <div className="flex items-center gap-4">
-                        <button onClick={toggleUserMenu} className="w-12 p-0 h-12 rounded-full bg-transparent">
+                        <button onClick={toggleUserMenu} name="accountButton" className="w-12 p-0 h-12 rounded-full bg-transparent">
                             <img src={user?.picture} alt={user?.name} className="rounded-full"/>
                         </button>
                         {userMenu && 
