@@ -9,6 +9,7 @@ describe('Account Tests', () => {
 
     it("should display account page if logged in", () => {
         cy.login();
+        cy.wait(1000);
         cy.visit('http://localhost:5173/account');
         cy.contains('Account Details').should('be.visible');
         cy.contains('Your Products').should('be.visible');
@@ -17,9 +18,26 @@ describe('Account Tests', () => {
 
     it("should check the sidebar items", () => {
         cy.login();
+        cy.wait(1000);
         cy.visit('http://localhost:5173/account');
-        cy.get('button').contains('Profile').should('be.visible');
-        cy.get('button').contains('Products').should('be.visible');
-        cy.get('button').contains('Brands').should('be.visible');
+        cy.get('a').contains('Profile').should('be.visible');
+        cy.get('a').contains('Settings').should('be.visible');
+        cy.get('a').contains('Sell').should('be.visible');
+    });
+
+    it("should click on the settings link and navigate to settings page", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.get('a').contains('Settings').click();
+        cy.url().should('include', '/settings');
+    });
+
+    it("should click on the sell link and navigate to sell page", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.get('a').contains('Sell').click();
+        cy.url().should('include', '/sell');
     });
 });
