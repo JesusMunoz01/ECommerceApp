@@ -48,4 +48,20 @@ describe('Navbar', () => {
     cy.get('button[name="accountButton"]').click();
   });
 
+  it("logs in, logs out, and checks for removed navbar links", () => {
+    cy.login()
+    cy.get('button[name="accountButton"]').click();
+    cy.get('p').eq(0).contains(Cypress.env('auth_username'));
+    cy.get('p').eq(1).contains(Cypress.env('auth_username'))
+    cy.get('button').contains('Log Out').click();
+    cy.get('.border-2').contains('Logo').should('be.visible');
+    cy.get('input[type="text"]').should('be.visible');
+    cy.get('select').should('be.visible');
+    cy.get('button').contains('Search').should('be.visible');
+    cy.get('button').contains('Log In').should('be.visible');
+    cy.get('button[name="accountButton"]').should('not.exist');
+    cy.get('button').contains('Log Out').should('not.exist');
+    cy.get('button').contains('Upgrade').should('not.exist');
+  });
+
 });
