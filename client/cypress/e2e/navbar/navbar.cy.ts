@@ -38,4 +38,14 @@ describe('Navbar', () => {
     cy.url().should('include', '/upgrade');
   });
 
+  it("checks for the account button and navigates when clicked", () => {
+    cy.login()
+    cy.get('button[name="accountButton"]').click();
+    cy.get('p').eq(0).contains(Cypress.env('auth_username'));
+    cy.get('p').eq(1).contains(Cypress.env('auth_username'))
+    cy.get('#accLink').click();
+    cy.url().should('include', '/account');
+    cy.get('button[name="accountButton"]').click();
+  });
+
 });
