@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { AppService } from 'src/app.service';
 
 @Injectable()
 export class BrandsService {
+  constructor(private appService: AppService) {}
+  private connection = this.appService.connection;
+
   create(createBrandDto: CreateBrandDto) {
     return 'This action adds a new brand';
   }
