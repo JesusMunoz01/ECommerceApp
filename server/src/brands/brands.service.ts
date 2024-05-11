@@ -8,8 +8,14 @@ export class BrandsService {
   constructor(private appService: AppService) {}
   private connection = this.appService.connection;
 
-  create(createBrandDto: CreateBrandDto) {
-    return 'This action adds a new brand';
+  async create(createBrandDto: CreateBrandDto) {
+    try {
+      const result = await this.connection.query('INSERT INTO brands SET ?', createBrandDto);
+      console.log(result)
+      return { message: 'Brand page created successfully', data: result}
+    } catch (error) {
+      return { message: 'Error creating brand page', data: error}
+    }
   }
 
   findAll() {
