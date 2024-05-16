@@ -18,8 +18,14 @@ export class BrandsService {
     }
   }
 
-  findAll() {
-    return `This action returns all brands`;
+  async findAll() {
+    try {
+      const result = await this.connection.query('SELECT * FROM brands');
+      console.log(result)
+      return { message: 'Brand page created successfully', data: result}
+    } catch (error) {
+      return { message: 'Error creating brand page', data: error}
+    }
   }
 
   findOne(id: number) {
