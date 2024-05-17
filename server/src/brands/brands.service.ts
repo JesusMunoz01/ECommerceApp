@@ -60,11 +60,24 @@ export class BrandsService {
     }
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(id: number, updateBrandDto: UpdateBrandDto) {
+    try {
+      await this.connection.query('UPDATE brands SET name = ?, description = ?, image = ?, updated_at = NOW() WHERE id = ?', 
+      [updateBrandDto.name, updateBrandDto.description, updateBrandDto.image, id]);
+      return { message: 'Brand page updated successfully', data: updateBrandDto}
+    } catch (error) {
+      console.log(error)
+      return { message: 'Error updating brand page', data: error}
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async remove(id: number) {
+    try {
+      await this.connection.query('DELETE FROM brands WHERE id = ?', [id]);
+      return { message: 'Brand page deleted successfully', data: id}
+    } catch (error) {
+      console.log(error)
+      return { message: 'Error deleting brand page', data: error}
+    }
   }
 }
