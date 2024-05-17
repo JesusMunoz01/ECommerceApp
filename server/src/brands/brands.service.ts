@@ -21,21 +21,42 @@ export class BrandsService {
 
   async findAll() {
     try {
-      const result = await this.connection.query('SELECT * FROM brands');
-      console.log(result)
-      return { message: 'Brand page created successfully', data: result}
+      const result = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM brands', (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+      
+      return { message: 'Brand page found successfully', data: result };
     } catch (error) {
-      return { message: 'Error creating brand page', data: error}
+      console.log(error);
+      return { message: 'Error finding brand page', data: error };
     }
   }
+  
 
   async findOne(id: number) {
     try {
-      const result = await this.connection.query('SELECT * FROM brands WHERE id = ?', id);
-      console.log(result)
-      return { message: 'Brand page created successfully', data: result}
+      const result = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM brands WHERE id = ?', [id], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+      
+      return { message: 'Brand page found successfully', data: result };
     } catch (error) {
-      return { message: 'Error creating brand page', data: error}
+      console.log(error);
+      return { message: 'Error finding brand page', data: error };
     }
   }
 
