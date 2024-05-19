@@ -19,7 +19,7 @@ describe('Navbar', () => {
 
   it('navigates to brands when brands link is clicked', () => {
     cy.get('a').contains('Brands').click();
-    cy.url().should('include', '/test');
+    cy.url().should('include', '/brands');
   });
 
   it('navigates to cart when cart link is clicked', () => {
