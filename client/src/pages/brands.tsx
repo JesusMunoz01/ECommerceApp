@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 const BrandsPage = () => {
+    const [search, setSearch] = useState('');
     const brandsQuery = useQuery({
         queryKey: ['brands'],
         queryFn: async () => {
@@ -15,9 +17,14 @@ const BrandsPage = () => {
 
     return (
         <div className="m-1">
-            <h1>Brands</h1>
+            <div>
+                <h1>Brands</h1>
+                <search className="border border-white w-fit m-1">
+                    <input type="text" className="p-1" placeholder="Search Brands" onChange={(e) => setSearch(e.target.value)}/>
+                </search>
+            </div>
             <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
-                {brandsQuery.data.data.map((brand: any) => (
+                {brandsQuery.data.data.filter((brand: any) => brand.name.toLowerCase().includes(search.toLowerCase())).map((brand: any) => (
                     <div key={brand.id} className="border-2 p-2 bg-slate-700">
                         <h2>{brand.name}</h2>
                         <p>{brand.description}</p>
