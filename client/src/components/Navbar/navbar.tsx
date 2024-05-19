@@ -28,7 +28,7 @@ const Navbar = ({userData}: NavbarProps) => {
                 <div className="flex text-xl text-white-100 gap-16 items-center justify-center">
                     <span className="border-2 border-black p-2">Logo</span>
                     <SelectedLink to="/">Home</SelectedLink>
-                    <SelectedLink to="/test">Brands</SelectedLink>
+                    <SelectedLink to="/brands">Brands</SelectedLink>
                 </div>
                 <div className="flex items-center gap-4 w-2/4">
                     <div className="flex border border-gray-300 bg-neutral-700 h-10 rounded-lg w-5/6 divide-x divide-white">

@@ -11,6 +11,7 @@ import SellPage from './pages/seller.tsx'
 import AccountPage from './pages/account.tsx'
 import Sidebar from './components/Sidebar/sidebar.tsx'
 import SettingsPage from './pages/settings.tsx'
+import BrandsPage from './pages/brands.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
@@ -47,6 +48,7 @@ function App() {
           <Route path="/" element={<HomePage setCart={setCart}/>} />
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
           <Route path='/upgrade' element={<UpgradePage role={userData.data?.plan}/>} />
+          <Route path='/brands' element={<BrandsPage />} />
           <Route path="*" element={<h1>Not Found</h1>} />
           {isAuthenticated && (
                 <>
