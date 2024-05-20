@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const BrandsPage = () => {
     const [search, setSearch] = useState('');
@@ -25,10 +26,12 @@ const BrandsPage = () => {
             </div>
             <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
                 {brandsQuery.data.data.filter((brand: any) => brand.name.toLowerCase().includes(search.toLowerCase())).map((brand: any) => (
-                    <div key={brand.id} className="border-2 p-2 bg-slate-700">
-                        <h2>{brand.name}</h2>
-                        <p>{brand.description}</p>
-                    </div>
+                    <Link to={`/brands/${brand.id}`}>
+                        <div key={brand.id} className="border-2 p-2 bg-slate-700">
+                            <h2>{brand.name}</h2>
+                            <p>{brand.description}</p>
+                        </div>
+                    </Link>
                 ))}
             </div>
         </div>
