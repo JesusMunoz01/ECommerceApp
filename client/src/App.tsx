@@ -49,6 +49,7 @@ function App() {
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
           <Route path='/upgrade' element={<UpgradePage role={userData.data?.plan}/>} />
           <Route path='/brands' element={<BrandsPage />} />
+          <Route path='/brands/:id' element={<BrandsPage />} />
           <Route path="*" element={<h1>Not Found</h1>} />
           {isAuthenticated && (
                 <>
