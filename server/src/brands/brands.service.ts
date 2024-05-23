@@ -49,7 +49,7 @@ export class BrandsService {
             reject(err);
             return;
           }
-          resolve(results);
+          resolve(results[0]);
         });
       });
       
