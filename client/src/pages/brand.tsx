@@ -9,6 +9,7 @@ const BrandPage = () => {
         queryFn: async () => {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}`);
             const data = await response.json();
+            console.log(data);
             return data;
         }
     });
@@ -19,17 +20,17 @@ const BrandPage = () => {
     return (
         <div>
             <div>
-                <h1>{brandQuery.data.data[0].name}</h1>
-                <p>{brandQuery.data.data[0].description}</p>
-                <img src={brandQuery.data.data[0].image} alt={brandQuery.data.data[0].name}/>
+                <h1>{brandQuery.data.data.name}</h1>
+                <p>{brandQuery.data.data.description}</p>
+                { brandQuery.data.data.image && <img src={brandQuery.data.data.image} alt={brandQuery.data.data.name}/> }
             </div>
             <div>
-                <h2>Products</h2>
+                {/* <h2>Products</h2>
                 <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
-                    {brandQuery.data.data[0].products.map((product: any) => (
+                    {brandQuery.data.data.products.map((product: any) => (
                         <ProductCard key={product.id} product={product}/>
                     ))}
-                </div>
+                </div> */}
             </div>
         </div>
     );
