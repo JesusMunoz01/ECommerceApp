@@ -24,6 +24,20 @@ const testProducts = [
         price: 300,
         image: ''
     },
+    {
+        id: 4,
+        name: 'Product 4',
+        description: 'Product 4 description',
+        price: 400,
+        image: ''
+    },
+    {
+        id: 5,
+        name: 'Product 5',
+        description: 'Product 5 description',
+        price: 500,
+        image: ''
+    },
 ];
 
 const BrandPage = () => {
@@ -57,10 +71,10 @@ const BrandPage = () => {
                         <ProductCard key={product.id} product={product}/>
                     ))}
                 </div> */}
-                <h2 className="m-2 text-3xl">Brand's Products:</h2>
+                <h2 className="m-2 text-3xl p-1">Brand's Products:</h2>
                 <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
                     {testProducts.map((product: any) => (
-                        <ProductCard key={product.id} product={product}/>
+                        <ProductCard key={product.id} product={product} addToCart={() => {}}/>
                     ))}
                 </div>
             </div>
