@@ -83,6 +83,7 @@ const BrandPage = () => {
                     {testProducts.filter(product => product.name.includes(search)).map((product: any) => (
                         <ProductCard key={product.id} product={product} addToCart={() => {}}/>
                     ))}
+                    {testProducts.filter(product => product.name.includes(search)).length === 0 && <div>No Products Found</div>}
                 </div>
             </div>
         </div>
