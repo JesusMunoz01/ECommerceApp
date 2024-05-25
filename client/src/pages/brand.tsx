@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/Products/productCard";
+import { useState } from "react";
 
 const testProducts = [
     {
@@ -42,6 +43,7 @@ const testProducts = [
 
 const BrandPage = () => {
     const { id } = useParams();
+    const [search, setSearch] = useState('');
     const brandQuery = useQuery({
         queryKey: ['brands', id],
         queryFn: async () => {
@@ -71,9 +73,14 @@ const BrandPage = () => {
                         <ProductCard key={product.id} product={product}/>
                     ))}
                 </div> */}
-                <h2 className="m-2 text-3xl p-1">Brand's Products:</h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="m-2 text-3xl p-1">Brand's Products:</h2>
+                    <search className="border border-white w-fit m-2">
+                        <input type="text" className="p-1 w-64" placeholder="Search Products" onChange={(e) => setSearch(e.target.value)}/>
+                    </search>
+                </div>
                 <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
-                    {testProducts.map((product: any) => (
+                    {testProducts.filter(product => product.name.includes(search)).map((product: any) => (
                         <ProductCard key={product.id} product={product} addToCart={() => {}}/>
                     ))}
                 </div>
