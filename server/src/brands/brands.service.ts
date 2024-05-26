@@ -57,7 +57,6 @@ export class BrandsService {
         throw new Error('Brand page not found');
       }
 
-      if (result) {
         // Get products for brand
         const products = await new Promise((resolve, reject) => {
           this.connection.query('SELECT * FROM products WHERE brandId = ?', [id], (err, results) => {
@@ -70,10 +69,7 @@ export class BrandsService {
           });
         });
 
-        return { message: 'Brand page found successfully', brand: result, products: products};
-      }
-      
-      return { message: 'Brand page found successfully', data: result };
+      return { message: 'Brand page found successfully', brand: result, products: products};
     } catch (error) {
       return { message: 'Error finding brand page', error: error.message || error };
     }

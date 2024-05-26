@@ -19,14 +19,14 @@ const BrandPage = () => {
         },
         retry(failureCount, error) {
             if (error.message === "Brand page not found") return false;
-            return failureCount < 2;
+            return failureCount < 3;
         },
     });
 
     if(brandQuery.isLoading) return <div>Loading...</div>;
     if (brandQuery.isError) {
         const errorMessage = brandQuery.error.message || 'Error fetching brand';
-        return <div>Error: {errorMessage}</div>;
+        return <h1 className="flex items-center justify-center mt-2">Error: {errorMessage}</h1>;
     }
 
     return (
@@ -42,14 +42,14 @@ const BrandPage = () => {
                 <div className="flex items-center justify-between">
                     <h2 className="m-2 text-3xl p-1">Brand's Products:</h2>
                     <search className="border border-white w-fit m-2">
-                        <input type="text" className="p-1 w-64" placeholder="Search Products" onChange={(e) => setSearch(e.target.value)}/>
+                        <input type="text" className="p-1 w-64" placeholder="Search Products" onChange={(e) => setSearch(e.target.value.toLocaleLowerCase())}/>
                     </search>
                 </div>
                 <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
-                    {brandQuery.data.products.filter((product: any) => product.name.includes(search)).map((product: any) => (
+                    {brandQuery.data.products.filter((product: any) => product.name.toLowerCase().includes(search)).map((product: any) => (
                         <ProductCard key={product.id} product={product} addToCart={() => {}}/>
                     ))}
-                    {brandQuery.data.products.filter((product: any) => product.name.includes(search)).length === 0 && <div>No Products Found</div>}
+                    {brandQuery.data.products.filter((product: any) => product.name.toLowerCase().includes(search)).length === 0 && <div>No Products Found</div>}
                 </div>
             </div>
         </div>
