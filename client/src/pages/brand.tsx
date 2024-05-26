@@ -12,12 +12,22 @@ const BrandPage = () => {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}`);
             const data = await response.json();
             console.log(data);
+            if (data.error) {
+                throw new Error(data.error);
+            }
             return data;
-        }
+        },
+        retry(failureCount, error) {
+            if (error.message === "Brand page not found") return false;
+            return failureCount < 2;
+        },
     });
 
     if(brandQuery.isLoading) return <div>Loading...</div>;
-    if(brandQuery.isError) return <div>Error fetching brand</div>;
+    if (brandQuery.isError) {
+        const errorMessage = brandQuery.error.message || 'Error fetching brand';
+        return <div>Error: {errorMessage}</div>;
+    }
 
     return (
         <div>

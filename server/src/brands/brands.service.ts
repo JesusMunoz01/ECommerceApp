@@ -42,7 +42,7 @@ export class BrandsService {
 
   async findOne(id: number) {
     try {
-      const result = await new Promise((resolve, reject) => {
+      const result: [] = await new Promise((resolve, reject) => {
         this.connection.query('SELECT * FROM brands WHERE id = ?', [id], (err, results) => {
           if (err) {
             console.log(err);
@@ -52,6 +52,10 @@ export class BrandsService {
           resolve(results[0]);
         });
       });
+
+      if (!result || result.length === 0) {
+        throw new Error('Brand page not found');
+      }
 
       if (result) {
         // Get products for brand
@@ -71,8 +75,7 @@ export class BrandsService {
       
       return { message: 'Brand page found successfully', data: result };
     } catch (error) {
-      console.log(error);
-      return { message: 'Error finding brand page', data: error };
+      return { message: 'Error finding brand page', error: error.message || error };
     }
   }
 
