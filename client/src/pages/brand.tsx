@@ -60,10 +60,10 @@ const BrandPage = () => {
     return (
         <div>
             <div className="flex items-center justify-center flex-row bg-slate-500 h-fit">
-                { brandQuery.data.data.image && <img src={brandQuery.data.data.image} alt={brandQuery.data.data.name}/> }
+                { brandQuery.data.brand.image && <img src={brandQuery.data.brand.image} alt={brandQuery.data.brand.name}/> }
                 <div className="flex items-center justify-center flex-col bg-slate-500 pb-2">
-                    <h1>{brandQuery.data.data.name}</h1>
-                    <p>{brandQuery.data.data.description}</p>
+                    <h1>{brandQuery.data.brand.name}</h1>
+                    <p>{brandQuery.data.brand.description}</p>
                 </div>
             </div>
             <div>

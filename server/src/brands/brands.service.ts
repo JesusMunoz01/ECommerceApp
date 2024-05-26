@@ -52,6 +52,22 @@ export class BrandsService {
           resolve(results[0]);
         });
       });
+
+      if (result) {
+        // Get products for brand
+        const products = await new Promise((resolve, reject) => {
+          this.connection.query('SELECT * FROM products WHERE brandId = ?', [id], (err, results) => {
+            if (err) {
+              console.log(err);
+              reject(err);
+              return;
+            }
+            resolve(results);
+          });
+        });
+
+        return { message: 'Brand page found successfully', brand: result, products: products};
+      }
       
       return { message: 'Brand page found successfully', data: result };
     } catch (error) {
