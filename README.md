@@ -1,4 +1,5 @@
 # ECommerceApp
+
 An Ecommerce Project
 
 ## Features
@@ -7,8 +8,10 @@ This project contains both a backend and a frontend. The backend will be found i
 The application requires both the backend and frontend to be running to function properly and the respective packages to be installed.
 
 ### Backend
-To initialize the backend, navigate to the backend folder 
-```
+
+To initialize the backend, navigate to the backend folder
+
+``` shell
 cd server
 npm i
 npm run start:dev
@@ -21,8 +24,10 @@ npm run start:dev
 - Stripe
 
 ### Frontend
-To initialize the frontend, navigate to the frontend folder 
-```
+
+To initialize the frontend, navigate to the frontend folder
+
+``` shell
 cd client
 npm i
 npm run dev
