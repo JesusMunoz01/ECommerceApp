@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/Products/productCard";
 import { useState } from "react";
+import { productFilter } from "../utils/productFilter";
 
 const BrandPage = () => {
     const { id } = useParams();
@@ -46,10 +47,10 @@ const BrandPage = () => {
                     </search>
                 </div>
                 <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
-                    {brandQuery.data.products.filter((product: any) => product.name.toLowerCase().includes(search)).map((product: any) => (
+                    {productFilter(brandQuery.data.products, search).map((product: any) => (
                         <ProductCard key={product.id} product={product} addToCart={() => {}}/>
                     ))}
-                    {brandQuery.data.products.filter((product: any) => product.name.toLowerCase().includes(search)).length === 0 && <div>No Products Found</div>}
+                    {productFilter(brandQuery.data.products, search).length === 0 && <div>No Products Found</div>}
                 </div>
             </div>
         </div>

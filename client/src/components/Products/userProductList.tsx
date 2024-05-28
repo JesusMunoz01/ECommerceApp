@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product } from "./productCard";
 import { useState, useRef, useEffect } from "react";
 import ProductForm from "./productForm";
+import { productFilter } from "../../utils/productFilter";
 
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
@@ -70,7 +71,7 @@ const UserProductList = () => {
             <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
             <div className="border border-slate-500 p-1" style={{maxHeight: "60vh"}}>
                 <ul className="flex flex-col gap-4 w-10/12 overflow-y-auto">
-                    {data.products.filter((product: Product) => product.name.toLowerCase().includes(filter.toLowerCase())).map((product: Product) => (
+                    {productFilter(data.products, filter).map((product: Product) => (
                     <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
                         <div className="flex flex-col gap-1">
                             <h2 className="text-xl">{product.name}</h2>
@@ -91,6 +92,7 @@ const UserProductList = () => {
                         </div>
                     </div>
                     ))}
+                    {productFilter(data.products, filter).length === 0 && <div>No Products Found</div>}
                 </ul>
             </div>
         </div>
