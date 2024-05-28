@@ -8,7 +8,7 @@ const UserBrandPagesList = () => {
     const [filter, setFilter] = useState<string>('');
     const formRefs = useRef<{ [key: number]: React.RefObject<HTMLDivElement> | null }>({});
     const queryClient = useQueryClient();
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['userBrands', user?.id],
         queryFn: async () => {
             const token = await getAccessTokenSilently();
@@ -19,8 +19,15 @@ const UserBrandPagesList = () => {
                 },
             });
             const data = await response.json();
+            if (data.error) {
+                throw new Error(data.error);
+            }
             return data;
-        }
+        },
+        retry(failureCount, error) {
+            if (error.message === "Brand page not found") return false;
+            return failureCount < 3;
+        },
     });
 
     useEffect(() => {
@@ -61,7 +68,10 @@ const UserBrandPagesList = () => {
     };
     
     if (isLoading) return <p>Loading...</p>;
-    if (!data) return <p>No Brand Pages Found</p>;
+    if (isError){
+        const errorMessage = data?.error.message || 'Error fetching brand';
+        return <p className="flex items-center justify-center mt-2">Error: {errorMessage}</p>;
+    }
     
     return (
         <div>

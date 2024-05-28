@@ -65,8 +65,6 @@ const UserProductList = () => {
     
     if (isLoading) return <p>Loading...</p>;
     if (!data) return <p>No Products Found</p>;
-
-    console.log(productFilter(data.products, filter));
     
     return (
         <div>
