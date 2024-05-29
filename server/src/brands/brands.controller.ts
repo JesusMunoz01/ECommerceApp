@@ -22,6 +22,11 @@ export class BrandsController {
     return this.brandsService.findOne(+id);
   }
 
+  @Get('user/:id')
+  findBrandOwner(@Param('id') id: string) {
+    return this.brandsService.findByOwner(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
     return this.brandsService.update(+id, updateBrandDto);

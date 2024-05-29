@@ -75,6 +75,29 @@ export class BrandsService {
     }
   }
 
+  async findByOwner(ownerId: string) {
+    try {
+      const result: [] = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM brands WHERE brandOwner = ?', [ownerId], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+
+      if (!result || result.length === 0) {
+        throw new Error('Brand page not found');
+      }
+
+      return { message: 'Brand pages found successfully', brands: result};
+    } catch (error) {
+      return { message: 'Error finding brand page', error: error.message || error };
+    }
+  }
+
   async update(id: number, updateBrandDto: UpdateBrandDto) {
     try {
       await this.connection.query('UPDATE brands SET name = ?, description = ?, image = ?, updated_at = NOW() WHERE id = ?', 
