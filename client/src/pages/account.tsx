@@ -14,7 +14,7 @@ const AccountPage = () => {
             <h2 className="text-xl border-b border-slate-500 w-full">Your Products</h2>
             <UserProductList />
           </div>
-          <div className="mt-2 ml-2 w-6/12">
+          <div className="mt-2 ml-2 w-6/12 gap-4 flex flex-col">
             <h2 className="text-xl border-b border-slate-500 w-full">Your Brand</h2>
             <UserBrandPagesList />
           </div>
