@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
+import { productFilter } from "../../utils/productFilter";
 
 const UserBrandPagesList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
@@ -19,6 +20,7 @@ const UserBrandPagesList = () => {
                 },
             });
             const data = await response.json();
+            console.log(data)
             if (data.error) {
                 throw new Error(data.error);
             }
@@ -75,10 +77,10 @@ const UserBrandPagesList = () => {
     
     return (
         <div>
-            <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
+            <input type="text" placeholder="Filter Brands" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
             <div className="border border-slate-500 p-1" style={{maxHeight: "60vh"}}>
                 <ul className="flex flex-col gap-4 w-10/12 overflow-y-auto">
-                    {data.brandPages.map((page: any) => (
+                    {productFilter(data.brands, filter).map((page: any) => (
                     <div key={page.id} className="flex flex-col border border-slate-600 gap-2 p-2">
                         <div className="flex flex-col gap-1">
                             <h2 className="text-xl">{page.name}</h2>
@@ -98,6 +100,7 @@ const UserBrandPagesList = () => {
                         </div>
                     </div>
                     ))}
+                    {productFilter(data.brands, filter).length === 0 && <div>No Brands Found</div>}
                 </ul>
             </div>
         </div>
