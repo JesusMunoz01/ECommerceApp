@@ -13,6 +13,7 @@ import Sidebar from './components/Sidebar/sidebar.tsx'
 import SettingsPage from './pages/settings.tsx'
 import BrandsPage from './pages/brands.tsx'
 import BrandPage from './pages/brand.tsx'
+import EditBrandPage from './pages/editBrand.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
@@ -69,6 +70,7 @@ function App() {
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <SettingsPage />
                   </div>} />
+                  <Route path='/brand/edit/:id' element={<EditBrandPage userData={userData.data}/>} />
                 </>
               )}
         </Routes>

@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { productFilter } from "../../utils/productFilter";
+import { Link } from "react-router-dom";
 
 const UserBrandPagesList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
@@ -93,8 +94,7 @@ const UserBrandPagesList = () => {
                         <div ref={(ref) => { formRefs.current[page.id] = ref ? { current: ref } : null; }}>
                             {editingBrandId === page.id && (
                                 <div className="flex flex-col border-t mt-2">
-                                    <h1>Edit Brand</h1>
-                                    {/* <ProductForm actionType="Update" userProduct={product} /> */}
+                                    <Link to={`/brand/edit/${page.id}`}>Edit Brand</Link>
                                 </div>
                             )}
                         </div>
