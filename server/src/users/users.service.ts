@@ -76,7 +76,7 @@ export class UsersService {
         return { message: "User already exists" };
     }
 
-    async getUser(userID: string): Promise<{ message: string, plan?: string }> {
+    async getUser(userID: string): Promise<{ message: string, plan?: string, brands?: [] }> {
         try{
             const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
                 headers: {
@@ -88,9 +88,10 @@ export class UsersService {
             // Fetch user plan name from the database and return it to the client
             const queryAsync = promisify(this.connection.query).bind(this.connection);
             const results = await queryAsync(`SELECT sname FROM users WHERE id = ?`, [userData.identities[0].user_id]);
+            const brands = await queryAsync(`SELECT * FROM brands WHERE brandOwner = ?`, [userData.identities[0].user_id]);
 
             if (results && results.length > 0) {
-                return { message: "User fetched successfully", plan: results[0].sname };
+                return { message: "User fetched successfully", plan: results[0].sname, brands: brands };
             } else {
                 return { message: "User not found" };
             }
