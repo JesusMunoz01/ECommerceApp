@@ -26,7 +26,7 @@ const BrandsPage = () => {
             </div>
             <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
                 {brandsQuery.data.data.filter((brand: any) => brand.name.toLowerCase().includes(search.toLowerCase())).map((brand: any) => (
-                    <Link to={`/brands/${brand.id}`}>
+                    <Link key={brand.id} to={`/brands/${brand.id}`}>
                         <div key={brand.id} className="border-2 p-2 bg-slate-700">
                             <h2>{brand.name}</h2>
                             <p>{brand.description}</p>
