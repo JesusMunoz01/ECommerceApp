@@ -24,6 +24,11 @@ export class BrandsController {
     return this.brandsService.findOne(+id);
   }
 
+  @Get('/:bid/products/:uid')
+  findBrandProducts(@Param('bid') bid: string, @Param('uid') uid: string) {
+    return this.brandsService.findUserBrandProducts(+bid, uid);
+  }
+
   @UseGuards(AuthGuard("jwt"))
   @Get('user/:id')
   findBrandOwner(@Param('id') id: string) {

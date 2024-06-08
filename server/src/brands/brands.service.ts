@@ -98,10 +98,10 @@ export class BrandsService {
     }
   }
 
-  async findBrandProducts(id: number) {
+  async findUserBrandProducts(bid: number, uid: string) {
     try {
       const result: [] = await new Promise((resolve, reject) => {
-        this.connection.query('SELECT * FROM products WHERE brandId = ?', [id], (err, results) => {
+        this.connection.query('SELECT * FROM products WHERE brandId = ? and ownerId = ?', [bid, uid], (err, results) => {
           if (err) {
             console.log(err);
             reject(err);
