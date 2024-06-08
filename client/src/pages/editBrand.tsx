@@ -53,20 +53,23 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
                 </form>
                 <button className="w-2/12">Save Changes</button>
             </div>
-            <div className="flex flex-col w-1/2 m-1">
+            <div className="flex flex-col w-3/4 m-1">
                 <h1>Your Brand's Products:</h1>
-                <div>
+                <div className="flex flex-col">
                     <h2>Product Details:</h2>
                     {brandProductQuery.isLoading && <div>Loading...</div>}
                     {brandProductQuery.isError && <div>Error: {brandProductQuery.error.message || 'Error fetching products'}</div>}
-                    {brandProductQuery.data && <div className="flex">
+                    {brandProductQuery.data && <div className="grid grid-cols-4 gap-4 w-12/12 m-2" style={{maxHeight: "60vh"}}>
                         {brandProductQuery.data.products.map((product: any) => (
                             <ProductCard key={product.id} product={product}/>
                         ))}
                     </div>}
                     {brandProductQuery.data && brandProductQuery.data.products.length === 0 && <div>No Products Found</div>}
+                    <div className="flex gap-2">
+                        <button className="w-2/12">Add New Product</button>
+                        <button className="w-2/12 bg-red-800">Remove A Product</button>
+                    </div>
                 </div>
-                <button className="w-2/12">Add Product</button>
             </div>
         </div>
     )

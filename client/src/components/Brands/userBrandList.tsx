@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { productFilter } from "../../utils/productFilter";
 import { Link } from "react-router-dom";
 
@@ -8,7 +8,6 @@ const UserBrandPagesList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [editingBrandId, setEditingBrandId] = useState<number | null>(null);
     const [filter, setFilter] = useState<string>('');
-    const formRefs = useRef<{ [key: number]: React.RefObject<HTMLDivElement> | null }>({});
     const queryClient = useQueryClient();
     const { data, isLoading, isError } = useQuery({
         queryKey: ['userBrands', user?.id],
@@ -32,12 +31,6 @@ const UserBrandPagesList = () => {
             return failureCount < 3;
         },
     });
-
-    useEffect(() => {
-        if (editingBrandId !== null && formRefs.current[editingBrandId]?.current) {
-            formRefs.current[editingBrandId]?.current?.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [editingBrandId, formRefs]);
 
     const deleteMutation = useMutation({
         mutationKey: ['deletePage'],
@@ -87,16 +80,11 @@ const UserBrandPagesList = () => {
                             <h2 className="text-xl">{page.name}</h2>
                             <p className="text-lg">{page.description}</p>
                         </div>
-                        <div className="flex gap-2">
-                            <button className="w-2/12" onClick={() => handleEditChange(page.id)}>Edit</button>
-                            <button className="w-2/12" onClick={() => handleDelete(page.id)}>Delete</button>
-                        </div>
-                        <div ref={(ref) => { formRefs.current[page.id] = ref ? { current: ref } : null; }}>
-                            {editingBrandId === page.id && (
-                                <div className="flex flex-col border-t mt-2">
-                                    <Link to={`/brand/edit/${page.id}`}>Edit Brand</Link>
-                                </div>
-                            )}
+                        <div className="flex gap-2 w-4/12">
+                            <Link to={`/brand/edit/${page.id}`}>
+                                <button className="min-w-24" onClick={() => handleEditChange(page.id)}>Edit</button>
+                            </Link>
+                            <button className="min-w-24" onClick={() => handleDelete(page.id)}>Delete</button>
                         </div>
                     </div>
                     ))}
