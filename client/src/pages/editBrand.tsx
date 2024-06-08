@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import ProductCard from "../components/Products/productCard";
 
 type EditBrandPageProps = {
     userData: { message: string; plan: string, brands: any[]}
@@ -13,30 +14,36 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
     if(!brand) return <div>Brand not found</div>;
     
     return (
-        <div>
-            <h1>Edit Brand</h1>
-            <div>
+        <div className="flex flex-row">
+            <div className="flex flex-col w-1/4 gap-2 m-1">
+                <h1>Edit Brand</h1>
                 <h2>Brand Details:</h2>
-                <div>
-                    <label>Name:</label>
+                <div className="flex flex-col">
+                    <label className="mr-1">Current Name:</label>
+                    <p>{brand.name}</p>
+                    <label className="mr-1">Current Description:</label>
+                    <p>{brand.description}</p>
+                    {/* <label className="mr-1">Current Image:</label>
+                    <img src={brand.image} alt={brand.name} /> */}
+                </div>
+                <form className="flex flex-col w-fit">
+                    <label className="mr-1">New Name:</label>
                     <input type="text" value={brand.name} />
-                </div>
-                <div>
-                    <label>Description:</label>
+                    <label className="mr-1">New Description:</label>
                     <input type="text" value={brand.description} />
-                </div>
-                <div>
-                    <label>Image:</label>
-                    <input type="text" value={brand.image} />
-                </div>
-                <button>Save</button>
+                    {/* <label className="mr-1">New Image:</label>
+                    <input type="text" value={brand.image} /> */}
+                </form>
+                <button className="w-2/12">Save Changes</button>
             </div>
-            <div>
-                <h2>Products:</h2>
+            <div className="flex flex-col w-1/2 m-1">
+                <h1>Your Products:</h1>
                 <div>
-                    Placeholder
+                    <h2>Product Details:</h2>
+                    {true && <h2>No products found</h2>}
+                    {/* <ProductCard /> */}
                 </div>
-                <button>Add Product</button>
+                <button className="w-2/12">Add Product</button>
             </div>
         </div>
     )
