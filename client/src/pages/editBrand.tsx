@@ -12,6 +12,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
     if(userData.brands.length === 0) return <div>No brands found</div>;
     const brand = userData.brands.find(brand => brand.id === Number(id));
     if(!brand) return <div>Brand not found</div>;
+    console.log(brand)
     
     return (
         <div className="flex flex-row">
