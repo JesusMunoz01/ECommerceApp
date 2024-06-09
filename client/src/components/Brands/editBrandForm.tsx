@@ -18,9 +18,9 @@ const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
         </div>
         <form className="flex flex-col w-fit">
             <label className="mr-1">New Name:</label>
-            <input type="text" value={brandDetails.name} />
+            <input type="text" value={brandDetails.name} onChange={() => {}}/>
             <label className="mr-1">New Description:</label>
-            <input type="text" value={brandDetails.description} />
+            <input type="text" value={brandDetails.description} onChange={() => {}}/>
             {/* <label className="mr-1">New Image:</label>
             <input type="text" value={brand.image} /> */}
         </form>
