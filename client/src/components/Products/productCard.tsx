@@ -41,12 +41,14 @@ const ProductCard = ({product, addToCart}: ProductCardProps) => {
                     <p className="text-gray-900 text-xl font-medium mb-2">${product.price}</p>
                 </div>
                 <div className="flex justify-between items-center gap-1 flex-col-reverse">
-                    {addToCart && <button className="bg-green-600 text-white p-2 rounded-lg w-3/4" onClick={addProduct}>Add to cart</button>}
+                    {addToCart && <>
+                    <button className="bg-green-600 text-white p-2 rounded-lg w-3/4" onClick={addProduct}>Add to cart</button>
                     <div className="flex items-center justify-center">
                         <button className="flex justify-center items-center w-12 h-6" onClick={() => setQuantity((prev) => prev - 1)}>-</button>
                         <p className="mx-2">{quantity}</p>
                         <button className="flex justify-center items-center w-12 h-6" onClick={() => setQuantity((prev) => prev + 1)}>+</button>
                     </div>
+                    </>}
                 </div>
             </div>
         </div>

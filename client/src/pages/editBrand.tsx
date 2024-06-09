@@ -1,5 +1,10 @@
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/Products/productCard";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import EditBrandForm from "../components/Brands/editBrandForm";
+import { useEffect, useState } from "react";
+import ProductSelectionPopup from "../components/Popups/productSelect";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type EditBrandPageProps = {
     userData: { message: string; plan: string, brands: any[]}
@@ -7,43 +12,105 @@ type EditBrandPageProps = {
 
 const EditBrandPage = ({userData}: EditBrandPageProps) => {
     const { id } = useParams();
-    if(!userData) return <div>Loading...</div>;
+    const queryClient = useQueryClient();
+    const { user, getAccessTokenSilently } = useAuth0();
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [brand, setBrand] = useState(userData?.brands.find(brand => brand.id === Number(id)));
 
+    useEffect(() => {
+        setBrand(userData?.brands.find(brand => brand.id === Number(id)));
+    }, [userData, id]);
+
+    const brandProductQuery = useQuery({
+        queryKey: ['brands', id, 'products'],
+        queryFn: async () => {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${brand.brandOwner}`);
+            const data = await response.json();
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            return data;
+        },
+        enabled: !!brand,
+        retry(failureCount, error) {
+            if (error.message === "Brand page not found") return false;
+            return failureCount < 3;
+        },
+    });
+
+    const userProducts = useQuery({
+        queryKey: ['userProducts', user?.id],
+        queryFn: async () => {
+            const token = await getAccessTokenSilently();
+            const userId = user?.sub?.split('|')[1];
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            return data;
+        }
+    });
+
+    const addProductsQuery = useMutation({
+        mutationKey: ['brands','addProducts'],
+        mutationFn: async (products: number[]) => {
+            const token = await getAccessTokenSilently()
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${user?.sub}`, {
+                method: 'POST', 
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ products })
+            });
+            const data = await response.json();
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['brands', id, 'products']
+            });
+        }
+    });
+
+    const addProducts = (products: number[]) => {
+        addProductsQuery.mutate(products);
+        togglePopup();
+    }
+
+    const togglePopup = () => setIsPopupVisible(!isPopupVisible);
+
+    if(!userData) return <div>Loading...</div>;
     if(userData.brands.length === 0) return <div>No brands found</div>;
-    const brand = userData.brands.find(brand => brand.id === Number(id));
     if(!brand) return <div>Brand not found</div>;
     
     return (
         <div className="flex flex-row">
-            <div className="flex flex-col w-1/4 gap-2 m-1">
-                <h1>Edit Brand</h1>
-                <h2>Brand Details:</h2>
+            {isPopupVisible && 
+                <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
+                    <ProductSelectionPopup products={userProducts.data.products} onClose={togglePopup} onAddProducts={addProducts} />
+                </div>
+            }
+            <EditBrandForm brandDetails={brand}/>
+            <div className="flex flex-col w-3/4 m-1">
+                <h1>Your Brand's Products:</h1>
                 <div className="flex flex-col">
-                    <label className="mr-1">Current Name:</label>
-                    <p>{brand.name}</p>
-                    <label className="mr-1">Current Description:</label>
-                    <p>{brand.description}</p>
-                    {/* <label className="mr-1">Current Image:</label>
-                    <img src={brand.image} alt={brand.name} /> */}
-                </div>
-                <form className="flex flex-col w-fit">
-                    <label className="mr-1">New Name:</label>
-                    <input type="text" value={brand.name} />
-                    <label className="mr-1">New Description:</label>
-                    <input type="text" value={brand.description} />
-                    {/* <label className="mr-1">New Image:</label>
-                    <input type="text" value={brand.image} /> */}
-                </form>
-                <button className="w-2/12">Save Changes</button>
-            </div>
-            <div className="flex flex-col w-1/2 m-1">
-                <h1>Your Products:</h1>
-                <div>
                     <h2>Product Details:</h2>
-                    {true && <h2>No products found</h2>}
-                    {/* <ProductCard /> */}
+                    {brandProductQuery.isLoading && <div>Loading...</div>}
+                    {brandProductQuery.isError && <div>Error: {brandProductQuery.error.message || 'Error fetching products'}</div>}
+                    {brandProductQuery.data && <div className="grid grid-cols-4 gap-4 w-12/12 m-2" style={{maxHeight: "60vh"}}>
+                        {brandProductQuery.data.products.map((product: any) => (
+                            <ProductCard key={product.id} product={product}/>
+                        ))}
+                    </div>}
+                    {brandProductQuery.data && brandProductQuery.data.products.length === 0 && <div>No Products Found</div>}
+                    <div className="flex gap-2">
+                        <button className="w-2/12" onClick={togglePopup}>Add New Product</button>
+                        <button className="w-2/12 bg-red-800">Remove A Product</button>
+                    </div>
                 </div>
-                <button className="w-2/12">Add Product</button>
             </div>
         </div>
     )
