@@ -38,6 +38,21 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         },
     });
 
+    const userProducts = useQuery({
+        queryKey: ['userProducts', user?.id],
+        queryFn: async () => {
+            const token = await getAccessTokenSilently();
+            const userId = user?.sub?.split('|')[1];
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            return data;
+        }
+    });
+
     const addProductsQuery = useMutation({
         mutationKey: ['brands','addProducts'],
         mutationFn: async (products: number[]) => {
@@ -75,7 +90,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         <div className="flex flex-row">
             {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-                    <ProductSelectionPopup products={[]} onClose={togglePopup} onAddProducts={addProducts} />
+                    <ProductSelectionPopup products={userProducts.data.products} onClose={togglePopup} onAddProducts={addProducts} />
                 </div>
             }
             <EditBrandForm brandDetails={brand}/>
