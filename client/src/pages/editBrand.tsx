@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/Products/productCard";
 import { useQuery } from "@tanstack/react-query";
+import EditBrandForm from "../components/Brands/editBrandForm";
 
 type EditBrandPageProps = {
     userData: { message: string; plan: string, brands: any[]}
@@ -32,27 +33,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
     
     return (
         <div className="flex flex-row">
-            <div className="flex flex-col w-1/4 gap-2 m-1">
-                <h1>Edit Brand</h1>
-                <h2>Brand Details:</h2>
-                <div className="flex flex-col">
-                    <label className="mr-1">Current Name:</label>
-                    <p>{brand.name}</p>
-                    <label className="mr-1">Current Description:</label>
-                    <p>{brand.description}</p>
-                    {/* <label className="mr-1">Current Image:</label>
-                    <img src={brand.image} alt={brand.name} /> */}
-                </div>
-                <form className="flex flex-col w-fit">
-                    <label className="mr-1">New Name:</label>
-                    <input type="text" value={brand.name} />
-                    <label className="mr-1">New Description:</label>
-                    <input type="text" value={brand.description} />
-                    {/* <label className="mr-1">New Image:</label>
-                    <input type="text" value={brand.image} /> */}
-                </form>
-                <button className="w-2/12">Save Changes</button>
-            </div>
+            <EditBrandForm brandDetails={brand}/>
             <div className="flex flex-col w-3/4 m-1">
                 <h1>Your Brand's Products:</h1>
                 <div className="flex flex-col">
