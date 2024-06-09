@@ -1,8 +1,10 @@
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/Products/productCard";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import EditBrandForm from "../components/Brands/editBrandForm";
 import { useEffect, useState } from "react";
+import ProductSelectionPopup from "../components/Popups/productSelect";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type EditBrandPageProps = {
     userData: { message: string; plan: string, brands: any[]}
@@ -10,15 +12,14 @@ type EditBrandPageProps = {
 
 const EditBrandPage = ({userData}: EditBrandPageProps) => {
     const { id } = useParams();
+    const queryClient = useQueryClient();
+    const { user, getAccessTokenSilently } = useAuth0();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    //const brand = userData?.brands.find(brand => brand.id === Number(id));
     const [brand, setBrand] = useState(userData?.brands.find(brand => brand.id === Number(id)));
-    console.log(brand)
 
     useEffect(() => {
         setBrand(userData?.brands.find(brand => brand.id === Number(id)));
     }, [userData, id]);
-
 
     const brandProductQuery = useQuery({
         queryKey: ['brands', id, 'products'],
@@ -37,6 +38,33 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         },
     });
 
+    const addProductsQuery = useMutation({
+        mutationKey: ['brands','addProducts'],
+        mutationFn: async (products: number[]) => {
+            const token = await getAccessTokenSilently()
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${user?.sub}`, {
+                method: 'POST', 
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ products })
+            });
+            const data = await response.json();
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['brands', id, 'products']
+            });
+        }
+    });
+
+    const addProducts = (products: number[]) => {
+        addProductsQuery.mutate(products);
+        togglePopup();
+    }
+
     const togglePopup = () => setIsPopupVisible(!isPopupVisible);
 
     if(!userData) return <div>Loading...</div>;
@@ -47,8 +75,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         <div className="flex flex-row">
             {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-                    {/* Popup content here, you can use your ProductSelectionPopup component */}
-                    {/* <ProductSelectionPopup onClose={togglePopup} /> */}
+                    <ProductSelectionPopup products={[]} onClose={togglePopup} onAddProducts={addProducts} />
                 </div>
             }
             <EditBrandForm brandDetails={brand}/>
