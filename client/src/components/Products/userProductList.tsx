@@ -1,9 +1,10 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Product } from "./productCard";
 import { useState, useRef, useEffect } from "react";
 import ProductForm from "./productForm";
 import { productFilter } from "../../utils/productFilter";
+import { useUserProductsQuery } from "../../utils/useQueries";
 
 const UserProductList = () => {
     const { user, getAccessTokenSilently } = useAuth0();
@@ -11,20 +12,7 @@ const UserProductList = () => {
     const [filter, setFilter] = useState<string>('');
     const formRefs = useRef<{ [key: number]: React.RefObject<HTMLDivElement> | null }>({});
     const queryClient = useQueryClient();
-    const { data, isLoading } = useQuery({
-        queryKey: ['userProducts', user?.id],
-        queryFn: async () => {
-            const token = await getAccessTokenSilently();
-            const userId = user?.sub?.split('|')[1];
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
-            return data;
-        }
-    });
+    const { data, isLoading } = useUserProductsQuery(user?.sub?.split('|')[1]);
 
     useEffect(() => {
         if (editingProductId !== null && formRefs.current[editingProductId]?.current) {

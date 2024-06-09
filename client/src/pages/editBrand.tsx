@@ -5,6 +5,7 @@ import EditBrandForm from "../components/Brands/editBrandForm";
 import { useEffect, useState } from "react";
 import ProductSelectionPopup from "../components/Popups/productSelect";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useUserProductsQuery } from "../utils/useQueries";
 
 type EditBrandPageProps = {
     userData: { message: string; plan: string, brands: any[]}
@@ -38,20 +39,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         },
     });
 
-    const userProducts = useQuery({
-        queryKey: ['userProducts', user?.id],
-        queryFn: async () => {
-            const token = await getAccessTokenSilently();
-            const userId = user?.sub?.split('|')[1];
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/user/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
-            return data;
-        }
-    });
+    const userProducts = useUserProductsQuery(user?.sub?.split('|')[1]);
 
     const addProductsQuery = useMutation({
         mutationKey: ['brands','addProducts'],
@@ -85,12 +73,14 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
     if(!userData) return <div>Loading...</div>;
     if(userData.brands.length === 0) return <div>No brands found</div>;
     if(!brand) return <div>Brand not found</div>;
+
+    console.log(userProducts.data.products);
     
     return (
         <div className="flex flex-row">
             {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-                    <ProductSelectionPopup products={userProducts.data.products} onClose={togglePopup} onAddProducts={addProducts} />
+                    <ProductSelectionPopup products={userProducts.data.products.filter((product:any) => product.brandId !== Number(id))} onClose={togglePopup} onAddProducts={addProducts} />
                 </div>
             }
             <EditBrandForm brandDetails={brand}/>
