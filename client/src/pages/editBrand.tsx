@@ -64,8 +64,35 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         }
     });
 
+    const removeProductsQuery = useMutation({
+        mutationKey: ['brands','removeProducts'],
+        mutationFn: async (products: number[]) => {
+            const token = await getAccessTokenSilently()
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${user?.sub}`, {
+                method: 'DELETE', 
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ products })
+            });
+            const data = await response.json();
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['brands', id, 'products']
+            });
+        }
+    });
+
     const addProducts = (products: number[]) => {
         addProductsQuery.mutate(products);
+        togglePopup();
+    }
+
+    const removeProducts = (products: number[]) => {
+        removeProductsQuery.mutate(products);
         togglePopup();
     }
 
@@ -84,8 +111,9 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         <div className="flex flex-row">
             {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-                    <ProductSelectionPopup products={userProducts.data.products.filter((product:any) => product.brandId !== Number(id))} 
-                        onClose={togglePopup} onProductsAction={addProducts} />
+                    <ProductSelectionPopup products={actionType === 'add' ? userProducts.data.products.filter((product:any) => product.brandId !== Number(id))
+                        : brandProductQuery.data.products.map((product:any) => ({ id: product.id, name: product.name }))} 
+                        actionType={actionType} onClose={togglePopup} onProductsAction={actionType === 'add' ? addProducts : removeProducts} />
                 </div>
             }
             <EditBrandForm brandDetails={brand}/>
