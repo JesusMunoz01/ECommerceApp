@@ -3,12 +3,13 @@ import { useState } from "react";
 type ProductSelectionPopupProps = {
     products: any[];
     onClose: () => void;
-    onAddProducts: (products: number[]) => void;
+    actionType?: string;
+    onProductsAction: (products: number[]) => void;
 };
 
 type SelectedProducts = number[];
 
-const ProductSelectionPopup = ({ products, onClose, onAddProducts }: ProductSelectionPopupProps) => {
+const ProductSelectionPopup = ({ products, actionType = "add", onClose, onProductsAction }: ProductSelectionPopupProps) => {
 const [selectedProducts, setSelectedProducts] = useState<SelectedProducts>([]);
 
 const handleSelectProduct = (productId: number) => {
@@ -33,7 +34,7 @@ return (
             {product.name}
         </div>
         ))}
-        <button onClick={() => onAddProducts(selectedProducts)}>Add Selected Products</button>
+        <button onClick={() => onProductsAction(selectedProducts)}>{actionType === "add" ? "Add selected products": "Remove selected products" }</button>
     </div>
     </div>
 );
