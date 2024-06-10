@@ -13,6 +13,7 @@ type EditBrandPageProps = {
 
 const EditBrandPage = ({userData}: EditBrandPageProps) => {
     const { id } = useParams();
+    const [actionType, setActionType] = useState<string>('add');
     const queryClient = useQueryClient();
     const { user, getAccessTokenSilently } = useAuth0();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -68,7 +69,10 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         togglePopup();
     }
 
-    const togglePopup = () => setIsPopupVisible(!isPopupVisible);
+    const togglePopup = (actionType?: string) => {
+        setIsPopupVisible((prev) => !prev);
+        if(actionType) setActionType(actionType);
+    }
 
     if(!userData) return <div>Loading...</div>;
     if(userData.brands.length === 0) return <div>No brands found</div>;
@@ -80,7 +84,8 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         <div className="flex flex-row">
             {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-                    <ProductSelectionPopup products={userProducts.data.products.filter((product:any) => product.brandId !== Number(id))} onClose={togglePopup} onAddProducts={addProducts} />
+                    <ProductSelectionPopup products={userProducts.data.products.filter((product:any) => product.brandId !== Number(id))} 
+                        onClose={togglePopup} onProductsAction={addProducts} />
                 </div>
             }
             <EditBrandForm brandDetails={brand}/>
@@ -97,8 +102,8 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
                     </div>}
                     {brandProductQuery.data && brandProductQuery.data.products.length === 0 && <div>No Products Found</div>}
                     <div className="flex gap-2">
-                        <button className="w-2/12" onClick={togglePopup}>Add New Product</button>
-                        <button className="w-2/12 bg-red-800">Remove A Product</button>
+                        <button className="w-2/12" onClick={() => togglePopup('add')}>Add New Product</button>
+                        <button className="w-2/12 bg-red-800" onClick={() => togglePopup('remove')}>Remove A Product</button>
                     </div>
                 </div>
             </div>
