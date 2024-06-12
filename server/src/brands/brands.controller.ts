@@ -42,6 +42,12 @@ export class BrandsController {
   }
 
   @UseGuards(AuthGuard("jwt"))
+  @Patch('/:bid/products/:uid')
+  addProducts(@Param('bid') bid: string, @Param('uid') uid: string, @Body() products: number[]) {
+    return this.brandsService.addProducts(+bid, uid, products);
+  }
+
+  @UseGuards(AuthGuard("jwt"))
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.brandsService.remove(+id);

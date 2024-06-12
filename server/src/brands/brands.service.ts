@@ -132,6 +132,17 @@ export class BrandsService {
     }
   }
 
+  async addProducts(id: number, uid: string, products: number[]) {
+    try{
+      await this.connection.query('UPDATE products SET brandId = ? WHERE id IN (?) AND ownerId = ?', [id, products, uid]);
+      return { message: 'Products added successfully', data: products}
+    }
+    catch (error) {
+      console.log(error)
+      return { message: 'Error adding products', data: error}
+    }
+  }
+
   async remove(id: number) {
     try {
       await this.connection.query('DELETE FROM brands WHERE id = ?', [id]);
