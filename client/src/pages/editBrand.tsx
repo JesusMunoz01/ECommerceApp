@@ -116,7 +116,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
                         actionType={actionType} onClose={togglePopup} onProductsAction={actionType === 'add' ? addProducts : removeProducts} />
                 </div>
             }
-            <EditBrandForm brandDetails={brand}/>
+            <EditBrandForm brandDetails={{...brand, id}}/>
             <div className="flex flex-col w-3/4 m-1">
                 <h1>Your Brand's Products:</h1>
                 <div className="flex flex-col">

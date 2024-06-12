@@ -36,9 +36,9 @@ export class BrandsController {
   }
 
   @UseGuards(AuthGuard("jwt"))
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
-    return this.brandsService.update(+id, updateBrandDto);
+  @Patch(':id/:uid')
+  update(@Param('id') id: string, @Param('uid') uid: string, @Body() updateBrandDto: UpdateBrandDto) {
+    return this.brandsService.update(+id, updateBrandDto, uid);
   }
 
   @UseGuards(AuthGuard("jwt"))

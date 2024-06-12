@@ -121,7 +121,7 @@ export class BrandsService {
     }
   }
 
-  async update(id: number, updateBrandDto: UpdateBrandDto) {
+  async update(id: number, updateBrandDto: UpdateBrandDto, uid: string) {
     try {
       await this.connection.query('UPDATE brands SET name = ?, description = ?, image = ?, updated_at = NOW() WHERE id = ?', 
       [updateBrandDto.name, updateBrandDto.description, updateBrandDto.image, id]);
