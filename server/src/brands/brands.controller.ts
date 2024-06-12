@@ -54,8 +54,8 @@ export class BrandsController {
   }
 
   @UseGuards(AuthGuard("jwt"))
-  @Delete('/:bid/products/:uid')
-  removeProducts(@Param('bid') bid: string, @Param('uid') uid: string, @Body() products: number[]) {
-    return this.brandsService.removeProducts(+bid, uid, products);
+  @Delete('products/:uid')
+  removeProducts(@Param('uid') uid: string, @Body() products: number[]) {
+    return this.brandsService.removeProducts(uid, products);
   }
 }

@@ -153,7 +153,7 @@ export class BrandsService {
     }
   }
 
-  async removeProducts(id: number, uid: string, products: number[]) {
+  async removeProducts(uid: string, products: number[]) {
     try{
       await this.connection.query('UPDATE products SET brandId = NULL WHERE id IN (?) AND ownerId = ?', [products, uid]);
       return { message: 'Products removed successfully', data: products}

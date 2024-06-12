@@ -68,7 +68,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         mutationKey: ['brands','removeProducts'],
         mutationFn: async (products: number[]) => {
             const token = await getAccessTokenSilently()
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${user?.sub}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/products/${user?.sub}`, {
                 method: 'DELETE', 
                 headers: {
                     "Content-Type": "application/json",
