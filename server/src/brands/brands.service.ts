@@ -152,4 +152,15 @@ export class BrandsService {
       return { message: 'Error deleting brand page', data: error}
     }
   }
+
+  async removeProducts(id: number, uid: string, products: number[]) {
+    try{
+      await this.connection.query('UPDATE products SET brandId = NULL WHERE id IN (?) AND ownerId = ?', [products, uid]);
+      return { message: 'Products removed successfully', data: products}
+    }
+    catch (error) {
+      console.log(error)
+      return { message: 'Error removing products', data: error}
+    }
+  }
 }

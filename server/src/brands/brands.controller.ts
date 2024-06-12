@@ -52,4 +52,10 @@ export class BrandsController {
   remove(@Param('id') id: string) {
     return this.brandsService.remove(+id);
   }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Delete('/:bid/products/:uid')
+  removeProducts(@Param('bid') bid: string, @Param('uid') uid: string, @Body() products: number[]) {
+    return this.brandsService.removeProducts(+bid, uid, products);
+  }
 }
