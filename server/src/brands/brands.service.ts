@@ -134,7 +134,8 @@ export class BrandsService {
 
   async addProducts(id: number, uid: string, products: number[]) {
     try{
-      await this.connection.query('UPDATE products SET brandId = ? WHERE id IN (?) AND ownerId = ?', [id, products, uid]);
+      const formattedProducts = products.map((product) => `${product}`).join(',');
+      await this.connection.query('UPDATE products SET brandId = ? WHERE id IN (?) AND ownerId = ?', [id, formattedProducts, uid]);
       return { message: 'Products added successfully', data: products}
     }
     catch (error) {
@@ -155,7 +156,8 @@ export class BrandsService {
 
   async removeProducts(uid: string, products: number[]) {
     try{
-      await this.connection.query('UPDATE products SET brandId = NULL WHERE id IN (?) AND ownerId = ?', [products, uid]);
+      const formattedProducts = products.map((product) => `${product}`).join(',');
+      await this.connection.query('UPDATE products SET brandId = NULL WHERE id IN (?) AND ownerId = ?', [formattedProducts, uid]);
       return { message: 'Products removed successfully', data: products}
     }
     catch (error) {

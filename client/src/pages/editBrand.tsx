@@ -46,13 +46,13 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         mutationKey: ['brands','addProducts'],
         mutationFn: async (products: number[]) => {
             const token = await getAccessTokenSilently()
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${user?.sub}`, {
-                method: 'POST', 
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${user?.sub?.split('|')[1]}`, {
+                method: 'PATCH',
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ products })
+                body: JSON.stringify(products)
             });
             const data = await response.json();
             return data;
@@ -68,13 +68,13 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
         mutationKey: ['brands','removeProducts'],
         mutationFn: async (products: number[]) => {
             const token = await getAccessTokenSilently()
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/products/${user?.sub}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/products/${user?.sub?.split('|')[1]}`, {
                 method: 'DELETE', 
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ products })
+                body: JSON.stringify(products)
             });
             const data = await response.json();
             return data;
