@@ -36,14 +36,26 @@ export class BrandsController {
   }
 
   @UseGuards(AuthGuard("jwt"))
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
-    return this.brandsService.update(+id, updateBrandDto);
+  @Patch(':id/:uid')
+  update(@Param('id') id: string, @Param('uid') uid: string, @Body() updateBrandDto: UpdateBrandDto) {
+    return this.brandsService.update(+id, updateBrandDto, uid);
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Patch('/:bid/products/:uid')
+  addProducts(@Param('bid') bid: string, @Param('uid') uid: string, @Body() products: number[]) {
+    return this.brandsService.addProducts(+bid, uid, products);
   }
 
   @UseGuards(AuthGuard("jwt"))
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.brandsService.remove(+id);
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Delete('products/:uid')
+  removeProducts(@Param('uid') uid: string, @Body() products: number[]) {
+    return this.brandsService.removeProducts(uid, products);
   }
 }

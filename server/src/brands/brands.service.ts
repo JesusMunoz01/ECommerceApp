@@ -121,7 +121,7 @@ export class BrandsService {
     }
   }
 
-  async update(id: number, updateBrandDto: UpdateBrandDto) {
+  async update(id: number, updateBrandDto: UpdateBrandDto, uid: string) {
     try {
       await this.connection.query('UPDATE brands SET name = ?, description = ?, image = ?, updated_at = NOW() WHERE id = ?', 
       [updateBrandDto.name, updateBrandDto.description, updateBrandDto.image, id]);
@@ -132,6 +132,18 @@ export class BrandsService {
     }
   }
 
+  async addProducts(id: number, uid: string, products: number[]) {
+    try{
+      const formattedProducts = products.map((product) => `${product}`).join(',');
+      await this.connection.query('UPDATE products SET brandId = ? WHERE id IN (?) AND ownerId = ?', [id, formattedProducts, uid]);
+      return { message: 'Products added successfully', data: products}
+    }
+    catch (error) {
+      console.log(error)
+      return { message: 'Error adding products', data: error}
+    }
+  }
+
   async remove(id: number) {
     try {
       await this.connection.query('DELETE FROM brands WHERE id = ?', [id]);
@@ -139,6 +151,18 @@ export class BrandsService {
     } catch (error) {
       console.log(error)
       return { message: 'Error deleting brand page', data: error}
+    }
+  }
+
+  async removeProducts(uid: string, products: number[]) {
+    try{
+      const formattedProducts = products.map((product) => `${product}`).join(',');
+      await this.connection.query('UPDATE products SET brandId = NULL WHERE id IN (?) AND ownerId = ?', [formattedProducts, uid]);
+      return { message: 'Products removed successfully', data: products}
+    }
+    catch (error) {
+      console.log(error)
+      return { message: 'Error removing products', data: error}
     }
   }
 }
