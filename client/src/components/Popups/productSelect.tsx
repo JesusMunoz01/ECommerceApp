@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 type ProductSelectionPopupProps = {
     products: any[];
@@ -21,20 +22,28 @@ const handleSelectProduct = (productId: number) => {
 };
 
 return (
-    <div className="popup">
-    <div className="popup-inner">
-        <button onClick={onClose}>Close</button>
-        {products.map((product) => (
-        <div key={product.id}>
-            <input
-            type="checkbox"
-            checked={selectedProducts.includes(product.id)}
-            onChange={() => handleSelectProduct(product.id)}
-            />
-            {product.name}
+    <div className="h-1/2 w-1/2">
+    <div className="bg-slate-600 h-full">
+        <div className="flex justify-between p-2">
+            <h1>Your Products:</h1>
+            <button className="w-1/12 bg-red-700" onClick={onClose}>Close</button>
         </div>
-        ))}
-        <button onClick={() => onProductsAction(selectedProducts)}>{actionType === "add" ? "Add selected products": "Remove selected products" }</button>
+        <p className="p-2">(Products already in brand will not appear here)</p>
+        <div className="h-2/4 p-2 mb-8">
+            {products.map((product) => (
+            <div key={product.id}>
+                <input
+                className="mr-2"
+                type="checkbox"
+                checked={selectedProducts.includes(product.id)}
+                onChange={() => handleSelectProduct(product.id)}
+                />
+                {product.name}
+            </div>
+            ))}
+        </div>
+        <button className="ml-2 p-1" onClick={() => onProductsAction(selectedProducts)}>{actionType === "add" ? "Add selected products": "Remove selected products" }</button>
+        <Link to="/sell"><button className="ml-2 p-1">Create a product</button></Link>
     </div>
     </div>
 );
