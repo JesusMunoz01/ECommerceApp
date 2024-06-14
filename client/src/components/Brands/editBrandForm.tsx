@@ -37,10 +37,10 @@ const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
     }
 
     return (
-        <div className="flex flex-col w-1/4 gap-2 m-1">
+        <div className="flex flex-col w-1/4 gap-2 m-1" style={{height: "100%"}}>
         <h1>Edit Brand</h1>
         <h2>Brand Details:</h2>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
             <label className="mr-1">Current Name:</label>
             <p>{brandDetails.name}</p>
             <label className="mr-1">Current Description:</label>
