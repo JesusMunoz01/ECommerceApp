@@ -123,7 +123,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
                     <h2>Product Details:</h2>
                     {brandProductQuery.isLoading && <div>Loading...</div>}
                     {brandProductQuery.isError && <div>Error: {brandProductQuery.error.message || 'Error fetching products'}</div>}
-                    {brandProductQuery.data && <div className="grid grid-cols-4 gap-4 w-12/12 m-2">
+                    {brandProductQuery.data && <div className="grid grid-cols-4 gap-4 w-12/12 m-2" style={{maxHeight: "60vh"}}>
                         {brandProductQuery.data.products.map((product: any) => (
                             <ProductCard key={product.id} product={product}/>
                         ))}

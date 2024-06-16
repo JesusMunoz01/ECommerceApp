@@ -5,6 +5,10 @@
   overflow: auto;
 }
 
+#root {
+  width: 100%;
+}
+
 .App {
   min-width: 100%;
   min-height: 100vh;
@@ -27,8 +31,6 @@
 .routes {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   height: 90vh;
   margin: 0;
   padding: 0;

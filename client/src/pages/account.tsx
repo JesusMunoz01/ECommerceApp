@@ -5,7 +5,7 @@ import UserProductList from "../components/Products/userProductList";
 const AccountPage = () => {
 
   return (
-    <div className="flex gap-2 w-11/12 mr-4" style={{ height: 'calc(100vh - 6rem)' }}>
+    <div className="flex gap-2 w-11/12 mr-4">
       <div className="mt-2 w-full">
         <h1 className="text-2xl border-b border-slate-500 w-full mb-4">Account Details</h1>
         <Profile />

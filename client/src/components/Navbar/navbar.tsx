@@ -20,7 +20,7 @@ const Navbar = ({userData}: NavbarProps) => {
     };
 
     return (
-        <nav className="navbar bg-slate-600">
+        <nav className="navbar bg-slate-600 w-full">
             <div className="p-6 max-w mx-auto flex items-center justify-between w-full">
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
