@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import LoginButton from "../Auth/auth0-login";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Auth/auth0-logout";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsCart4 } from "react-icons/bs";
 import SelectedLink from "../Links/selectedLink";
 
@@ -13,15 +13,34 @@ type NavbarProps = {
 const Navbar = ({userData}: NavbarProps) => {
     const { user, isAuthenticated } = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
+    const userMenuRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
     };
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+                setUserMenu(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        // Cleanup event listener on component unmount
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        setUserMenu(false);
+    }, [location]);
+
     return (
-        <nav className="navbar bg-slate-600 h-24">
-            <div className="p-6 max-w mx-auto flex items-center justify-between">
+        <nav className="navbar bg-slate-600 w-full">
+            <div className="p-6 max-w mx-auto flex items-center justify-between w-full">
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
                 </div> */}
@@ -44,7 +63,7 @@ const Navbar = ({userData}: NavbarProps) => {
                 <div className="flex items-center gap-4">
                     <SelectedLink to="/cart"><BsCart4 className="text-white text-2xl"/>Cart</SelectedLink>
                     {isAuthenticated ? 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4" ref={userMenuRef}>
                         <button onClick={toggleUserMenu} name="accountButton" className="w-12 p-0 h-12 rounded-full bg-transparent">
                             <img src={user?.picture} alt={user?.name} className="rounded-full"/>
                         </button>
