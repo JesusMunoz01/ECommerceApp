@@ -46,6 +46,7 @@ function App() {
       <div className='App'>
       <Router>
         <Navbar userData={userData}/>
+        <div className='routes'>
         <Routes>
           <Route path="/" element={<HomePage setCart={setCart}/>} />
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
@@ -74,6 +75,7 @@ function App() {
                 </>
               )}
         </Routes>
+        </div>
       </Router>
       </div>
     </>

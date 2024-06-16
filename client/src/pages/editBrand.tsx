@@ -108,7 +108,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
     console.log(userProducts.data.products);
     
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row divide-x-2 w-full overflow-auto h-full">
             {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
                     <ProductSelectionPopup products={actionType === 'add' ? userProducts.data.products.filter((product:any) => product.brandId !== Number(id))
@@ -117,13 +117,13 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
                 </div>
             }
             <EditBrandForm brandDetails={{...brand, id}}/>
-            <div className="flex flex-col w-3/4 m-1">
+            <div className="flex flex-col w-3/4 p-2 h-full">
                 <h1>Your Brand's Products:</h1>
                 <div className="flex flex-col">
                     <h2>Product Details:</h2>
                     {brandProductQuery.isLoading && <div>Loading...</div>}
                     {brandProductQuery.isError && <div>Error: {brandProductQuery.error.message || 'Error fetching products'}</div>}
-                    {brandProductQuery.data && <div className="grid grid-cols-4 gap-4 w-12/12 m-2" style={{maxHeight: "60vh"}}>
+                    {brandProductQuery.data && <div className="grid grid-cols-4 gap-4 w-12/12 m-2">
                         {brandProductQuery.data.products.map((product: any) => (
                             <ProductCard key={product.id} product={product}/>
                         ))}

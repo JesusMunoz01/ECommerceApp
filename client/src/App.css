@@ -6,6 +6,30 @@
 }
 
 .App {
-  min-width: 100vw;
+  min-width: 100%;
   min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 10vh;
+  justify-content: space-between;
+  color: white;
+  /* padding: 10px 20px; */
+}
+
+.routes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  margin: 0;
+  padding: 0;
 }
