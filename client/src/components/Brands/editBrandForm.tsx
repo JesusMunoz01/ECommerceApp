@@ -6,11 +6,16 @@ type EditBrandFormProps = {
     brandDetails: { name: string, description: string, image: string, id: string}
 };
 
+const editForm = {
+    name: '',
+    description: '',
+    image: ''
+};
+
 const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
     const {user, getAccessTokenSilently} = useAuth0();
-    const [newBrandDetails, setNewBrandDetails] = useState(brandDetails);
+    const [newBrandDetails, setNewBrandDetails] = useState(editForm);
     const fileInputRef = useRef(null);
-    const queryClient = useQueryClient();
     const updateBrandQuery = useMutation({
         mutationKey: ['brands','update'],
         mutationFn: async () => {
@@ -25,16 +30,17 @@ const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
             });
             const data = await response.json();
             return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['brands', brandDetails.id]
-            });
         }
     })
 
-    const saveChangesHandler = () => {
-        updateBrandQuery.mutate();
+    const saveChangesHandler = async () => {
+        if (newBrandDetails.name === '' || newBrandDetails.description === '') {
+            alert('Please fill out all fields');
+            return;
+        }
+        await updateBrandQuery.mutate();
+        // TODO: Create context for user data and update the brand details
+        setNewBrandDetails({...brandDetails, name: '', description: '', image: ''});
     }
 
     return (
@@ -53,9 +59,9 @@ const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
         </div>
         <form className="flex flex-col w-full gap-2">
             <label className="mr-1">New Name:</label>
-            <input className="w-3/4" type="text" value={newBrandDetails.name} onChange={(e) => setNewBrandDetails({...newBrandDetails, name: e.target.value})}/>
+            <input className="w-3/4 pl-2" type="text" value={newBrandDetails.name} onChange={(e) => setNewBrandDetails({...newBrandDetails, name: e.target.value})}/>
             <label className="mr-1">New Description:</label>
-            <textarea className="w-full" rows={4} value={newBrandDetails.description} onChange={(e) => setNewBrandDetails({...newBrandDetails, description: e.target.value})}/>
+            <textarea className="w-full pl-2" rows={4} value={newBrandDetails.description} onChange={(e) => setNewBrandDetails({...newBrandDetails, description: e.target.value})}/>
             <label className="mr-1">New Image:</label>
             <input ref={fileInputRef} id="fileInput" className="hidden" type="file" accept="image/*" onChange={(e) => setNewBrandDetails({...newBrandDetails, image: e.target.value})}/>
             <label htmlFor="fileInput" className="w-3/4 cursor-pointer inline-block text-center py-2 bg-blue-500 text-white self-center">

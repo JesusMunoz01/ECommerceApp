@@ -105,8 +105,6 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
     if(userData.brands.length === 0) return <div>No brands found</div>;
     if(!brand) return <div>Brand not found</div>;
 
-    console.log(userProducts.data.products);
-    
     return (
         <div className="flex flex-row divide-x-2 w-full overflow-auto h-full">
             {isPopupVisible && 
