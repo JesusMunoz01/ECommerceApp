@@ -14,7 +14,11 @@ const editForm = {
 
 const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
     const {user, getAccessTokenSilently} = useAuth0();
-    const [newBrandDetails, setNewBrandDetails] = useState(editForm);
+    const [newBrandDetails, setNewBrandDetails] = useState(brandDetails ? {
+        name: brandDetails.name,
+        description: brandDetails.description,
+        image: brandDetails.image
+    } : editForm);
     const [validationMessages, setValidationMessages] = useState({ name: '', description: ''});
     const fileInputRef = useRef(null);
 
