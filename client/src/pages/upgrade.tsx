@@ -25,7 +25,7 @@ const subscriptionData = [
 ];
 
 type UpgradePageProps = {
-    role: string
+    role?: string
 }
 
 const UpgradePage = ({role}: UpgradePageProps) => {

@@ -123,12 +123,45 @@ export class BrandsService {
 
   async update(id: number, updateBrandDto: UpdateBrandDto, uid: string) {
     try {
-      await this.connection.query('UPDATE brands SET name = ?, description = ?, image = ?, updated_at = NOW() WHERE id = ?', 
-      [updateBrandDto.name, updateBrandDto.description, updateBrandDto.image, id]);
-      return { message: 'Brand page updated successfully', data: updateBrandDto}
+      let setClause = [];
+      let queryParams = [];
+
+      console.log(updateBrandDto)
+  
+      // Dynamically build the SET part of the SQL query
+      if (updateBrandDto.name !== '') {
+        setClause.push('name = ?');
+        queryParams.push(updateBrandDto.name);
+      }
+      if (updateBrandDto.description !== '') {
+        setClause.push('description = ?');
+        queryParams.push(updateBrandDto.description);
+      }
+      if (updateBrandDto.image !== '') {
+        setClause.push('image = ?');
+        queryParams.push(updateBrandDto.image);
+      }
+  
+      // Ensure there's at least one field to update
+      if (setClause.length === 0) {
+        throw new Error('No valid fields provided for update');
+      }
+  
+      // Add the current timestamp to the updated_at field
+      setClause.push('updated_at = NOW()');
+  
+      // Add the WHERE clause parameter
+      queryParams.push(id);
+  
+      // Construct the full SQL query
+      const sqlQuery = `UPDATE brands SET ${setClause.join(', ')} WHERE id = ?`;
+  
+      // Execute the query
+      await this.connection.query(sqlQuery, queryParams);
+      return { message: 'Brand page updated successfully', data: updateBrandDto }
     } catch (error) {
       console.log(error)
-      return { message: 'Error updating brand page', data: error}
+      return { message: 'Error updating brand page', data: error }
     }
   }
 

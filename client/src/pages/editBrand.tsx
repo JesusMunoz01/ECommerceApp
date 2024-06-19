@@ -6,17 +6,15 @@ import { useEffect, useState } from "react";
 import ProductSelectionPopup from "../components/Popups/productSelect";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useUserProductsQuery } from "../utils/useQueries";
+import { useUser } from "../utils/userContext";
 
-type EditBrandPageProps = {
-    userData: { message: string; plan: string, brands: any[]}
-};
-
-const EditBrandPage = ({userData}: EditBrandPageProps) => {
+const EditBrandPage = () => {
     const { id } = useParams();
     const [actionType, setActionType] = useState<string>('add');
     const queryClient = useQueryClient();
     const { user, getAccessTokenSilently } = useAuth0();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const { userData } = useUser();
     const [brand, setBrand] = useState(userData?.brands.find(brand => brand.id === Number(id)));
 
     useEffect(() => {
@@ -26,6 +24,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
     const brandProductQuery = useQuery({
         queryKey: ['brands', id, 'products'],
         queryFn: async () => {
+            if(!brand) throw new Error('Brand page not found');
             const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/products/${brand.brandOwner}`);
             const data = await response.json();
             if (data.error) {
@@ -114,7 +113,7 @@ const EditBrandPage = ({userData}: EditBrandPageProps) => {
                         actionType={actionType} onClose={togglePopup} onProductsAction={actionType === 'add' ? addProducts : removeProducts} />
                 </div>
             }
-            <EditBrandForm brandDetails={{...brand, id}}/>
+            <EditBrandForm brandDetails={{id: Number(id)}}/>
             <div className="flex flex-col w-3/4 p-2 h-full">
                 <h1>Your Brand's Products:</h1>
                 <div className="flex flex-col">
