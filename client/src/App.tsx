@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom' 
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
 import Navbar from './components/Navbar/navbar'
@@ -14,43 +14,64 @@ import SettingsPage from './pages/settings.tsx'
 import BrandsPage from './pages/brands.tsx'
 import BrandPage from './pages/brand.tsx'
 import EditBrandPage from './pages/editBrand.tsx'
+import { useUser } from './utils/userContext.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
   const [cart, setCart] = useState<CartItem[]>([])
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { userData, setUser } = useUser(); 
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const getUser = useMemo(() => async () => {
-    const token = await getAccessTokenSilently();
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    const data = await response.json();
-    return data;
-  }, [getAccessTokenSilently, user?.sub]);
+  // useMemo(() => async () => {
+  //   const token = await getAccessTokenSilently();
+  //   const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
+  //       headers: {
+  //           Authorization: `Bearer ${token}`,
+  //       },
+  //   });
+  //   const data = await response.json();
+  //   setUser(data);
+  //   return data;
+  // }, [getAccessTokenSilently, user?.sub]);
 
-  const userData = useQuery({
-      queryKey: ['user', user?.sub],
-      queryFn: getUser,
-      enabled: !!user
-  });
+  const userQuery = useQuery({
+    queryKey: ['user', user?.sub],
+    queryFn: async () => {
+      const token = await getAccessTokenSilently();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+      });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    }
+});
+
+useEffect(() => {
+  if (userQuery.data) {
+    setUser(userQuery.data);
+  }
+}, [userQuery.data]);
+
+if (userQuery.isLoading) return <p>Loading...</p>;
+if (userQuery.isError) return <p>Error</p>;
 
   return (
     <>
       <div className='App'>
       <Router>
-        <Navbar userData={userData}/>
+        <Navbar />
         <div className='routes'>
         <Routes>
           <Route path="/" element={<HomePage setCart={setCart}/>} />
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
-          <Route path='/upgrade' element={<UpgradePage role={userData.data?.plan}/>} />
+          <Route path='/upgrade' element={<UpgradePage role={userData?.plan}/>} />
           <Route path='/brands' element={<BrandsPage />} />
           <Route path='/brands/:id' element={<BrandPage />} />
           <Route path="*" element={<h1>Not Found</h1>} />
@@ -71,7 +92,7 @@ function App() {
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <SettingsPage />
                   </div>} />
-                  <Route path='/brand/edit/:id' element={<EditBrandPage userData={userData.data}/>} />
+                  <Route path='/brand/edit/:id' element={<EditBrandPage />} />
                 </>
               )}
         </Routes>

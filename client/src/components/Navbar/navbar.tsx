@@ -5,17 +5,15 @@ import LogoutButton from "../Auth/auth0-logout";
 import { useEffect, useRef, useState } from "react";
 import { BsCart4 } from "react-icons/bs";
 import SelectedLink from "../Links/selectedLink";
+import { useUser } from "../../utils/userContext";
 
-type NavbarProps = {
-    userData: any;
-}
-
-const Navbar = ({userData}: NavbarProps) => {
+const Navbar = () => {
     const { user, isAuthenticated } = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
     const userMenuRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
+    const { userData } = useUser();
 
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
@@ -79,7 +77,7 @@ const Navbar = ({userData}: NavbarProps) => {
                             </div>
                             </div>
                         }
-                        {userData.data?.plan !== "Enterprise" && <button className="bg-slate-900 text-white p-2 rounded-lg"
+                        {userData?.plan !== "Enterprise" && <button className="bg-slate-900 text-white p-2 rounded-lg"
                             onClick={() => navigate("/upgrade")}>Upgrade</button>}
                     </div>
                     : <LoginButton />}
