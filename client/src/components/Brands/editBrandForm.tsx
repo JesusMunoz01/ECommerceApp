@@ -80,7 +80,6 @@ const EditBrandForm = ({ brandDetails }: EditBrandFormProps) => {
             image: newBrandDetails.image !== '' ? newBrandDetails.image : brand.image,
             id: newBrandDetails.id
         }
-        // TODO: Create context for user data and update the brand details
         const updatedData = userData.brands.map(b => b.id === completeForm.id ? {...completeForm, brandOwner: brand.brandOwner} : b);
         const newUserData = { ...userData, brands: updatedData };
         setUser(newUserData);
@@ -113,7 +112,7 @@ const EditBrandForm = ({ brandDetails }: EditBrandFormProps) => {
                 <label htmlFor="fileInput" className="w-3/4 cursor-pointer inline-block text-center py-2 bg-blue-500 text-white self-center">
                     Choose File
                 </label>
-                <button type="submit" className="w-1/2 self-center">Save Changes</button>
+                <button type="submit" className="w-1/2 self-center mt-10 bg-gray-600">Save Changes</button>
             </form>
         </div>
     )

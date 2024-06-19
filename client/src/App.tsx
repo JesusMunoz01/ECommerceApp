@@ -26,18 +26,6 @@ function App() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // useMemo(() => async () => {
-  //   const token = await getAccessTokenSilently();
-  //   const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
-  //       headers: {
-  //           Authorization: `Bearer ${token}`,
-  //       },
-  //   });
-  //   const data = await response.json();
-  //   setUser(data);
-  //   return data;
-  // }, [getAccessTokenSilently, user?.sub]);
-
   const userQuery = useQuery({
     queryKey: ['user', user?.sub],
     queryFn: async () => {
@@ -51,16 +39,15 @@ function App() {
       console.log(data);
       return data;
     }
-});
+  });
 
-useEffect(() => {
-  if (userQuery.data) {
-    setUser(userQuery.data);
-  }
-}, [userQuery.data]);
+  useEffect(() => {
+    if (userQuery.data) {
+      setUser(userQuery.data);
+    }
+  }, [userQuery.data]);
 
-if (userQuery.isLoading) return <p>Loading...</p>;
-if (userQuery.isError) return <p>Error</p>;
+  if (userQuery.isError) return <p>Error</p>;
 
   return (
     <>
