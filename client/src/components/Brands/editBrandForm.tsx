@@ -14,30 +14,9 @@ const editForm = {
 
 const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
     const {user, getAccessTokenSilently} = useAuth0();
-    const [newBrandDetails, setNewBrandDetails] = useState(brandDetails ? {
-        name: brandDetails.name,
-        description: brandDetails.description,
-        image: brandDetails.image
-    } : editForm);
+    const [newBrandDetails, setNewBrandDetails] = useState(editForm);
     const [validationMessages, setValidationMessages] = useState({ name: '', description: ''});
     const fileInputRef = useRef(null);
-
-    const validateForm = () => {
-        let isValid = true;
-        let errors = { name: '', description: '', image: '' };
-
-        if (!newBrandDetails.name.trim()) {
-            errors.name = 'Name is required';
-            isValid = false;
-        }
-        if (!newBrandDetails.description.trim()) {
-            errors.description = 'Description is required';
-            isValid = false;
-        }
-
-        setValidationMessages(errors);
-        return isValid;
-    };
 
     const updateBrandQuery = useMutation({
         mutationKey: ['brands','update'],
@@ -58,9 +37,6 @@ const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!validateForm()) {
-            return;
-        }
         await updateBrandQuery.mutate();
         // TODO: Create context for user data and update the brand details
         setNewBrandDetails({...brandDetails, name: '', description: '', image: ''});
@@ -92,8 +68,8 @@ const EditBrandForm = ({brandDetails}: EditBrandFormProps) => {
             <label htmlFor="fileInput" className="w-3/4 cursor-pointer inline-block text-center py-2 bg-blue-500 text-white self-center">
                 Choose File
             </label>
+            <button type="submit" className="w-1/2 self-center mt-10">Save Changes</button>
         </form>
-        <button type="submit" className="w-1/2 self-center">Save Changes</button>
     </div>
     )
 }
