@@ -6,6 +6,7 @@ import { Product } from "./productCard";
 type ProductFormProps = {
     userProduct?: Product;
     actionType: "Create" | "Update";
+    onSuccessfulSubmit?: (args: any) => void;
 };
 
 const initialProduct: Product = {
@@ -18,7 +19,7 @@ const initialProduct: Product = {
     //image: "",
 };
 
-const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
+const ProductForm = ({userProduct, actionType, onSuccessfulSubmit}: ProductFormProps) => {
     const [product, setProduct] = useState<Product>(userProduct ?? initialProduct);
     const {user, isAuthenticated, getAccessTokenSilently} = useAuth0()
 
@@ -65,7 +66,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
             return data;
         },
         onSuccess: (data) => {
-            queryClient.setQueryData(['userProducts', user?.id], (oldData: any) => {
+            queryClient.setQueryData(['userProducts', user?.sub?.split('|')[1]], (oldData: any) => {
                 return { 
                     message: oldData.message, products: oldData.products.map((product: Product) => {
                         if(product.id === userProduct?.id) {
@@ -100,6 +101,8 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
                 updateProduct.mutate();
                 break;
         }
+
+        if(onSuccessfulSubmit) onSuccessfulSubmit(null);
     }
 
 
@@ -111,7 +114,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
                 <label htmlFor="description" className="text-lg">Product Description:</label>
                 <textarea rows={5} className="pl-1" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
                 <label htmlFor="price" className="text-lg">Product Price:</label>
-                <input type="number" className="pl-1" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
+                <input type="number" step="0.01" className="pl-1" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
                 <label htmlFor="stock" className="text-lg">Product Stock:</label>
                 <input type="number" className="pl-1" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />
                 <label htmlFor="discountNumber" className="text-lg">Product Discount:</label>
