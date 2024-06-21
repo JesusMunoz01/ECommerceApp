@@ -15,7 +15,7 @@ export class UsersController {
 
     @Post("/create")
     async createUser(@Body() id: string): Promise<{ message: string; }> {
-      return this.usersService.createUser(id);
+      return this.usersService.createUser(id, false);
     }
 
     @Patch(":id")

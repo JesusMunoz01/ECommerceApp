@@ -111,7 +111,7 @@ const ProductForm = ({userProduct, actionType}: ProductFormProps) => {
                 <label htmlFor="description" className="text-lg">Product Description:</label>
                 <textarea rows={5} className="pl-1" placeholder="Product Description" name="description" value={product.description} onChange={handleChange} />
                 <label htmlFor="price" className="text-lg">Product Price:</label>
-                <input type="number" className="pl-1" placeholder="Product Price" name="price" min={0} value={product.price} onChange={handleChange} />
+                <input type="number" className="pl-1" placeholder="Product Price" name="price" min={0} defaultValue={""} value={product.price} onChange={handleChange} />
                 <label htmlFor="stock" className="text-lg">Product Stock:</label>
                 <input type="number" className="pl-1" placeholder="Product Stock" name="stock" min={0} value={product.stock} onChange={handleChange} />
                 <label htmlFor="discountNumber" className="text-lg">Product Discount:</label>

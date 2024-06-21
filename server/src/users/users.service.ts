@@ -26,7 +26,7 @@ export class UsersService {
         return aToken.access_token;
     }
 
-    async createUser(userID: string): Promise<{ message: string; }> {
+    async createUser(userID: string, bypassLoginCount: boolean): Promise<{ message: string; }> {
         // Calls Auth0's /users/{id} endpoint to get user data using the access token
         const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
             headers: {
@@ -34,11 +34,13 @@ export class UsersService {
             }
         });
         const userData = await userResponse.json();
+        console.log(userData);
         // Checks if the user has logged in before, if not, adds the user to the database with the OAuth id
-        if(userData.logins_count === 1) {
+        if(userData.logins_count === 1 || bypassLoginCount) {
             try{
-                await this.connection.query(`INSERT INTO users (id, email, name, created_at, updated_at) VALUES 
-                (?, ?, ?, NOW(), NOW())`, [userData.identities[0].user_id, userData.email, userData.given_name ], (err, results) => {
+                const name = userData.given_name ? userData.given_name : userData.name;
+                await this.connection.query(`INSERT INTO users (id, email, name, sname, created_at, updated_at) VALUES 
+                (?, ?, ?, ?, NOW(), NOW())`, [userData.identities[0].user_id, userData.email, name, "Free" ], (err, results) => {
                     if(err) {
                         console.log(err);
                         return { message: "Error creating user" };
@@ -55,6 +57,7 @@ export class UsersService {
         else {
             // Check the user's plan end date and update the user's plan if necessary
             const userEndDate = await this.connection.query(`SELECT endingDate FROM users WHERE id = ?`, [userData.identities[0].user_id]);
+            console.log(userEndDate);
             if(userEndDate[0].endingDate && userEndDate[0].endingDate < new Date()) {
                 // set plan to free and remove the ending date
                 try{
@@ -84,9 +87,18 @@ export class UsersService {
                 }
             });
             const userData = await userResponse.json();
+            // console.log(userData);
 
             // Fetch user plan name from the database and return it to the client
             const queryAsync = promisify(this.connection.query).bind(this.connection);
+
+            // Search for the user in the database
+            const user = await queryAsync(`SELECT created_at FROM users WHERE id = ?`, [userData.identities[0].user_id]);
+
+            if(user.length === 0) {
+                this.createUser(userData.user_id, true);
+            }
+
             const results = await queryAsync(`SELECT sname FROM users WHERE id = ?`, [userData.identities[0].user_id]);
             const brands = await queryAsync(`SELECT * FROM brands WHERE brandOwner = ?`, [userData.identities[0].user_id]);
 
