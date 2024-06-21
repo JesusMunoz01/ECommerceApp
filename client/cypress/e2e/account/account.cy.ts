@@ -11,6 +11,7 @@ describe('Account Tests', () => {
         cy.login();
         cy.wait(1000);
         cy.visit('http://localhost:5173/account');
+        cy.contains('Username: testuseraccount@ecproject.com')
         cy.contains('Account Details').should('be.visible');
         cy.contains('Your Products').should('be.visible');
         cy.contains('Your Brand').should('be.visible');

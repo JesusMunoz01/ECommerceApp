@@ -22,6 +22,8 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { userData, setUser } = useUser(); 
 
+  console.log(isAuthenticated)
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -29,6 +31,7 @@ function App() {
   const userQuery = useQuery({
     queryKey: ['user', user?.sub],
     queryFn: async () => {
+      console.log(user)
       const token = await getAccessTokenSilently();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
           headers: {
@@ -38,7 +41,8 @@ function App() {
       const data = await response.json();
       console.log(data);
       return data;
-    }
+    },
+    enabled: isAuthenticated,
   });
 
   useEffect(() => {
@@ -46,8 +50,6 @@ function App() {
       setUser(userQuery.data);
     }
   }, [userQuery.data]);
-
-  if (userQuery.isError) return <p>Error</p>;
 
   return (
     <>
@@ -60,7 +62,7 @@ function App() {
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
           <Route path='/upgrade' element={<UpgradePage role={userData?.plan}/>} />
           <Route path='/brands' element={<BrandsPage />} />
-          <Route path='/brands/:id' element={<BrandPage />} />
+          <Route path='/brands/:id' element={<BrandPage setCart={setCart}/>} />
           <Route path="*" element={<h1>Not Found</h1>} />
           {isAuthenticated && (
                 <>

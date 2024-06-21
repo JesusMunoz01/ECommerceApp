@@ -35,7 +35,7 @@ const UserProductList = () => {
         },
         onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['userProducts', user?.id]
+                    queryKey: ['userProducts', user?.sub?.split('|')[1]]
                 });
         }
     });
@@ -74,7 +74,7 @@ const UserProductList = () => {
                             {editingProductId === product.id && (
                                 <div className="flex flex-col border-t mt-2">
                                     <h1>Edit Product</h1>
-                                    <ProductForm actionType="Update" userProduct={product} />
+                                    <ProductForm actionType="Update" userProduct={product} onSuccessfulSubmit={setEditingProductId} />
                                 </div>
                             )}
                         </div>
