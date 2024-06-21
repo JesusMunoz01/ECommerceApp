@@ -38,7 +38,8 @@ function App() {
       const data = await response.json();
       console.log(data);
       return data;
-    }
+    },
+    enabled: isAuthenticated,
   });
 
   useEffect(() => {
@@ -46,8 +47,6 @@ function App() {
       setUser(userQuery.data);
     }
   }, [userQuery.data]);
-
-  if (userQuery.isError) return <p>Error</p>;
 
   return (
     <>
