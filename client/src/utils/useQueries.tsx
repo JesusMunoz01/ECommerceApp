@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const useUserProductsQuery = (userId: string | undefined) => {
-  if (!userId) return { data: undefined, isLoading: false, error: undefined };
+  // if (!userId) return { data: undefined, isLoading: false, error: undefined };
   const { getAccessTokenSilently } = useAuth0();
 
   return useQuery({
@@ -16,6 +16,7 @@ export const useUserProductsQuery = (userId: string | undefined) => {
       });
       const data = await response.json();
       return data;
-    }
+    },
+    enabled: !!userId,
   });
 };

@@ -35,7 +35,7 @@ const UserProductList = () => {
         },
         onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: ['userProducts', user?.id]
+                    queryKey: ['userProducts', user?.sub?.split('|')[1]]
                 });
         }
     });
