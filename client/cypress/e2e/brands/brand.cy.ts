@@ -30,6 +30,10 @@ describe('Brand Tests', () => {
         cy.get('.grid').contains("Wooden Desk").get('button').contains('Add to cart').click();
         // Verify the cart
         cy.contains('Cart').click();
-        // TODO: Check if the product is in the cart with the correct quantity
+        cy.get('div').contains('Wooden Desk').parent()
+            .should('contain.text', 'Wooden Desk')
+            .and('contain.text', 'Price: 199.9')
+            .and('contain.text', 'Amount: 2')
+            .and('contain.text', 'Remove');
     });
 });

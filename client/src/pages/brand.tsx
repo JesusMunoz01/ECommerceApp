@@ -3,8 +3,13 @@ import { useParams } from "react-router-dom";
 import ProductCard from "../components/Products/productCard";
 import { useState } from "react";
 import { productFilter } from "../utils/productFilter";
+import { CartItem } from "./cart";
 
-const BrandPage = () => {
+type BrandPageProps = {
+    setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+};
+
+const BrandPage = ({setCart}: BrandPageProps) => {
     const { id } = useParams();
     const [search, setSearch] = useState('');
     const brandQuery = useQuery({
@@ -23,6 +28,10 @@ const BrandPage = () => {
             return failureCount < 3;
         },
     });
+
+    const addToCart = (cartProduct: CartItem) => {
+        setCart((prevCart) => [...prevCart, cartProduct]);
+    };
 
     if(brandQuery.isLoading) return <div>Loading...</div>;
     if (brandQuery.isError) {
@@ -48,7 +57,7 @@ const BrandPage = () => {
                 </div>
                 <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
                     {productFilter(brandQuery.data.products, search).map((product: any) => (
-                        <ProductCard key={product.id} product={product} addToCart={() => {}}/>
+                        <ProductCard key={product.id} product={product} addToCart={addToCart}/>
                     ))}
                     {productFilter(brandQuery.data.products, search).length === 0 && <div>No Products Found</div>}
                 </div>
