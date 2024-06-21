@@ -3,22 +3,22 @@ describe('Account Tests', () => {
         cy.visit('http://localhost:5173/account');
     });
 
-    // it("should go to the sell page and create a product", () => {
-    //     cy.login();
-    //     cy.wait(1000);
-    //     cy.visit('http://localhost:5173/sell');
-    //     cy.get('input[name="name"]').type('Test Product');
-    //     cy.get('textarea[name="description"]').type('Test Description');
-    //     cy.get('input[name="price"]').clear().type('100');
-    //     cy.get('input[name="stock"]').clear().type('10');
-    //     cy.get('input[name="discountNumber"]').clear().type('0');
-    //     cy.get('button').contains('Create Product').click();
+    it("should go to the sell page and create a product", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/sell');
+        cy.get('input[name="name"]').type('Test Product');
+        cy.get('textarea[name="description"]').type('Test Description');
+        cy.get('input[name="price"]').clear().type('100');
+        cy.get('input[name="stock"]').clear().type('10');
+        cy.get('input[name="discountNumber"]').clear().type('0');
+        cy.get('button').contains('Create Product').click();
         
-    //     // Check profile to see if the product is created
-    //     cy.visit('http://localhost:5173/account');
-    //     cy.wait(1000);
-    //     cy.contains('Test Product').should('be.visible');
-    // });
+        // Check profile to see if the product is created
+        cy.visit('http://localhost:5173/account');
+        cy.wait(1000);
+        cy.contains('Test Product').should('be.visible');
+    });
 
     it("should be able to edit the product", () => {
         cy.login();
@@ -43,6 +43,15 @@ describe('Account Tests', () => {
         cy.get('input[name="discountNumber"]').clear().type('0');
 
         cy.get('button').contains('Update Product').click();
+    });
+
+    it("should be able to delete the product", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Product Updated').parent().parent().get('button').contains('Delete').click();
+        cy.wait(1000);
+        cy.contains('Test Product Updated').should('not.exist');
     });
 
 });
