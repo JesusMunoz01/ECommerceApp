@@ -26,6 +26,30 @@ export class UsersService {
         return aToken.access_token;
     }
 
+    async checkSubscription(userID: string): Promise<{ message: string; }> {
+        const queryAsync = promisify(this.connection.query).bind(this.connection);
+        // Check the user's plan end date and update the user's plan if necessary
+        const userEndDate = await queryAsync(`SELECT endingDate FROM users WHERE id = ?`, [userID]);
+        console.log(userEndDate);
+        if(userEndDate[0].endingDate && userEndDate[0].endingDate < new Date()) {
+            try{
+                await this.connection.query(`UPDATE users SET sname = ?, endingDate = NULL, updated_at = NOW() WHERE id = ?`, 
+                ["Free", userID], (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        return { message: "Error updating user" };
+                    }
+                    console.log(results);
+                    return { message: "User subscription updated successfully" };
+                });
+            }catch(err) {
+                console.log(err);
+                return { message: "Error updating user" };
+            }
+        }
+    }
+
+
     async createUser(userID: string, bypassLoginCount: boolean): Promise<{ message: string; }> {
         // Calls Auth0's /users/{id} endpoint to get user data using the access token
         const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
@@ -54,29 +78,6 @@ export class UsersService {
                 return { message: "Error creating user" };
             }
         }
-        else {
-            // Check the user's plan end date and update the user's plan if necessary
-            const userEndDate = await this.connection.query(`SELECT endingDate FROM users WHERE id = ?`, [userData.identities[0].user_id]);
-            console.log(userEndDate);
-            if(userEndDate[0].endingDate && userEndDate[0].endingDate < new Date()) {
-                // set plan to free and remove the ending date
-                try{
-                    await this.connection.query(`UPDATE users SET plan = ?, endingDate = NULL, updated_at = NOW() WHERE id = ?`, 
-                    ["Free", userData.identities[0].user_id], (err, results) => {
-                        if(err) {
-                            console.log(err);
-                            return { message: "Error updating user" };
-                        }
-                        console.log(results);
-                        return { message: "User updated successfully" };
-                    });
-                }catch(err) {
-                    console.log(err);
-                    return { message: "Error updating user" };
-                }
-            }
-        }
-        return { message: "User already exists" };
     }
 
     async getUser(userID: string): Promise<{ message: string, plan?: string, brands?: [] }> {
@@ -87,9 +88,7 @@ export class UsersService {
                 }
             });
             const userData = await userResponse.json();
-            // console.log(userData);
 
-            // Fetch user plan name from the database and return it to the client
             const queryAsync = promisify(this.connection.query).bind(this.connection);
 
             // Search for the user in the database
@@ -99,6 +98,9 @@ export class UsersService {
                 this.createUser(userData.user_id, true);
             }
 
+            await this.checkSubscription(userData.identities[0].user_id)
+
+            // Fetch user plan name from the database and return it to the client
             const results = await queryAsync(`SELECT sname FROM users WHERE id = ?`, [userData.identities[0].user_id]);
             const brands = await queryAsync(`SELECT * FROM brands WHERE brandOwner = ?`, [userData.identities[0].user_id]);
 

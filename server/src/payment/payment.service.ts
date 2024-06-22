@@ -151,7 +151,7 @@ export class StripeService {
 
         // Update user plan in database
         await new Promise((resolve, reject) => {
-          this.connection.query(`UPDATE users SET sname = ?, endingDate = ?, pid = ? WHERE id = ?`, [planName, endingDate, userSubId, userSID], (err, results) => {
+          this.connection.query(`UPDATE users SET sname = ?, endingDate = FROM_UNIXTIME(?), pid = ? WHERE id = ?`, [planName, endingDate, userSubId, userSID], (err, results) => {
             if (err) {
               console.log(err);
               reject({ message: "Error updating user" });
