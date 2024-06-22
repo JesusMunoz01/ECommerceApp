@@ -4,7 +4,7 @@ const subscriptionData = [
     {
         tier: 1,
         benefits: ["Buy Items", "Sell Items (100 Max)"],
-        name: "Basic",
+        name: "Free",
         price: 0,
         active: true
     },
