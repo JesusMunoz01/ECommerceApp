@@ -45,11 +45,15 @@ const EditUserForm = () => {
 
     return (
         <div>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2 bg-slate-600 p-4 border">
+                <h1>Edit User</h1>
+                <label htmlFor="name">Name</label>
                 <input type="text" placeholder="Name" name="name" value={updatedUser.name} onChange={handleChange} />
+                <label htmlFor="email">Email</label>
                 <input type="email" placeholder="Email" name="email" value={updatedUser.email} onChange={handleChange} />
+                <label htmlFor="password">Password</label>
                 <input type="password" placeholder="Password" name="password" value={updatedUser.password} onChange={handleChange} />
-                <button type="submit">Update</button>
+                <button type="submit" className="bg-gray-800 w-1/2 self-center mt-2">Update</button>
             </form>
         </div>
     )
