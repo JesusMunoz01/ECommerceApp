@@ -116,13 +116,14 @@ export class UsersService {
     }
 
     async updateUser(userID: string, data: UserDto): Promise<{ message: string; }> {
-        const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
-            headers: {
-            authorization: `Bearer ${await this.getAccessToken()}`,
-            }
-        });
-        const userData = await userResponse.json();
-        const user = userData.user_id;
+        // const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
+        //     headers: {
+        //     authorization: `Bearer ${await this.getAccessToken()}`,
+        //     }
+        // });
+        // const userData = await userResponse.json();
+        // console.log(userData)
+        const user = userID;
 
         /************************************************************************
         * Variables to be used in the SQL query

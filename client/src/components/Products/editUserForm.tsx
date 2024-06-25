@@ -11,17 +11,19 @@ const initialUser = {
 };
 
 const EditUserForm = () => {
-    const { user } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
     const [updatedUser, setUpdatedUser] = useState(initialUser);
     const [error, setError] = useState({ name: '', email: '', password: '' });
     const editUser = useMutation({
         mutationKey: ['editUser'],
         mutationFn: async () => {
+            const token = await getAccessTokenSilently();
             const userId = user?.sub?.split("|")[1];
             const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     name: updatedUser.name,
