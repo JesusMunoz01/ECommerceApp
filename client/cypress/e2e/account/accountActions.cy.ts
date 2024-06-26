@@ -54,4 +54,26 @@ describe('Account Tests', () => {
         cy.contains('Test Product Updated').should('not.exist');
     });
 
+    it("should be able to edit the user", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/settings');
+        cy.contains('Edit User').click();
+        cy.get("form").should('be.visible').and('contain', 'Edit User');
+        cy.get('input[name="name"]').clear().type('Test User Updated');
+        cy.contains('Update').click();
+    });
+
+    it("should be able to bring out the delete user popup and click cancel", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/settings');
+        cy.contains('Delete User').click();
+        cy.contains('Are you sure you want to delete your account?').should('be.visible');
+        cy.get('button').contains('Cancel').should('be.visible');
+        cy.get('button').contains('Confirm').should('be.visible');
+        cy.get('button').contains('Cancel').click();
+        cy.contains('Are you sure you want to delete your account?').should('not.exist');
+    });
+
 });
