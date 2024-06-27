@@ -4,7 +4,7 @@ import { UserDto } from './dto/userUpdate.dto';
 import { promisify } from 'util';
 import { ManagementClient } from 'auth0';
 
-type UpdateFields = {
+export type UpdateFields = {
     email?: string;
     password?: string;
     name?: string;
@@ -164,10 +164,20 @@ export class UsersService {
         }
     }
 
-    async updateAuthData(userID: string, data: UpdateFields){
+    async updateAuthData(userID: string, data: UpdateFields, authUserID: string){
+        if(userID !== authUserID) {
+            return { message: "Unauthorized" };
+        }
+
+        const isAuth0User = authUserID.startsWith("auth0|");
+
         const updateFields: UpdateFields  = {}
-        if(data.email) updateFields.email = data.email;
-        if(data.password) updateFields.password = data.password;
+        
+        if(isAuth0User){
+            if(data.email) updateFields.email = data.email;
+            if(data.password) updateFields.password = data.password;
+        }
+
         if (data.name) updateFields.name = data.name;
 
         if(Object.keys(updateFields).length === 0) {
