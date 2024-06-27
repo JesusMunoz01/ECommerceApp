@@ -2,11 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { UserDto } from './dto/userUpdate.dto';
 import { promisify } from 'util';
+import { ManagementClient } from 'auth0';
+
+type UpdateFields = {
+    email?: string;
+    password?: string;
+    name?: string;
+}
 
 @Injectable()
 export class UsersService {
     constructor(private appService: AppService) {}
     private connection = this.appService.connection;
+
+    private management = new ManagementClient({
+        domain: process.env.AUTH0_ISSUER_URL,
+        clientId: process.env.API_CLIENT_ID,
+        clientSecret: process.env.API_CLIENT_SECRE,
+        audience: process.env.AUTH0_MANAGEMENT_AUDIENCE,
+      });
 
     // Calls Auth0's /oauth/token endpoint to get an access token
     async getAccessToken() {
@@ -147,6 +161,25 @@ export class UsersService {
         }catch(err) {
             console.log(err);
             return { message: "Error updating user" };
+        }
+    }
+
+    async updateAuthData(userID: string, data: UpdateFields){
+        const updateFields: UpdateFields  = {}
+        if(data.email) updateFields.email = data.email;
+        if(data.password) updateFields.password = data.password;
+        if (data.name) updateFields.name = data.name;
+
+        if(Object.keys(updateFields).length === 0) {
+            return { message: "No fields to update" };
+        }
+
+        try{
+            await this.management.users.update( { id: userID }, updateFields );
+            return { message: "Password updated successfully" };
+        }catch(err) {
+            console.log(err);
+            return { message: "Error updating password" };
         }
     }
 
