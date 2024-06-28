@@ -172,7 +172,7 @@ export class UsersService {
         const isAuth0User = authUserID.startsWith("auth0|");
 
         const updateFields: UpdateFields  = {}
-        
+
         if(isAuth0User){
             if(data.email) updateFields.email = data.email;
             if(data.password) updateFields.password = data.password;
@@ -186,6 +186,16 @@ export class UsersService {
 
         try{
             await this.management.users.update( { id: userID }, updateFields );
+            const fields = ["email", "name"];
+            const filledFields = Object.keys(data).filter(key => data[key] && fields.includes(key));
+            const sqlQuery = `UPDATE users SET ${filledFields.map(key => `${key} = ?`).join(", ")}, updated_at = NOW() WHERE id = ?`;
+            const sqlData = [...filledFields.map(key => data[key]), userID.split('|')[1]];
+            await this.connection.query(sqlQuery, sqlData, (err) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error updating user" };
+                }
+            });
             return { message: "Password updated successfully" };
         }catch(err) {
             console.log(err);
