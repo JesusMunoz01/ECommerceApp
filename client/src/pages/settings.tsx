@@ -11,7 +11,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="flex w-full max-w-md mx-auto h-full flex-col">
+    <div className="flex w-full max-w-3xl mx-auto h-full flex-col items-center">
+      <h1 className='w-full text-center h-24'>Account Options</h1>
       {isDelete && 
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
           <ConfirmationPopup 
@@ -22,18 +23,24 @@ const SettingsPage = () => {
           />
         </div>
       }
-      <div className="flex flex-col shadow-md rounded my-6 gap-4 h-full">
+      <div className="flex flex-col shadow-md rounded my-6 gap-4 h-full w-3/4">
+      <button 
+          className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
+          onClick={handleToggle(isOpen, setIsOpen)}>Peronal Information</button>
         <button 
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
           onClick={handleToggle(isOpen, setIsOpen)}
         >
-          Edit User
+          Account Security
         </button>
         {isOpen && (
             <div className="border-t">
                 <EditUserForm/>
             </div>
         )}
+        <button 
+          className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
+          onClick={handleToggle(isOpen, setIsOpen)}>View Orders</button>
         <button 
           className="block hover:bg-red-500 bg-red-800 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
           onClick={handleToggle(isDelete, setIsDelete)}

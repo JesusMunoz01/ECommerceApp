@@ -14,12 +14,32 @@ const EditUserForm = () => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [updatedUser, setUpdatedUser] = useState(initialUser);
     const [error, setError] = useState({ name: '', email: '', password: '' });
-    const editUser = useMutation({
-        mutationKey: ['editUser'],
+    // const editUser = useMutation({
+    //     mutationKey: ['editUser'],
+    //     mutationFn: async () => {
+    //         const token = await getAccessTokenSilently();
+    //         const userId = user?.sub?.split("|")[1];
+    //         const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
+    //             method: 'PATCH',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //             body: JSON.stringify({
+    //                 name: updatedUser.name,
+    //                 email: updatedUser.email,
+    //                 password: updatedUser.password,
+    //             })
+    //         });
+    //         const data = await response.json();
+    //         return data;
+    //     }
+    // });
+    const editUserAuth = useMutation({
+        mutationKey: ['editUserAuth'],
         mutationFn: async () => {
             const token = await getAccessTokenSilently();
-            const userId = user?.sub?.split("|")[1];
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/auth/${user?.sub}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +104,8 @@ const EditUserForm = () => {
         if (!validateForm()) {
             return;
         }
-        editUser.mutate();
+        //editUser.mutate();
+        editUserAuth.mutate();
     };
 
     return (
