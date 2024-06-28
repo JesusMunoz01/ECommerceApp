@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { UpdateFields, UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDto } from './dto/userUpdate.dto';
 
@@ -21,6 +21,12 @@ export class UsersController {
     @Patch(":id")
     async updateUser(@Param("id") id: string, @Body() userData: UserDto): Promise<{ message: string; }> {
       return this.usersService.updateUser(id, userData);
+    }
+
+    @Patch("/auth/:id")
+    async updateUserAuth(@Param("id") userID: string, @Request() req, @Body() data: UpdateFields) {
+      const authUserId = req.user.sub
+      return this.usersService.updateAuthData(userID, data, authUserId);
     }
 
     @Delete(":id")

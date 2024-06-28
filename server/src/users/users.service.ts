@@ -2,11 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { UserDto } from './dto/userUpdate.dto';
 import { promisify } from 'util';
+import { ManagementClient } from 'auth0';
+
+export type UpdateFields = {
+    email?: string;
+    password?: string;
+    name?: string;
+}
 
 @Injectable()
 export class UsersService {
     constructor(private appService: AppService) {}
     private connection = this.appService.connection;
+
+    private management = new ManagementClient({
+        domain: process.env.AUTH0_ISSUER_URL,
+        clientId: process.env.API_CLIENT_ID,
+        clientSecret: process.env.API_CLIENT_SECRE,
+        audience: process.env.AUTH0_MANAGEMENT_AUDIENCE,
+      });
 
     // Calls Auth0's /oauth/token endpoint to get an access token
     async getAccessToken() {
@@ -147,6 +161,45 @@ export class UsersService {
         }catch(err) {
             console.log(err);
             return { message: "Error updating user" };
+        }
+    }
+
+    async updateAuthData(userID: string, data: UpdateFields, authUserID: string){
+        if(userID !== authUserID) {
+            return { message: "Unauthorized" };
+        }
+
+        const isAuth0User = authUserID.startsWith("auth0|");
+
+        const updateFields: UpdateFields  = {}
+
+        if(isAuth0User){
+            if(data.email) updateFields.email = data.email;
+            if(data.password) updateFields.password = data.password;
+        }
+
+        if (data.name) updateFields.name = data.name;
+
+        if(Object.keys(updateFields).length === 0) {
+            return { message: "No fields to update" };
+        }
+
+        try{
+            await this.management.users.update( { id: userID }, updateFields );
+            const fields = ["email", "name"];
+            const filledFields = Object.keys(data).filter(key => data[key] && fields.includes(key));
+            const sqlQuery = `UPDATE users SET ${filledFields.map(key => `${key} = ?`).join(", ")}, updated_at = NOW() WHERE id = ?`;
+            const sqlData = [...filledFields.map(key => data[key]), userID.split('|')[1]];
+            await this.connection.query(sqlQuery, sqlData, (err) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error updating user" };
+                }
+            });
+            return { message: "Password updated successfully" };
+        }catch(err) {
+            console.log(err);
+            return { message: "Error updating password" };
         }
     }
 
