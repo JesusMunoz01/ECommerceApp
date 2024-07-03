@@ -1,48 +1,21 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { useUser } from "../../utils/userContext";
 //import { useEffect, useState } from "react";
 
 const Profile = () => {
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-    //const [userMetadata, setUserMetadata] = useState(null);
-
-    const sendRequest = async () => {
-        try {
-            const token = await getAccessTokenSilently();
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/users/create`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ 
-                  data: user?.sub,
-                  test: "test"
-                }),
-            });
-
-            const responseData = await response.json();
-            console.log(responseData);
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const { userData } = useUser();
+    console.log(userData);
 
     return (
-      <div>
+      <div className="h-24 mt-4">
         {isAuthenticated ? 
-          <div className="flex">
-            <img src={user?.picture} alt={user?.name} />
-            <div className="flex flex-col ml-2 justify-center gap-2">
+          <div className="flex h-full ">
+            <img src={user?.picture} alt={user?.name}/>
+            <div className="flex flex-col ml-2 gap-2 h-full">
               <h2>Username: {user?.name}</h2>
               <p>Email: {user?.email}</p>
-              {/* <h3>User Metadata</h3>
-              {userMetadata ? (
-                <pre>{JSON.stringify(userMetadata, null, 2)}</pre>
-                ) : (
-                  "No user metadata defined"
-                  )} */}
-            <button onClick={sendRequest}>Send Request</button>
+              <p>Plan: {userData?.plan}</p>
             </div>
             <br></br>
           </div>

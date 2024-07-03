@@ -10,7 +10,11 @@ const initialUser = {
     confirmPassword: "",
 };
 
-const EditUserForm = () => {
+type EditUserFormProps = {
+    onCancel?: () => void;
+};
+
+const EditUserForm = ({onCancel}: EditUserFormProps) => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [updatedUser, setUpdatedUser] = useState(initialUser);
     const [error, setError] = useState({ name: '', email: '', password: '' });
@@ -109,7 +113,7 @@ const EditUserForm = () => {
     };
 
     return (
-        <div>
+        <div className="lg:w-2/6 md:w-1/2 sm:w-3/4 w-11/12">
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 bg-slate-600 p-4 border">
                 <h1>Edit User</h1>
                 <div className="flex flex-col gap-2 border-b-4 pb-4 border-slate-800">
@@ -129,7 +133,10 @@ const EditUserForm = () => {
                 <label htmlFor="confirmPassword">Confirm Password</label>
                 <input type="password" placeholder="Confirm Password" name="confirmPassword"  value={updatedUser.confirmPassword} onChange={handleChange}/>
                 <span className="text-red-500">{error.password}</span>
-                <button type="submit" className="bg-gray-800 w-1/2 self-center mt-2">Update</button>
+                <div className="flex gap-4">
+                    <button type="submit" className="bg-gray-800 w-1/2 self-center mt-2">Update</button>
+                    {onCancel && <button className="bg-gray-800 w-1/2 self-center mt-2" onClick={onCancel}>Cancel</button>}
+                </div>
             </form>
         </div>
     )

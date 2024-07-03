@@ -27,14 +27,21 @@ const SettingsPage = () => {
           />
         </div>
       }
+      {isEditOpen && (
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
+            <EditUserForm onCancel={handleToggle(isEditOpen, setIsEditOpen)}/>
+        </div>
+      )}
       <div className="flex flex-col my-6 gap-4 h-4/6 w-3/4">
         <button 
             className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
             onClick={handleToggle(isProfileOpen, setIsProfileOpen)}>Peronal Information
         </button>
         {isProfileOpen && (
-            <div className="border-t">
+            <div className="border-t flex flex-col gap-2">
                 <Profile/>
+                <button className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-1/2 text-center px-4 py-2 rounded-md self-center" 
+                onClick={handleToggle(isEditOpen, setIsEditOpen)}>Edit</button>
             </div>
         )}
         <button 
@@ -43,11 +50,6 @@ const SettingsPage = () => {
         >
           Account Security
         </button>
-        {isEditOpen && (
-            <div className="border-t">
-                <EditUserForm/>
-            </div>
-        )}
         <button 
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
           onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders</button>
