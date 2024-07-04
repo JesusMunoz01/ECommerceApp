@@ -12,9 +12,10 @@ const initialUser = {
 
 type EditUserFormProps = {
     onCancel?: () => void;
+    type: "security" | "profile";
 };
 
-const EditUserForm = ({onCancel}: EditUserFormProps) => {
+const EditUserForm = ({onCancel, type}: EditUserFormProps) => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [updatedUser, setUpdatedUser] = useState(initialUser);
     const [error, setError] = useState({ name: '', email: '', password: '' });
@@ -115,24 +116,31 @@ const EditUserForm = ({onCancel}: EditUserFormProps) => {
     return (
         <div className="lg:w-2/6 md:w-1/2 sm:w-3/4 w-11/12">
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 bg-slate-600 p-4 border">
-                <h1>Edit User</h1>
-                <div className="flex flex-col gap-2 border-b-4 pb-4 border-slate-800">
-                    <label htmlFor="name">Name</label>
-                    <input type="text" placeholder="Name" name="name" value={updatedUser.name} onChange={handleChange} />
-                    <span className="text-red-500">{error.name}</span>
-                </div>
-                <div className="flex flex-col gap-2 border-b-4 pb-4 border-slate-800">
-                    <label htmlFor="email">Email</label>
-                    <input type="email" placeholder="Email" name="email" value={updatedUser.email} onChange={handleChange} />
-                    <label htmlFor="confirmEmail">Confirm Email</label>
-                    <input type="email" placeholder="Confirm Email" name="confirmEmail" value={updatedUser.confirmEmail} onChange={handleChange}/>
-                    <span className="text-red-500">{error.email}</span>
-                </div>
-                <label htmlFor="password">Password</label>
-                <input type="password" placeholder="Password" name="password" value={updatedUser.password} onChange={handleChange} />
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input type="password" placeholder="Confirm Password" name="confirmPassword"  value={updatedUser.confirmPassword} onChange={handleChange}/>
-                <span className="text-red-500">{error.password}</span>
+                {type === "profile" ? 
+                <>
+                    <h1>Edit User</h1>
+                    <div className="flex flex-col gap-2 border-b-4 pb-4 border-slate-800">
+                        <label htmlFor="name">Name</label>
+                        <input type="text" placeholder="Name" name="name" value={updatedUser.name} onChange={handleChange} />
+                        <span className="text-red-500">{error.name}</span>
+                    </div>
+                    <div className="flex flex-col gap-2 border-b-4 pb-4 border-slate-800">
+                        <label htmlFor="email">Email</label>
+                        <input type="email" placeholder="Email" name="email" value={updatedUser.email} onChange={handleChange} />
+                        <label htmlFor="confirmEmail">Confirm Email</label>
+                        <input type="email" placeholder="Confirm Email" name="confirmEmail" value={updatedUser.confirmEmail} onChange={handleChange}/>
+                        <span className="text-red-500">{error.email}</span>
+                    </div> 
+                </>:
+                <>
+                    <h1>Edit Password</h1>
+                    <label htmlFor="password">Password</label>
+                    <input type="password" placeholder="Password" name="password" value={updatedUser.password} onChange={handleChange} />
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input type="password" placeholder="Confirm Password" name="confirmPassword"  value={updatedUser.confirmPassword} onChange={handleChange}/>
+                    <span className="text-red-500">{error.password}</span>
+                </>
+                }
                 <div className="flex gap-4">
                     <button type="submit" className="bg-gray-800 w-1/2 self-center mt-2">Update</button>
                     {onCancel && <button className="bg-gray-800 w-1/2 self-center mt-2" onClick={onCancel}>Cancel</button>}
