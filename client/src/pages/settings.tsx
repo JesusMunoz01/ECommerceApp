@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import EditUserForm from '../components/Products/editUserForm';
+import EditUserForm from '../components/Auth/editUserForm';
 import ConfirmationPopup from '../components/Popups/confirmPopup';
 import Profile from '../components/Auth/auth0-profile';
 
@@ -29,7 +29,12 @@ const SettingsPage = () => {
       }
       {isEditOpen && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-            <EditUserForm onCancel={handleToggle(isEditOpen, setIsEditOpen)}/>
+            <EditUserForm onCancel={handleToggle(isEditOpen, setIsEditOpen)} type='profile'/>
+        </div>
+      )}
+      {isSecurityOpen && (
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
+            <EditUserForm onCancel={handleToggle(isSecurityOpen, setIsSecurityOpen)} type='security'/>
         </div>
       )}
       <div className="flex flex-col my-6 gap-4 h-4/6 w-3/4">
