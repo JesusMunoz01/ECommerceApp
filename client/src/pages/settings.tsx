@@ -3,6 +3,7 @@ import EditUserForm from '../components/Auth/editUserForm';
 import ConfirmationPopup from '../components/Popups/confirmPopup';
 import Profile from '../components/Auth/auth0-profile';
 import PersonalOptions from '../components/User/PersonalOptions';
+import DeleteButton from '../components/Buttons/DeleteButton';
 
 type editType = "profile" | "security";
 
@@ -62,14 +63,7 @@ const SettingsPage = () => {
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
           onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders</button>
       </div>
-      <div className='flex flex-col shadow-md rounded my-6 gap-4 h-1/6 w-3/4'>
-        <button 
-          className="block hover:bg-red-500 bg-red-800 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={handleToggle(isDelete, setIsDelete)}
-        >
-          Delete User
-        </button>
-      </div>
+      <DeleteButton action={handleToggle(isDelete, setIsDelete)}/>
     </div>
   );
 }
