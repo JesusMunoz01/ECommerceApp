@@ -2,6 +2,7 @@ import { useState } from 'react';
 import EditUserForm from '../components/Auth/editUserForm';
 import ConfirmationPopup from '../components/Popups/confirmPopup';
 import Profile from '../components/Auth/auth0-profile';
+import PersonalOptions from '../components/User/PersonalOptions';
 
 type editType = "profile" | "security";
 
@@ -38,23 +39,12 @@ const SettingsPage = () => {
             <EditUserForm onCancel={handleToggle(isEditOpen, setIsEditOpen)} type={type}/>
         </div>
       )}
-      {/* {isSecurityOpen && (
-        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-            <EditUserForm onCancel={handleToggle(isSecurityOpen, setIsSecurityOpen)} type='security'/>
-        </div>
-      )} */}
       <div className="flex flex-col my-6 gap-4 h-4/6 w-3/4">
         <button 
             className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
             onClick={handleToggle(isProfileOpen, setIsProfileOpen)}>Peronal Information
         </button>
-        {isProfileOpen && (
-            <div className="border-t flex flex-col gap-2">
-                <Profile/>
-                <button className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-1/2 text-center px-4 py-2 rounded-md self-center" 
-                onClick={handleToggle(isEditOpen, setIsEditOpen, "profile")}>Edit</button>
-            </div>
-        )}
+        {isProfileOpen && (<PersonalOptions onClick={handleToggle(isEditOpen, setIsEditOpen, "profile")}/>)}
         <button 
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
           onClick={handleToggle(isSecurityOpen, setIsSecurityOpen)}
