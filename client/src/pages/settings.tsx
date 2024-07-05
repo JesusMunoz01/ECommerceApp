@@ -3,15 +3,21 @@ import EditUserForm from '../components/Auth/editUserForm';
 import ConfirmationPopup from '../components/Popups/confirmPopup';
 import Profile from '../components/Auth/auth0-profile';
 
+type editType = "profile" | "security";
+
 const SettingsPage = () => {
+  const [type, setType] = useState<editType>("profile");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSecurityOpen, setIsSecurityOpen] = useState(false);
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
 
-  const handleToggle = (state: boolean, setState: (state: boolean) => void) => () => {
+  const handleToggle = (state: boolean, setState: (state: boolean) => void, type?: editType) => () => {
     setState(!state);
+    if (type) {
+      setType(type);
+    }
   };
 
   return (
@@ -29,14 +35,14 @@ const SettingsPage = () => {
       }
       {isEditOpen && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-            <EditUserForm onCancel={handleToggle(isEditOpen, setIsEditOpen)} type='profile'/>
+            <EditUserForm onCancel={handleToggle(isEditOpen, setIsEditOpen)} type={type}/>
         </div>
       )}
-      {isSecurityOpen && (
+      {/* {isSecurityOpen && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
             <EditUserForm onCancel={handleToggle(isSecurityOpen, setIsSecurityOpen)} type='security'/>
         </div>
-      )}
+      )} */}
       <div className="flex flex-col my-6 gap-4 h-4/6 w-3/4">
         <button 
             className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
@@ -46,15 +52,22 @@ const SettingsPage = () => {
             <div className="border-t flex flex-col gap-2">
                 <Profile/>
                 <button className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-1/2 text-center px-4 py-2 rounded-md self-center" 
-                onClick={handleToggle(isEditOpen, setIsEditOpen)}>Edit</button>
+                onClick={handleToggle(isEditOpen, setIsEditOpen, "profile")}>Edit</button>
             </div>
         )}
         <button 
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={handleToggle(isEditOpen, setIsEditOpen)}
+          onClick={handleToggle(isSecurityOpen, setIsSecurityOpen)}
         >
           Account Security
         </button>
+        {isSecurityOpen && (
+            <div className="border-t flex flex-col gap-2">
+                <Profile/>
+                <button className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-1/2 text-center px-4 py-2 rounded-md self-center" 
+                onClick={handleToggle(isEditOpen, setIsEditOpen, "security")}>Edit</button>
+            </div>
+        )}
         <button 
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
           onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders</button>
