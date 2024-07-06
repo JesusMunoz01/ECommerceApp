@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import EditUserForm from '../components/Auth/editUserForm';
 import ConfirmationPopup from '../components/Popups/confirmPopup';
-import Profile from '../components/Auth/auth0-profile';
 import PersonalOptions from '../components/User/PersonalOptions';
 import DeleteButton from '../components/Buttons/DeleteButton';
 import AccountSecurity from '../components/User/AccountSecurity';
+import UserOrders from '../components/User/UserOrders';
 
 type editType = "profile" | "security";
 
@@ -17,6 +17,9 @@ const SettingsPage = () => {
   const [isDelete, setIsDelete] = useState(false);
 
   const handleToggle = (state: boolean, setState: (state: boolean) => void, type?: editType) => () => {
+    setIsProfileOpen(false);
+    setIsSecurityOpen(false);
+    setIsOrdersOpen(false);
     setState(!state);
     if (type) {
       setType(type);
@@ -56,7 +59,9 @@ const SettingsPage = () => {
         {isSecurityOpen && (<AccountSecurity onClick={handleToggle(isEditOpen, setIsEditOpen, "security")}/>)}
         <button 
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders</button>
+          onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders
+        </button>
+        {isOrdersOpen && (<UserOrders/>)}
       </div>
       <DeleteButton action={handleToggle(isDelete, setIsDelete)}/>
     </div>
