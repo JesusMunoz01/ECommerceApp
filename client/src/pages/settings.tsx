@@ -4,6 +4,7 @@ import ConfirmationPopup from '../components/Popups/confirmPopup';
 import Profile from '../components/Auth/auth0-profile';
 import PersonalOptions from '../components/User/PersonalOptions';
 import DeleteButton from '../components/Buttons/DeleteButton';
+import AccountSecurity from '../components/User/AccountSecurity';
 
 type editType = "profile" | "security";
 
@@ -52,13 +53,7 @@ const SettingsPage = () => {
         >
           Account Security
         </button>
-        {isSecurityOpen && (
-            <div className="border-t flex flex-col gap-2">
-                <Profile/>
-                <button className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-1/2 text-center px-4 py-2 rounded-md self-center" 
-                onClick={handleToggle(isEditOpen, setIsEditOpen, "security")}>Edit</button>
-            </div>
-        )}
+        {isSecurityOpen && (<AccountSecurity onClick={handleToggle(isEditOpen, setIsEditOpen, "security")}/>)}
         <button 
           className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
           onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders</button>
