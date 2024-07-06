@@ -5,6 +5,7 @@ import PersonalOptions from '../components/User/PersonalOptions';
 import DeleteButton from '../components/Buttons/DeleteButton';
 import AccountSecurity from '../components/User/AccountSecurity';
 import UserOrders from '../components/User/UserOrders';
+import Button from '../components/Buttons/Button';
 
 type editType = "profile" | "security";
 
@@ -45,22 +46,11 @@ const SettingsPage = () => {
         </div>
       )}
       <div className="flex flex-col my-6 gap-4 h-4/6 w-3/4">
-        <button 
-            className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-            onClick={handleToggle(isProfileOpen, setIsProfileOpen)}>Peronal Information
-        </button>
+        <Button action={handleToggle(isProfileOpen, setIsProfileOpen)} text='Personal Information' />
         {isProfileOpen && (<PersonalOptions onClick={handleToggle(isEditOpen, setIsEditOpen, "profile")}/>)}
-        <button 
-          className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={handleToggle(isSecurityOpen, setIsSecurityOpen)}
-        >
-          Account Security
-        </button>
+        <Button action={handleToggle(isSecurityOpen, setIsSecurityOpen)} text='Account Security' />
         {isSecurityOpen && (<AccountSecurity onClick={handleToggle(isEditOpen, setIsEditOpen, "security")}/>)}
-        <button 
-          className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders
-        </button>
+        <Button action={handleToggle(isOrdersOpen, setIsOrdersOpen)} text='Order History' />
         {isOrdersOpen && (<UserOrders/>)}
       </div>
       <DeleteButton action={handleToggle(isDelete, setIsDelete)}/>

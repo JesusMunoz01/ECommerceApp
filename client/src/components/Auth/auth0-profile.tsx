@@ -5,10 +5,9 @@ import { useUser } from "../../utils/userContext";
 const Profile = () => {
     const { user, isAuthenticated } = useAuth0();
     const { userData } = useUser();
-    console.log(userData);
 
     return (
-      <div className="h-40 mt-4">
+      <div className="h-32 mt-4">
         {isAuthenticated ? 
           <div className="flex h-full ">
             <img src={user?.picture} alt={user?.name}/>
