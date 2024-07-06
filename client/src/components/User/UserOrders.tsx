@@ -41,7 +41,7 @@ const UserOrders = () => {
     
     return (
         <div className="flex flex-col gap-1 h-full">
-        <h1 className="mb-2 min-h-20">Your Orders</h1>
+        <h1 className="mb-2 min-h-20 text-3xl md:text-6xl">Your Orders</h1>
         <div>
         {orders.map((order) => (
             <div key={order.id} className="border-t flex flex-col gap-2 mb-2">

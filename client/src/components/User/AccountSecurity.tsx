@@ -6,7 +6,6 @@ interface AccountSecurityProps {
 
 const AccountSecurity = ({onClick}: AccountSecurityProps) => {
     const {user} = useAuth0();
-    console.log(user);
 
     return (
         <div className="border-t flex flex-col gap-2">

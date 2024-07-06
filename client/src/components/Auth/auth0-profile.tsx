@@ -7,9 +7,9 @@ const Profile = () => {
     const { userData } = useUser();
 
     return (
-      <div className="h-32 mt-4">
+      <div className="h-18 mt-4 sm:h-32">
         {isAuthenticated ? 
-          <div className="flex h-full ">
+          <div className="flex flex-col h-full items-start sm:flex-row sm:items-start sm:justify-start">
             <img src={user?.picture} alt={user?.name}/>
             <div className="flex flex-col ml-2 gap-2 h-full">
               <h2>Username: {user?.name}</h2>

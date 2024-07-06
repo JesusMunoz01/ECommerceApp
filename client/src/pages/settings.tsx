@@ -29,7 +29,7 @@ const SettingsPage = () => {
 
   return (
     <div className="flex w-full max-w-3xl mx-auto h-full flex-col items-center">
-      <h1 className='w-full text-center h-1/6'>Account Options</h1>
+      <h1 className='w-full text-center h-1/6 text-3xl sm:text-6xl'>Account Options</h1>
       {isDelete && 
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
           <ConfirmationPopup 
