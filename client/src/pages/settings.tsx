@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import EditUserForm from '../components/Auth/editUserForm';
 import ConfirmationPopup from '../components/Popups/confirmPopup';
-import Profile from '../components/Auth/auth0-profile';
 import PersonalOptions from '../components/User/PersonalOptions';
 import DeleteButton from '../components/Buttons/DeleteButton';
+import AccountSecurity from '../components/User/AccountSecurity';
+import UserOrders from '../components/User/UserOrders';
+import Button from '../components/Buttons/Button';
 
 type editType = "profile" | "security";
 
@@ -16,6 +18,9 @@ const SettingsPage = () => {
   const [isDelete, setIsDelete] = useState(false);
 
   const handleToggle = (state: boolean, setState: (state: boolean) => void, type?: editType) => () => {
+    setIsProfileOpen(false);
+    setIsSecurityOpen(false);
+    setIsOrdersOpen(false);
     setState(!state);
     if (type) {
       setType(type);
@@ -24,7 +29,7 @@ const SettingsPage = () => {
 
   return (
     <div className="flex w-full max-w-3xl mx-auto h-full flex-col items-center">
-      <h1 className='w-full text-center h-1/6'>Account Options</h1>
+      <h1 className='w-full text-center h-1/6 text-3xl sm:text-6xl'>Account Options</h1>
       {isDelete && 
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
           <ConfirmationPopup 
@@ -41,27 +46,12 @@ const SettingsPage = () => {
         </div>
       )}
       <div className="flex flex-col my-6 gap-4 h-4/6 w-3/4">
-        <button 
-            className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-            onClick={handleToggle(isProfileOpen, setIsProfileOpen)}>Peronal Information
-        </button>
+        <Button action={handleToggle(isProfileOpen, setIsProfileOpen)} text='Personal Information' />
         {isProfileOpen && (<PersonalOptions onClick={handleToggle(isEditOpen, setIsEditOpen, "profile")}/>)}
-        <button 
-          className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={handleToggle(isSecurityOpen, setIsSecurityOpen)}
-        >
-          Account Security
-        </button>
-        {isSecurityOpen && (
-            <div className="border-t flex flex-col gap-2">
-                <Profile/>
-                <button className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-1/2 text-center px-4 py-2 rounded-md self-center" 
-                onClick={handleToggle(isEditOpen, setIsEditOpen, "security")}>Edit</button>
-            </div>
-        )}
-        <button 
-          className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={handleToggle(isOrdersOpen, setIsOrdersOpen)}>View Orders</button>
+        <Button action={handleToggle(isSecurityOpen, setIsSecurityOpen)} text='Account Security' />
+        {isSecurityOpen && (<AccountSecurity onClick={handleToggle(isEditOpen, setIsEditOpen, "security")}/>)}
+        <Button action={handleToggle(isOrdersOpen, setIsOrdersOpen)} text='Order History' />
+        {isOrdersOpen && (<UserOrders/>)}
       </div>
       <DeleteButton action={handleToggle(isDelete, setIsDelete)}/>
     </div>

@@ -3,14 +3,13 @@ import { useUser } from "../../utils/userContext";
 //import { useEffect, useState } from "react";
 
 const Profile = () => {
-    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const { user, isAuthenticated } = useAuth0();
     const { userData } = useUser();
-    console.log(userData);
 
     return (
-      <div className="h-24 mt-4">
+      <div className="h-18 mt-4 sm:h-32">
         {isAuthenticated ? 
-          <div className="flex h-full ">
+          <div className="flex flex-col h-full items-start sm:flex-row sm:items-start sm:justify-start">
             <img src={user?.picture} alt={user?.name}/>
             <div className="flex flex-col ml-2 gap-2 h-full">
               <h2>Username: {user?.name}</h2>
