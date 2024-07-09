@@ -8,7 +8,7 @@ interface SelectedLinkProps {
 const SelectedLink: React.FC<SelectedLinkProps> = ({ to, children }) => {
     const match = useMatch(to);
     return (
-        <Link to={to} className={match ? "text-green-500" : "hover:text-green-500"}>
+        <Link to={to} className={match ? "text-green-500 flex flex-col items-center justify-center" : "hover:text-green-500 flex flex-col justify-center items-center"}>
             {children}
         </Link>
     );
