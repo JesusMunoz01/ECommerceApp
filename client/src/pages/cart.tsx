@@ -35,7 +35,7 @@ const Cart = ({cart, setCart}: CartProps) => {
                 </div>
             </div>
             <div className="flex flex-col w-4/4 md:w-1/4 bg-slate-800 h-2/6 md:h-full gap-2 justify-between items-center">
-                <h1 className="text-3xl md:text-5xl p-2">Checkout</h1>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl p-2">Checkout</h1>
                 <div className="md:text-2xl">
                     <h2>Total Items: {cart.length}</h2>
                     <h2>Total: ${cart.reduce((acc, product) => acc + product.price * product.quantity, 0)}</h2>
