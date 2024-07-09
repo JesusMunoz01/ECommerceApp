@@ -38,27 +38,27 @@ const Navbar = () => {
 
     return (
         <nav className="navbar bg-slate-600 w-full">
-            <div className="p-6 max-w mx-auto flex items-center justify-between w-full">
+            <div className="p-2 xs:p-6 max-w mx-auto flex items-center justify-between w-full">
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
                 </div> */}
-                <div className="flex text-xl text-white-100 gap-16 items-center justify-center">
+                <div className="flex text-md gap-2 sm:text-lg md:text-xl text-white-100 xs:gap-4 lg:gap-16 items-center justify-center">
                     <span className="border-2 border-black p-2">Logo</span>
                     <SelectedLink to="/">Home</SelectedLink>
                     <SelectedLink to="/brands">Brands</SelectedLink>
                 </div>
-                <div className="flex items-center gap-4 w-2/4">
+                <div className="sm:flex items-center gap-1 md:gap-4 w-2/6 md:w-2/4 hidden">
                     <div className="flex border border-gray-300 bg-neutral-700 h-10 rounded-lg w-5/6 divide-x divide-white">
-                    <input type="text" placeholder="Search" className="w-5/6 h-full rounded-l-lg pl-2"/>
-                    <select className="w-1/6 rounded-r-lg">
+                    <input type="text" placeholder="Search" className="w-6/6 md:w-5/6 h-full rounded-l-lg pl-2"/>
+                    <select className="md:flex w-1/6 rounded-r-lg hidden">
                         <option value="all">All</option>
                         <option value="brands">Brands</option>
                         <option value="products">Products</option>
                     </select>
                     </div>
-                    <button className="bg-green-500 text-white p-2 rounded-lg md:w-1/6 sm:w-fit">Search</button>
+                    <button className="bg-green-500 text-sm md:text-base min-w-14 text-white p-1 sm:p-2 rounded-lg md:w-1/6 sm:w-fit flex justify-center">Search</button>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 xs:gap-4">
                     <SelectedLink to="/cart"><BsCart4 className="text-white text-2xl"/>Cart</SelectedLink>
                     {isAuthenticated ? 
                     <div className="flex items-center gap-4" ref={userMenuRef}>
