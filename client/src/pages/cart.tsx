@@ -19,8 +19,8 @@ const Cart = ({cart, setCart}: CartProps) => {
     }
 
     return (
-        <div className="flex flex-row w-full h-full" style={{ height: 'calc(100vh - 6rem)' }}>
-            <div className="flex w-3/4 flex-col items-center">
+        <div className="flex flex-col md:flex-row w-full h-full" style={{ height: 'calc(100vh - 6rem)' }}>
+            <div className="flex w-4/4 md:w-3/4 h-4/6 md:h-full flex-col items-center">
                 <div className="flex flex-col w-full bg-slate-700 h-full">
                 <h1 className="ml-2 mr-2 border-b-2 p-2">Your Cart</h1>
                 <br/>
@@ -34,9 +34,9 @@ const Cart = ({cart, setCart}: CartProps) => {
                     )) : (<p className="m-2">No items in your cart</p>)}
                 </div>
             </div>
-            <div className="flex flex-col w-1/4 bg-slate-800 h-full gap-2 justify-between items-center">
-                <h1>Checkout</h1>
-                <div className=" text-2xl">
+            <div className="flex flex-col w-4/4 md:w-1/4 bg-slate-800 h-2/6 md:h-full gap-2 justify-between items-center">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl p-2">Checkout</h1>
+                <div className="md:text-2xl">
                     <h2>Total Items: {cart.length}</h2>
                     <h2>Total: ${cart.reduce((acc, product) => acc + product.price * product.quantity, 0)}</h2>
                 </div>

@@ -24,11 +24,11 @@ const BrandsPage = () => {
                     <input type="text" className="p-1" placeholder="Search Brands" onChange={(e) => setSearch(e.target.value)}/>
                 </search>
             </div>
-            <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-12/12 m-2">
                 {brandsQuery.data.data.filter((brand: any) => brand.name.toLowerCase().includes(search.toLowerCase())).map((brand: any) => (
                     <Link key={brand.id} to={`/brands/${brand.id}`}>
-                        <div key={brand.id} className="border-2 p-2 bg-slate-700">
-                            <h2>{brand.name}</h2>
+                        <div key={brand.id} className="flex flex-col gap-4 border-2 p-2 bg-slate-700 min-h-64 max-h-64">
+                            <h2 className="font-semibold text-xl border-b">{brand.name}</h2>
                             <p>{brand.description}</p>
                         </div>
                     </Link>
