@@ -71,20 +71,20 @@ const UserBrandPagesList = () => {
     
     return (
         <div>
-            <input type="text" placeholder="Filter Brands" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
+            <input type="text" placeholder="Filter Brands" className="border border-slate-600 p-1 mb-2 w-full xs:w-2/4" onChange={(e) => setFilter(e.target.value)} />
             <div className="border border-slate-500 p-1" style={{maxHeight: "60vh"}}>
-                <ul className="flex flex-col gap-4 w-10/12 overflow-y-auto">
+                <ul className="flex flex-col gap-4 w-full overflow-y-auto">
                     {productFilter(data.brands, filter).map((page: any) => (
                     <div key={page.id} className="flex flex-col border border-slate-600 gap-2 p-2">
                         <div className="flex flex-col gap-1">
                             <h2 className="text-xl">{page.name}</h2>
                             <p className="text-lg">{page.description}</p>
                         </div>
-                        <div className="flex gap-2 w-4/12">
-                            <Link to={`/brand/edit/${page.id}`}>
-                                <button className="min-w-24" onClick={() => handleEditChange(page.id)}>Edit</button>
+                        <div className="flex gap-2 w-full">
+                            <Link to={`/brand/edit/${page.id}`} className="w-1/3">
+                                <button className="w-full" onClick={() => handleEditChange(page.id)}>Edit</button>
                             </Link>
-                            <button className="min-w-24" onClick={() => handleDelete(page.id)}>Delete</button>
+                            <button className="w-1/3" onClick={() => handleDelete(page.id)}>Delete</button>
                         </div>
                     </div>
                     ))}

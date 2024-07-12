@@ -37,17 +37,17 @@ const Navbar = () => {
     }, [location]);
 
     return (
-        <nav className="navbar bg-slate-600 w-full">
-            <div className="p-2 xs:p-6 max-w mx-auto flex items-center justify-between w-full">
+        <nav className="navbar bg-slate-600 w-full h-1/6 overflow-hidden">
+            <div className="p-2 xs:p-6 max-w mx-auto flex items-center justify-between w-full h-5/6">
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
                 </div> */}
-                <div className="flex text-md gap-2 sm:text-lg md:text-xl text-white-100 xs:gap-4 lg:gap-16 items-center justify-center">
+                <div className="flex text-md gap-2 sm:text-lg md:text-xl text-white-100 xs:gap-4 lg:gap-16 items-center justify-center h-5/6">
                     <span className="border-2 border-black p-2">Logo</span>
                     <SelectedLink to="/">Home</SelectedLink>
                     <SelectedLink to="/brands">Brands</SelectedLink>
                 </div>
-                <div className="sm:flex items-center gap-1 md:gap-4 w-2/6 md:w-2/4 hidden">
+                <div className="sm:flex items-center gap-1 md:gap-4 w-2/6 md:w-2/4 hidden h-5/6">
                     <div className="flex border border-gray-300 bg-neutral-700 h-10 rounded-lg w-5/6 divide-x divide-white">
                     <input type="text" placeholder="Search" className="w-6/6 md:w-5/6 h-full rounded-l-lg pl-2"/>
                     <select className="md:flex w-1/6 rounded-r-lg hidden">
@@ -58,15 +58,15 @@ const Navbar = () => {
                     </div>
                     <button className="bg-green-500 text-sm md:text-base min-w-14 text-white p-1 sm:p-2 rounded-lg md:w-1/6 sm:w-fit flex justify-center">Search</button>
                 </div>
-                <div className="flex items-center gap-2 xs:gap-4">
-                    <SelectedLink to="/cart"><BsCart4 className="text-white text-2xl"/>Cart</SelectedLink>
+                <div className="flex items-center gap-2 xs:gap-4 h-5/6">
+                    <SelectedLink to="/cart"><BsCart4 className="text-white xs:text-2xl"/>Cart</SelectedLink>
                     {isAuthenticated ? 
-                    <div className="flex items-center gap-4" ref={userMenuRef}>
-                        <button onClick={toggleUserMenu} name="accountButton" className="w-12 p-0 h-12 rounded-full bg-transparent">
+                    <div className="flex items-center flex-col xs:flex-row gap-1 md:gap-4" ref={userMenuRef}>
+                        <button onClick={toggleUserMenu} name="accountButton" className="w-10 xs:w-12 p-0 h-10 xs:h-12 rounded-full bg-transparent">
                             <img src={user?.picture} alt={user?.name} className="rounded-full"/>
                         </button>
                         {userMenu && 
-                            <div id="dropdownMenu" className={`fixed flex items-center justify-center flex-col top-20 right-0 mt-4 w-64 bg-white border border-gray-200 divide-y divide-gray-200`}>
+                            <div id="dropdownMenu" className={`fixed flex items-center justify-center flex-col top-16 xs:top-20 right-0 mt-6 xs:mt-2 w-full xs:w-64 h-1/4 xs:h-fit bg-white border border-gray-200 divide-y divide-gray-200`}>
                             <div className="px-4 py-3 flex items-center justify-center flex-col">
                                 <p className="text-md font-medium text-gray-900">{user?.name}</p>
                                 <p className="text-sm text-gray-500">{user?.email}</p>
@@ -77,7 +77,7 @@ const Navbar = () => {
                             </div>
                             </div>
                         }
-                        {userData?.plan !== "Enterprise" && <button className="bg-slate-900 text-white p-2 rounded-lg"
+                        {userData?.plan !== "Enterprise" && <button className="bg-slate-900 text-white text-xs p-1 xs:text-base xs:p-2 rounded-lg"
                             onClick={() => navigate("/upgrade")}>Upgrade</button>}
                     </div>
                     : <LoginButton />}
