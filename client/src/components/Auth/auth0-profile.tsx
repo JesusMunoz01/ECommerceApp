@@ -10,7 +10,7 @@ const Profile = () => {
       <div className="h-18 mt-4 sm:h-32">
         {isAuthenticated ? 
           <div className="flex flex-col h-full items-start sm:flex-row sm:items-start sm:justify-start">
-            <img src={user?.picture} alt={user?.name}/>
+            <img src={user?.picture} alt={user?.name} className="self-center xs:self-start xs:ml-2 rounded-lg xs:rounded-none"/>
             <div className="flex flex-col ml-2 gap-2 h-full">
               <h2>Username: {user?.name}</h2>
               <p>Email: {user?.email}</p>

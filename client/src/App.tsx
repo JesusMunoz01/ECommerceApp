@@ -68,22 +68,22 @@ function App() {
           {isAuthenticated && (
                 <>
                   <Route path="/account" element={
-                  <div className='flex w-full gap-4' style={{ height: 'calc(100vh - 6rem)' }}>
+                  <div className='flex w-full gap-1 md:gap-4 h-full'>
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <AccountPage />
                   </div>} />
                   <Route path="/sell" element={
-                  <div className='flex w-full' style={{ height: 'calc(100vh - 6rem)' }}>
+                  <div className='flex w-full h-full'>
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <SellPage />
                   </div>} />
                   <Route path="/newBrand" element={
-                  <div className='flex w-full' style={{ height: 'calc(100vh - 6rem)' }}>
+                  <div className='flex w-full h-full'>
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <CreateBrandPage />
                   </div>} />
                   <Route path="/settings" element={
-                  <div className='flex w-full' style={{ height: 'calc(100vh - 6rem)' }}>
+                  <div className='flex w-full h-full'>
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <SettingsPage />
                   </div>} />

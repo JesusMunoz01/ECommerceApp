@@ -6,10 +6,11 @@ type SidebarProps = {
     toggle: () => void;
   };
 
-const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
+//const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
+const Sidebar = ({ isOpen }: SidebarProps) => {
     return (
       // isOpen ? (
-        <div className="flex flex-col items-center bg-slate-700 h-full w-1/12 justify-between">
+        <div className="flex flex-col items-center bg-slate-700 h-full w-1/3 xs:w-3/12 md:w-2/12 lg:w-1/12 justify-between">
           <div className="mt-2">
             <h2 className="text-xl border-b border-slate-500 w-full">Account</h2>
             <ul className="flex flex-col mt-4 gap-4">
@@ -20,7 +21,7 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
           </div>
           <div className="mb-2 flex items-center flex-col gap-2 border-t border-slate-500 w-fit pt-2">
             <LogoutButton />
-            <button onClick={toggle}>Close Sidebar</button>
+            {/* <button onClick={toggle}>Close Sidebar</button> */}
           </div>
         </div>
       // )

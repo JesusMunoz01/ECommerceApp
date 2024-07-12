@@ -56,24 +56,24 @@ const UserProductList = () => {
     
     return (
         <div>
-            <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-2/4" onChange={(e) => setFilter(e.target.value)} />
+            <input type="text" placeholder="Filter Products" className="border border-slate-600 p-1 mb-2 w-full xs:w-2/4" onChange={(e) => setFilter(e.target.value)} />
             <div className="border border-slate-500 p-1" style={{maxHeight: "60vh"}}>
-                <ul className="flex flex-col gap-4 w-10/12 overflow-y-auto">
+                <ul className="flex flex-col gap-4 w-full pr-1 sm:w-full overflow-y-auto">
                     {productFilter(data.products, filter).map((product: Product) => (
                     <div key={product.id} className="flex flex-col border border-slate-600 gap-2 p-2">
                         <div className="flex flex-col gap-1">
-                            <h2 className="text-xl">{product.name}</h2>
-                            <p className="text-lg">{product.description}</p>
-                            <p className="text-lg">${product.price}</p>
+                            <h2 className="text-lg sm:text-xl">{product.name}</h2>
+                            <p className="text-md sm:text-lg">{product.description}</p>
+                            <p className="text-md sm:text-lg">${product.price}</p>
                         </div>
                         <div className="flex gap-2">
-                            <button className="w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
-                            <button className="w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
+                            <button className="w-1/3 xs:w-1/4 md:w-2/12" onClick={() => handleEditChange(product.id)}>Edit</button>
+                            <button className="w-1/3 xs:w-1/4 md:w-2/12" onClick={() => handleDelete(product.id)}>Delete</button>
                         </div>
                         <div ref={(ref) => { formRefs.current[product.id] = ref ? { current: ref } : null; }}>
                             {editingProductId === product.id && (
                                 <div className="flex flex-col border-t mt-2">
-                                    <h1>Edit Product</h1>
+                                    <h1 className="text-2xl md:text-base">Edit Product</h1>
                                     <ProductForm actionType="Update" userProduct={product} onSuccessfulSubmit={setEditingProductId} />
                                 </div>
                             )}
