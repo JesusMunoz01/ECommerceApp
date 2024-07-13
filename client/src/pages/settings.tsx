@@ -53,7 +53,7 @@ const SettingsPage = () => {
         <Button action={handleToggle(isOrdersOpen, setIsOrdersOpen)} text='Order History' />
         {isOrdersOpen && (<UserOrders/>)}
       </div>
-      <DeleteButton action={handleToggle(isDelete, setIsDelete)}/>
+      <DeleteButton action={handleToggle(isDelete, setIsDelete)} className='w-3/4'/>
     </div>
   );
 }
