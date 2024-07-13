@@ -1,18 +1,15 @@
 interface DeleteButtonProps {
     action: () => void;
+    children?: React.ReactNode;
+    className?: string;
 }
 
-const DeleteButton = ({action}: DeleteButtonProps) => {
+const DeleteButton = ({action, children, className}: DeleteButtonProps) => {
 
     return (
-        <div className='flex flex-col shadow-md rounded my-6 gap-4 h-1/6 w-3/4'>
-        <button 
-          className="block hover:bg-red-500 bg-red-800 focus:outline-non transition duration-150 ease-in-out w-full text-left px-4 py-2 rounded-none"
-          onClick={action}
-        >
-          Delete User
+        <button className={`block hover:bg-red-500 bg-red-800 focus:outline-non transition duration-150 ease-in-out px-4 py-2 ${className}`} onClick={action}>
+          {children ? children : "Delete User"}
         </button>
-      </div>
     );
 
 }
