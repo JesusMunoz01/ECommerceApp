@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Res, Header, Req, RawBodyRequest } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Res, Header, Req, RawBodyRequest, Request } from '@nestjs/common';
 import { StripeService } from './payment.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -26,6 +26,14 @@ export class PaymentController {
   @Post('upgrade-subscription')
   async upgradeSubscription(@Body() data, @Res() response): Promise<void> {
     const url = await this.stripeService.createUpgradeSubscription(data.tier, data.userId);
+    response.json({ url });
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('cancel-subscription')
+  async cancelSubscription(@Request() req, @Res() response): Promise<void> {
+    const userId = req.user.sub;
+    const url = await this.stripeService.cancelSubscription(userId);
     response.json({ url });
   }
 
