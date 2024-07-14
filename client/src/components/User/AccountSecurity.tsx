@@ -10,14 +10,24 @@ interface AccountSecurityProps {
 }
 
 const AccountSecurity = ({onClick}: AccountSecurityProps) => {
-    const {user} = useAuth0();
+    const {user, getAccessTokenSilently} = useAuth0();
     const {userData} = useUser();
     const [isSubCancel, setIsSubCancel] = useState(false);
 
     const cancelSubQuery = useMutation({
         mutationKey: ["cancelSubscription"],
         mutationFn: async () => {
-            // Cancel subscription
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/payments/cancel-subscription`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                //body: JSON.stringify({userId: user?.sub})
+            });
+            const data = await response.json();
+            return data;
         }
     });
 
