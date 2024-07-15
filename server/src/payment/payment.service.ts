@@ -133,8 +133,8 @@ export class StripeService {
 
   async cancelSubscription(userId): Promise<string> {
     try{
-      const userStripeId:string = await new Promise((resolve, reject) => {
-        this.connection.query(`SELECT pid FROM users WHERE id = ?`, [userId.split('|')[1]], (err, results) => {
+      const subID:string = await new Promise((resolve, reject) => {
+        this.connection.query(`SELECT sid FROM users WHERE id = ?`, [userId.split('|')[1]], (err, results) => {
           if (err) {
             console.log(err);
             reject({ message: "Error getting user" });
@@ -143,9 +143,16 @@ export class StripeService {
           }
         });
       });
-      const test = await this.stripe.subscriptions.cancel(userStripeId, { prorate: true });
-      console.log(test);
-      return 'Subscription cancelled';
+
+      if(subID === null)
+        return 'Subscription not found';
+
+      const cancelAttempt = await this.stripe.subscriptions.cancel(subID, { prorate: true });
+
+      if(cancelAttempt.status === 'canceled')
+        return 'Subscription cancelled';
+      else
+        return 'Error cancelling subscription';
     } catch (error) {
       return error.message;
     }
@@ -161,17 +168,18 @@ export class StripeService {
     
     switch (event.type) {
       // Subscription created or updated --------------------------------------
-      case 'customer.subscription.updated':
+      case 'customer.subscription.updated' || 'customer.subscription.created':
         const userSID = event.data.object.metadata.userId;
         const planName = event.data.object.metadata.planName;
         const subscription = event.data.object as Stripe.Subscription;
-        const userSubId = subscription.customer;
+        const userPid = subscription.customer;
+        const userSubId = subscription.id;
         const endingDate = subscription.current_period_end;
         // const planId = subscription.items.data[0].price.id;
 
         // Update user plan in database
         await new Promise((resolve, reject) => {
-          this.connection.query(`UPDATE users SET sname = ?, endingDate = FROM_UNIXTIME(?), pid = ? WHERE id = ?`, [planName, endingDate, userSubId, userSID], (err, results) => {
+          this.connection.query(`UPDATE users SET sname = ?, endingDate = FROM_UNIXTIME(?), pid = ?, sid = ? WHERE id = ?`, [planName, endingDate, userPid, userSubId, userSID], (err, results) => {
             if (err) {
               console.log(err);
               reject({ message: "Error updating user" });
@@ -186,6 +194,7 @@ export class StripeService {
         if(!event.data.object.client_reference_id)
           break;
         const session = event.data.object as Stripe.Checkout.Session;
+        console.log(session)
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;

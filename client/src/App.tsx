@@ -23,8 +23,6 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { userData, setUser } = useUser(); 
 
-  console.log(isAuthenticated)
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -32,7 +30,7 @@ function App() {
   const userQuery = useQuery({
     queryKey: ['user', user?.sub],
     queryFn: async () => {
-      console.log(user)
+      // console.log(user)
       const token = await getAccessTokenSilently();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub}`, {
           headers: {
@@ -40,7 +38,7 @@ function App() {
           },
       });
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       return data;
     },
     enabled: isAuthenticated,
