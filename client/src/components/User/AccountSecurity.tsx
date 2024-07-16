@@ -31,6 +31,11 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
         }
     });
 
+    const confirmHandler = async () => {
+        await cancelSubQuery.mutate();
+        setIsSubCancel(false);
+    }
+
 
     return (
         <div className="border-t flex flex-col gap-2">
@@ -39,7 +44,7 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
                     <ConfirmationPopup 
                     title="Cancel Subscription"
                     message="Are you sure you want to cancel your subscription?" 
-                    onConfirm={cancelSubQuery.mutate} 
+                    onConfirm={confirmHandler} 
                     onCancel={()=>setIsSubCancel(false)}/>
                 </div>
             }
