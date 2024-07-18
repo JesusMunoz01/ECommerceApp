@@ -121,7 +121,7 @@ export class StripeService {
       if(currentSubscription === 3)
         return 'Already subscribed to Enterprise plan';
       else if(currentSubscription === 2)
-        discountCode = 'upgrade';
+        discountCode = 'kglmdZli';
     }
     else
       return 'Invalid plan ID';
@@ -135,6 +135,7 @@ export class StripeService {
           quantity: 1,
         },
       ],
+      discounts: discountCode ? [{ coupon: discountCode }] : [],
       mode: 'subscription',
       success_url: `${process.env.CLIENT_URL}`,
       cancel_url: `${process.env.CLIENT_URL}`,
