@@ -80,9 +80,19 @@ export class StripeService {
     return session.url;
   }
 
+  async getCurrentUserSubscriptionTier(userStripeId: string): Promise<number> {
+    const user = await this.stripe.customers.retrieve(userStripeId);
+    console.log(user);
+    // const subscription = user.subscriptions.data[0];
+    // const planId = subscription.items.data[0].price.id;
+    // return planId;
+    return 1;
+  }
+
   async createUpgradeSubscription(planId, userId): Promise<string> {
     let price;
     let planName;
+    let discountCode: string | null = null;
 
     const dbUserId = userId.split('|')[1]
 
@@ -97,13 +107,21 @@ export class StripeService {
       });
     });
 
+    const currentSubscription = await this.getCurrentUserSubscriptionTier(userStripeId as string);
+
     if(planId === 2){
       price = "price_1P076aIaMlkIlLqjzNNVBPcH"
       planName = "Premium"
+      if(currentSubscription === 2)
+        return 'Already subscribed to Premium plan';
     }
     else if(planId === 3){
       price = "price_1P077DIaMlkIlLqjeZXgNdMF"
       planName = "Enterprise"
+      if(currentSubscription === 3)
+        return 'Already subscribed to Enterprise plan';
+      else if(currentSubscription === 2)
+        discountCode = 'upgrade';
     }
     else
       return 'Invalid plan ID';

@@ -57,9 +57,11 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
             <div className="flex justify-center items-center gap-4">
                 <button className="block hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-1/2 text-center px-4 py-2 rounded-md self-center" 
                 onClick={onClick}>Edit Password</button>
+                {userData?.plan !== "Free" &&
                 <DeleteButton action={()=>setIsSubCancel(true)} className="w-1/2 rounded-md">
                     Cancel Subscription
                 </DeleteButton>
+                }
             </div>
         </div>
     );
