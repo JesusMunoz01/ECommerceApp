@@ -80,23 +80,23 @@ export class StripeService {
     return session.url;
   }
 
-  async getCurrentUserSubscriptionTier(userStripeId: string): Promise<number> {
-    const user = await this.stripe.customers.retrieve(userStripeId);
-    console.log(user);
-    // const subscription = user.subscriptions.data[0];
-    // const planId = subscription.items.data[0].price.id;
-    // return planId;
-    return 1;
-  }
+  // async getCurrentUserSubscriptionTier(userStripeId: string): Promise<number> {
+  //   const user = await this.stripe.customers.retrieve(userStripeId);
+  //   console.log(user);
+  //   // const subscription = user.subscriptions.data[0];
+  //   // const planId = subscription.items.data[0].price.id;
+  //   // return planId;
+  //   return 1;
+  // }
 
   async createUpgradeSubscription(planId, userId): Promise<string> {
-    let price;
+    let priceId;
     let planName;
     let discountCode: string | null = null;
 
     const dbUserId = userId.split('|')[1]
 
-    const userStripeId = await new Promise((resolve, reject) => {
+    const userSubId:string = await new Promise((resolve, reject) => {
       this.connection.query(`SELECT sid FROM users WHERE id = ?`, [dbUserId], (err, results) => {
         if (err) {
           console.log(err);
@@ -107,47 +107,59 @@ export class StripeService {
       });
     });
 
-    const currentSubscription = await this.getCurrentUserSubscriptionTier(userStripeId as string);
+    const subscription = await this.stripe.subscriptions.retrieve(userSubId)
+    console.log(subscription)
 
-    if(planId === 2){
-      price = "price_1P076aIaMlkIlLqjzNNVBPcH"
-      planName = "Premium"
-      if(currentSubscription === 2)
-        return 'Already subscribed to Premium plan';
-    }
-    else if(planId === 3){
-      price = "price_1P077DIaMlkIlLqjeZXgNdMF"
-      planName = "Enterprise"
-      if(currentSubscription === 3)
-        return 'Already subscribed to Enterprise plan';
-      else if(currentSubscription === 2)
-        discountCode = 'kglmdZli';
-    }
-    else
-      return 'Invalid plan ID';
+    // const currentSubscription = await this.getCurrentUserSubscriptionTier(userSubId as string);
 
-    const session = await this.stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      customer: userStripeId as string,
-      line_items: [
-        {
-          price: price,
-          quantity: 1,
-        },
-      ],
-      discounts: discountCode ? [{ coupon: discountCode }] : [],
-      mode: 'subscription',
-      success_url: `${process.env.CLIENT_URL}`,
-      cancel_url: `${process.env.CLIENT_URL}`,
-      subscription_data: {
-        metadata: {
-          userId: dbUserId,
-          planName: planName
-        }
-      },
-    });
+    // if(planId === 2){
+    //   priceId = "price_1P076aIaMlkIlLqjzNNVBPcH"
+    //   planName = "Premium"
+    //   if(currentSubscription === 2)
+    //     return 'Already subscribed to Premium plan';
+    // }
+    // else if(planId === 3){
+    //   priceId = "price_1P077DIaMlkIlLqjeZXgNdMF"
+    //   planName = "Enterprise"
+    //   if(currentSubscription === 3)
+    //     return 'Already subscribed to Enterprise plan';
+    //   else if(currentSubscription === 2)
+    //     discountCode = 'kglmdZli';
+    // }
+    // else
+    //   return 'Invalid plan ID';
 
-    return session.url;
+      if (!subscription.metadata.discount_used_for_upgrade) {
+        // Update the subscription with the new price and apply the promotion code
+        const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
+          items: [{
+            id: subscription.items.data[0].id,
+            price: priceId,
+          }],
+          coupon: discountCode,
+          metadata: {
+            discount_used_for_upgrade: 'true',
+            userId: dbUserId,
+            planName: planName
+          },
+        });
+    
+        return "Subscription updated with promotion code"; ;
+      } else {
+        // Update the subscription without applying the promotion code
+        const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
+          items: [{
+            id: subscription.items.data[0].id,
+            price: priceId,
+          }],
+          metadata: {
+            userId: dbUserId,
+            planName: planName
+          }
+        });
+    
+        return "Subscription updated without promotion code";
+      }
   }
 
   async cancelSubscription(userId): Promise<string> {
@@ -190,7 +202,11 @@ export class StripeService {
       case 'customer.subscription.updated' || 'customer.subscription.created':
         const userSID = event.data.object.metadata.userId;
         const planName = event.data.object.metadata.planName;
+        console.log(planName)
         const subscription = event.data.object as Stripe.Subscription;
+        const subscriptionName = subscription.metadata.planName;
+        console.log("-------------------")
+        console.log(subscriptionName)
         const userPid = subscription.customer;
         const userSubId = subscription.id;
         const endingDate = subscription.current_period_end;
