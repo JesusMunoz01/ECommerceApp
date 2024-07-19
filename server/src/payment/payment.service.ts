@@ -72,7 +72,8 @@ export class StripeService {
       subscription_data: {
         metadata: {
           userId: dbUserId,
-          planName: planName
+          planName: planName,
+          discount_used_for_upgrade: planName === "Premium" ? 'false' : 'true',
         }
       },
     });
@@ -129,36 +130,76 @@ export class StripeService {
     // else
     //   return 'Invalid plan ID';
 
-      if (!subscription.metadata.discount_used_for_upgrade) {
+      if (!subscription.metadata.discount_used_for_upgrade || subscription.metadata.discount_used_for_upgrade === 'false') {
         // Update the subscription with the new price and apply the promotion code
-        const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
-          items: [{
-            id: subscription.items.data[0].id,
-            price: priceId,
-          }],
-          coupon: discountCode,
-          metadata: {
-            discount_used_for_upgrade: 'true',
-            userId: dbUserId,
-            planName: planName
+        // Create a checkout session to apply the promotion code
+        const session = await this.stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              price: "price_1P077DIaMlkIlLqjeZXgNdMF",
+              quantity: 1,
+            },
+          ],
+          mode: 'subscription',
+          discounts: [{ coupon: "kglmdZli" }],
+          success_url: `${process.env.CLIENT_URL}`,
+          cancel_url: `${process.env.CLIENT_URL}`,
+          subscription_data: {
+            metadata: {
+              userId: dbUserId,
+              planName: planName,
+              discount_used_for_upgrade: 'true',
+            }
           },
         });
+        // const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
+        //   items: [{
+        //     id: subscription.items.data[0].id,
+        //     price: priceId,
+        //   }],
+        //   coupon: discountCode,
+        //   metadata: {
+        //     discount_used_for_upgrade: 'true',
+        //     userId: dbUserId,
+        //     planName: planName
+        //   },
+        // });
     
-        return "Subscription updated with promotion code"; ;
+        return session.url;
       } else {
         // Update the subscription without applying the promotion code
-        const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
-          items: [{
-            id: subscription.items.data[0].id,
-            price: priceId,
-          }],
-          metadata: {
-            userId: dbUserId,
-            planName: planName
-          }
+        const session = await this.stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              price: "price_1P077DIaMlkIlLqjeZXgNdMF",
+              quantity: 1,
+            },
+          ],
+          mode: 'subscription',
+          success_url: `${process.env.CLIENT_URL}`,
+          cancel_url: `${process.env.CLIENT_URL}`,
+          subscription_data: {
+            metadata: {
+              userId: dbUserId,
+              planName: planName,
+              discount_used_for_upgrade: 'true',
+            }
+          },
         });
+        // const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
+        //   items: [{
+        //     id: subscription.items.data[0].id,
+        //     price: priceId,
+        //   }],
+        //   metadata: {
+        //     userId: dbUserId,
+        //     planName: planName
+        //   }
+        // });
     
-        return "Subscription updated without promotion code";
+        return session.url;
       }
   }
 
@@ -308,6 +349,8 @@ export class StripeService {
           });
         });
         return event.data.object as Stripe.Checkout.Session;
+      // TODO: Handle subscription cancellation
+      //case 'customer.subscription.deleted':
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
