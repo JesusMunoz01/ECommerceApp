@@ -48,7 +48,7 @@ const UpgradePage = ({role}: UpgradePageProps) => {
             <p>Upgrade your account to access premium features</p>
             <div className="flex gap-5 mt-4">
                 {subscriptionData.map((subscription) => (
-                    <SubscriptionCard tier={subscription.tier} benefits={subscription.benefits} 
+                    <SubscriptionCard key={subscription.name} tier={subscription.tier} benefits={subscription.benefits} 
                         name={subscription.name} price={subscription.price} active={subscription.active}/>
                 ))}
             </div>
