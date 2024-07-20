@@ -13,6 +13,14 @@ export class StripeService {
       apiVersion: '2023-10-16',
     });
   }
+  
+  async createCoupon() {
+    const coupon = await this.stripe.coupons.create({
+      percent_off: 50, // Assuming the user paid $9.99 and the upgrade cost is $19.99, so 50% off.
+      duration: 'once',
+    });
+    return coupon.id;
+  }
 
   async createCheckoutSession(items, userId): Promise<string> {
     const session = await this.stripe.checkout.sessions.create({
@@ -149,7 +157,7 @@ export class StripeService {
             metadata: {
               userId: dbUserId,
               planName: planName,
-              discount_used_for_upgrade: 'true',
+              // discount_used_for_upgrade: 'true',
             }
           },
         });
