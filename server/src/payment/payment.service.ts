@@ -13,6 +13,15 @@ export class StripeService {
       apiVersion: '2023-10-16',
     });
   }
+  
+  async createCoupon() {
+    const coupon = await this.stripe.coupons.create({
+      percent_off: 50, // Assuming the user paid $9.99 and the upgrade cost is $19.99, so 50% off.
+      duration: 'once',
+      name: 'Upgrade discount',
+    });
+    return coupon.id;
+  }
 
   async createCheckoutSession(items, userId): Promise<string> {
     const session = await this.stripe.checkout.sessions.create({
@@ -81,126 +90,36 @@ export class StripeService {
     return session.url;
   }
 
-  // async getCurrentUserSubscriptionTier(userStripeId: string): Promise<number> {
-  //   const user = await this.stripe.customers.retrieve(userStripeId);
-  //   console.log(user);
-  //   // const subscription = user.subscriptions.data[0];
-  //   // const planId = subscription.items.data[0].price.id;
-  //   // return planId;
-  //   return 1;
-  // }
 
   async createUpgradeSubscription(planId, userId): Promise<string> {
-    let priceId;
+    
+    const couponId = await this.createCoupon();
     let planName;
-    let discountCode: string | null = null;
 
     const dbUserId = userId.split('|')[1]
 
-    const userSubId:string = await new Promise((resolve, reject) => {
-      this.connection.query(`SELECT sid FROM users WHERE id = ?`, [dbUserId], (err, results) => {
-        if (err) {
-          console.log(err);
-          reject({ message: "Error getting user" });
-        } else {
-          resolve(results[0].sid);
+    const session = await this.stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: "price_1P077DIaMlkIlLqjeZXgNdMF",
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      discounts: [{ coupon: couponId }],
+      success_url: `${process.env.CLIENT_URL}`,
+      cancel_url: `${process.env.CLIENT_URL}`,
+      subscription_data: {
+        metadata: {
+          userId: dbUserId,
+          planName: planName,
+          // discount_used_for_upgrade: 'true',
         }
-      });
+      },
     });
 
-    const subscription = await this.stripe.subscriptions.retrieve(userSubId)
-    console.log(subscription)
-
-    // const currentSubscription = await this.getCurrentUserSubscriptionTier(userSubId as string);
-
-    // if(planId === 2){
-    //   priceId = "price_1P076aIaMlkIlLqjzNNVBPcH"
-    //   planName = "Premium"
-    //   if(currentSubscription === 2)
-    //     return 'Already subscribed to Premium plan';
-    // }
-    // else if(planId === 3){
-    //   priceId = "price_1P077DIaMlkIlLqjeZXgNdMF"
-    //   planName = "Enterprise"
-    //   if(currentSubscription === 3)
-    //     return 'Already subscribed to Enterprise plan';
-    //   else if(currentSubscription === 2)
-    //     discountCode = 'kglmdZli';
-    // }
-    // else
-    //   return 'Invalid plan ID';
-
-      if (!subscription.metadata.discount_used_for_upgrade || subscription.metadata.discount_used_for_upgrade === 'false') {
-        // Update the subscription with the new price and apply the promotion code
-        // Create a checkout session to apply the promotion code
-        const session = await this.stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
-          line_items: [
-            {
-              price: "price_1P077DIaMlkIlLqjeZXgNdMF",
-              quantity: 1,
-            },
-          ],
-          mode: 'subscription',
-          discounts: [{ coupon: "kglmdZli" }],
-          success_url: `${process.env.CLIENT_URL}`,
-          cancel_url: `${process.env.CLIENT_URL}`,
-          subscription_data: {
-            metadata: {
-              userId: dbUserId,
-              planName: planName,
-              discount_used_for_upgrade: 'true',
-            }
-          },
-        });
-        // const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
-        //   items: [{
-        //     id: subscription.items.data[0].id,
-        //     price: priceId,
-        //   }],
-        //   coupon: discountCode,
-        //   metadata: {
-        //     discount_used_for_upgrade: 'true',
-        //     userId: dbUserId,
-        //     planName: planName
-        //   },
-        // });
-    
-        return session.url;
-      } else {
-        // Update the subscription without applying the promotion code
-        const session = await this.stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
-          line_items: [
-            {
-              price: "price_1P077DIaMlkIlLqjeZXgNdMF",
-              quantity: 1,
-            },
-          ],
-          mode: 'subscription',
-          success_url: `${process.env.CLIENT_URL}`,
-          cancel_url: `${process.env.CLIENT_URL}`,
-          subscription_data: {
-            metadata: {
-              userId: dbUserId,
-              planName: planName,
-              discount_used_for_upgrade: 'true',
-            }
-          },
-        });
-        // const updatedSubscription = await this.stripe.subscriptions.update(userSubId, {
-        //   items: [{
-        //     id: subscription.items.data[0].id,
-        //     price: priceId,
-        //   }],
-        //   metadata: {
-        //     userId: dbUserId,
-        //     planName: planName
-        //   }
-        // });
-    
-        return session.url;
-      }
+    return session.url;
   }
 
   async cancelSubscription(userId): Promise<string> {
