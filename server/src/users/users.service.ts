@@ -94,7 +94,7 @@ export class UsersService {
         }
     }
 
-    async getUser(userID: string): Promise<{ message: string, plan?: string, brands?: [] }> {
+    async getUser(userID: string): Promise<{ message: string, plan?: string, brands?: [], subEndDate?: string }> {
         try{
             const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
                 headers: {
@@ -115,11 +115,11 @@ export class UsersService {
             await this.checkSubscription(userData.identities[0].user_id)
 
             // Fetch user plan name from the database and return it to the client
-            const results = await queryAsync(`SELECT sname FROM users WHERE id = ?`, [userData.identities[0].user_id]);
+            const results = await queryAsync(`SELECT sname, endingDate FROM users WHERE id = ?`, [userData.identities[0].user_id]);
             const brands = await queryAsync(`SELECT * FROM brands WHERE brandOwner = ?`, [userData.identities[0].user_id]);
 
             if (results && results.length > 0) {
-                return { message: "User fetched successfully", plan: results[0].sname, brands: brands };
+                return { message: "User fetched successfully", plan: results[0].sname, brands: brands, subEndDate: results[0].endingDate };
             } else {
                 return { message: "User not found" };
             }

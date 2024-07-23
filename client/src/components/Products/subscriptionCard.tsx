@@ -11,6 +11,7 @@ type SubscriptionCardProps = {
 
 const SubscriptionCard = ({tier, benefits, name, price, active}: SubscriptionCardProps) => {
     const { userData } = useUser();
+    console.log(userData);
 
     return (
         <div className="flex gap-5">
