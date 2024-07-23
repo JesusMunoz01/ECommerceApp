@@ -33,7 +33,9 @@ const SubscriptionCard = ({tier, benefits, name, price, active}: SubscriptionCar
                             ))}
                         </ul>
                     </div>
-                    <div>
+                    <div className="flex items-center flex-col">
+                        { userData?.plan === `${name}` && userData?.subEndDate >= `${new Date().toISOString().split('T')[0]}` &&
+                        <span className="text-gray-300 mb-2">Subscription renews on {userData.subEndDate}</span>}
                         {tier !== 1 && !active ? <SubscriptionButton tier={tier}/> : 
                         <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none p-2 w-24" 
                             disabled={true}>Active</button>}

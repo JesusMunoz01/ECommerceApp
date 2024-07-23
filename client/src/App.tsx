@@ -46,7 +46,12 @@ function App() {
 
   useEffect(() => {
     if (userQuery.data) {
-      setUser(userQuery.data);
+      setUser({
+        ...userQuery.data, 
+        subEndDate: userQuery.data.subEndDate ? 
+        new Date(userQuery.data.subEndDate).toLocaleDateString() :
+        null
+      });
     }
   }, [userQuery.data]);
 
