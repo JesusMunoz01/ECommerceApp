@@ -47,8 +47,8 @@ export class UsersService {
         // console.log(userEndDate);
         if(userEndDate[0].endingDate && userEndDate[0].endingDate < new Date()) {
             try{
-                await this.connection.query(`UPDATE users SET sname = ?, endingDate = NULL, updated_at = NOW() WHERE id = ?`, 
-                ["Free", userID], (err, results) => {
+                await this.connection.query(`UPDATE users SET sname = ?, sactive = ?, endingDate = NULL, updated_at = NOW() WHERE id = ?`, 
+                ["Free", false, userID], (err, results) => {
                     if(err) {
                         console.log(err);
                         return { message: "Error updating user" };

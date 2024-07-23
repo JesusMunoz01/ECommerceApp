@@ -46,6 +46,7 @@ function App() {
 
   useEffect(() => {
     if (userQuery.data) {
+      console.log(userQuery.data);
       setUser({
         ...userQuery.data, 
         subEndDate: userQuery.data.subEndDate ? 

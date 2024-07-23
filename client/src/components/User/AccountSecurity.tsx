@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useUser } from "../../utils/userContext";
 import DeleteButton from "../Buttons/DeleteButton";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ConfirmationPopup from "../Popups/confirmPopup";
 import { useState } from "react";
 
@@ -13,6 +13,7 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
     const {user, getAccessTokenSilently} = useAuth0();
     const {userData} = useUser();
     const [isSubCancel, setIsSubCancel] = useState(false);
+    const queryClient = useQueryClient();
 
     const cancelSubQuery = useMutation({
         mutationKey: ["cancelSubscription"],
@@ -28,6 +29,11 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
             });
             const data = await response.json();
             return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['user', user?.sub]
+            });
         }
     });
 
@@ -35,7 +41,6 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
         await cancelSubQuery.mutate();
         setIsSubCancel(false);
     }
-
 
     return (
         <div className="border-t flex flex-col gap-2">
@@ -51,8 +56,10 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
             <div className="h-40 mt-4">
                 <div className="flex flex-col ml-2 gap-2 h-full">
                     <h2>Verification Status: {user?.email_verified ? "Verified": "Not Verified"}</h2>
-                    <h2>Subscription Status: {userData?.plan}</h2>
-                    {userData?.subEndDate && <h2>Next Payment Date: {userData?.subEndDate}</h2>}
+                    <h2>Subscription Name: {userData?.plan}</h2>
+                    <h2>Subscription Status: {userData?.subActive ? "Active" : "Cancelled"}</h2>
+                    {userData?.subEndDate && userData.subActive ? <h2>Next Payment Date: {userData?.subEndDate}</h2> :
+                        <h2>Subscription Ends: {userData?.subEndDate}</h2>}
                 </div>
             </div>
             <div className="flex justify-center items-center gap-4">
