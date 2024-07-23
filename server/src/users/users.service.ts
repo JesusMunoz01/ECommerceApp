@@ -115,11 +115,12 @@ export class UsersService {
             await this.checkSubscription(userData.identities[0].user_id)
 
             // Fetch user plan name from the database and return it to the client
-            const results = await queryAsync(`SELECT sname, endingDate FROM users WHERE id = ?`, [userData.identities[0].user_id]);
+            const results = await queryAsync(`SELECT sname, endingDate, sactive FROM users WHERE id = ?`, [userData.identities[0].user_id]);
             const brands = await queryAsync(`SELECT * FROM brands WHERE brandOwner = ?`, [userData.identities[0].user_id]);
 
             if (results && results.length > 0) {
-                return { message: "User fetched successfully", plan: results[0].sname, brands: brands, subEndDate: results[0].endingDate };
+                const subData = { plan: results[0].sname, subEndDate: results[0].endingDate, subActive: results[0].sactive };
+                return { message: "User fetched successfully", brands: brands, ...subData };
             } else {
                 return { message: "User not found" };
             }
