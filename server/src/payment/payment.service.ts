@@ -140,8 +140,19 @@ export class StripeService {
 
       const cancelAttempt = await this.stripe.subscriptions.cancel(subID, { prorate: true });
 
-      if(cancelAttempt.status === 'canceled')
+      if(cancelAttempt.status === 'canceled'){
+        await new Promise((resolve, reject) => {
+          this.connection.query(`UPDATE users SET sactive = Free WHERE id = ?`, [false], (err, results) => {
+            if (err) {
+              console.log(err);
+              reject({ message: "Error updating user" });
+            } else {
+              resolve(results);
+            }
+          });
+        });
         return 'Subscription cancelled';
+      }
       else
         return 'Error cancelling subscription';
     } catch (error) {

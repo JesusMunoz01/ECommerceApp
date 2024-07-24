@@ -5,6 +5,7 @@ type UserType = {
     plan: string;
     brands: { name: string, description: string, image: string, id: number, brandOwner?: string }[];
     subEndDate: string;
+    subActive: boolean;
 } | null;
 
 const UserContext = createContext<{ 

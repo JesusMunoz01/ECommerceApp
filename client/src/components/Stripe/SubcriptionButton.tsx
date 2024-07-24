@@ -2,7 +2,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 import { useUser } from "../../utils/userContext";
 
-const SubscriptionButton = ({tier}: {tier?: Number}) => {
+interface SubscriptionButtonProps {
+    tier?: number;
+    children?: React.ReactNode;
+}
+
+const SubscriptionButton = ({tier, children }: SubscriptionButtonProps) => {
     const { loginWithPopup, getAccessTokenSilently, user } = useAuth0();
     const { userData } = useUser();
 
@@ -76,7 +81,7 @@ const SubscriptionButton = ({tier}: {tier?: Number}) => {
     return (
         <div>
             <button className="mb-4 disabled:bg-gray-600 disabled:cursor-not-allowed disabled:border-none p-2 w-24" 
-                onClick={() => handleSubscription()} disabled={subscribeQuery.isPending}>Subscribe</button>
+                onClick={() => handleSubscription()} disabled={subscribeQuery.isPending}>{children ? children : "Subscribe"}</button>
         </div>
     );
 };
