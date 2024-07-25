@@ -43,19 +43,19 @@ const BrandPage = ({setCart}: BrandPageProps) => {
         <div>
             <div className="flex items-center justify-center flex-row bg-slate-500 h-fit">
                 { brandQuery.data.brand.image && <img src={brandQuery.data.brand.image} alt={brandQuery.data.brand.name}/> }
-                <div className="flex items-center justify-center flex-col bg-slate-500 pb-2">
-                    <h1>{brandQuery.data.brand.name}</h1>
-                    <p>{brandQuery.data.brand.description}</p>
+                <div className="flex items-center justify-center flex-col bg-slate-500">
+                    <h1 className="text-2xl xs:text-5xl xs:p-2">{brandQuery.data.brand.name}</h1>
+                    <p className="text-sm xs:text-md p-2">{brandQuery.data.brand.description}</p>
                 </div>
             </div>
             <div>
-                <div className="flex items-center justify-between">
-                    <h2 className="m-2 text-3xl p-1">Brand's Products:</h2>
+                <div className="flex items-center justify-between flex-col xs:flex-row">
+                    <h2 className="m-2 text-xl sm:text-3xl p-1">Brand's Products:</h2>
                     <search className="border border-white w-fit m-2">
                         <input type="text" className="p-1 w-64" placeholder="Search Products" onChange={(e) => setSearch(e.target.value.toLocaleLowerCase())}/>
                     </search>
                 </div>
-                <div className="grid grid-cols-5 gap-4 w-12/12 m-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-12/12 m-2">
                     {productFilter(brandQuery.data.products, search).map((product: any) => (
                         <ProductCard key={product.id} product={product} addToCart={addToCart}/>
                     ))}
