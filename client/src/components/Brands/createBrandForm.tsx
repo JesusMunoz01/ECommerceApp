@@ -1,20 +1,24 @@
+import Button from "../Buttons/Button";
+
 const CreateBrandForm = () => {
 
     return (
-        <form>
-            <div className="mb-3">
-                <label htmlFor="brandName" className="form-label">Brand Name</label>
-                <input type="text" className="form-control" id="brandName" />
+        <form className="flex flex-col justify-center items-center w-full max-w-2xl gap-2 border-slate-500 border p-2">
+            <div className="mb-3 flex flex-col w-full max-w-2xl">
+                <label htmlFor="brandName">Brand Name</label>
+                <input type="text"/>
             </div>
-            <div className="mb-3">
-                <label htmlFor="brandDescription" className="form-label">Brand Description</label>
-                <textarea className="form-control" id="brandDescription" rows={3}></textarea>
+            <div className="mb-3 flex flex-col w-full max-w-2xl">
+                <label htmlFor="brandDescription">Brand Description</label>
+                <textarea rows={3}></textarea>
             </div>
-            <div className="mb-3">
-                <label htmlFor="brandLogo" className="form-label">Brand Logo</label>
-                <input type="file" className="form-control" id="brandLogo" />
+            <div className="mb-3 flex flex-col w-full max-w-2xl">
+                <label htmlFor="brandLogo">Brand Logo</label>
+                <input type="file" className="text-base" />
             </div>
-            <button type="submit" className="btn btn-primary">Submit</button>
+            <div className="w-1/2 max-w-72">
+                <Button action={()=>{}}>Submit</Button>
+            </div>
         </form>
     )
 }
