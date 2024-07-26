@@ -1,3 +1,4 @@
+import { useUser } from "../../utils/userContext";
 import LogoutButton from "../Auth/auth0-logout";
 import SelectedLink from "../Links/selectedLink";
 
@@ -8,6 +9,7 @@ type SidebarProps = {
 
 //const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
 const Sidebar = ({ isOpen }: SidebarProps) => {
+  const { userData } = useUser();
     return (
       // isOpen ? (
         <div className="flex flex-col items-center bg-slate-700 h-full w-1/3 xs:w-3/12 md:w-2/12 lg:w-1/12 justify-between">
@@ -17,6 +19,9 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
               <li><SelectedLink to="/account">Profile</SelectedLink></li>
               <li><SelectedLink to="/settings">Settings</SelectedLink></li>
               <li><SelectedLink to="/sell">Sell</SelectedLink></li>
+              { userData?.plan !== "Free" &&
+                <li><SelectedLink to="/create-brand">Create Brand</SelectedLink></li>
+              }
             </ul>
           </div>
           <div className="mb-2 flex items-center flex-col gap-2 border-t border-slate-500 w-fit pt-2">

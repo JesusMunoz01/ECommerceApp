@@ -81,11 +81,13 @@ function App() {
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
                     <SellPage />
                   </div>} />
-                  <Route path="/newBrand" element={
-                  <div className='flex w-full h-full'>
-                    <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
-                    <CreateBrandPage />
-                  </div>} />
+                  { userData?.plan !== "Free" &&
+                    <Route path="/create-brand" element={
+                    <div className='flex w-full h-full'>
+                      <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+                      <CreateBrandPage />
+                    </div>} />
+                  }
                   <Route path="/settings" element={
                   <div className='flex w-full h-full'>
                     <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
