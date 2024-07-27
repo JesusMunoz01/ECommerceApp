@@ -3,7 +3,8 @@ import { useUserProductsQuery } from "../../utils/useQueries";
 import Button from "../Buttons/Button";
 import { useState } from "react";
 import ProductSelectionPopup from "../Popups/productSelect";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 type BrandData = {
     name: string;
@@ -13,6 +14,8 @@ type BrandData = {
 }
 
 const CreateBrandForm = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const { user, getAccessTokenSilently } = useAuth0();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     //const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
@@ -37,7 +40,14 @@ const CreateBrandForm = () => {
             }
 
             return response.json();
-        }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['user', user?.sub]
+            });
+            console.log('Brand created successfully');
+            navigate('/account');
+        },
     })
 
     const handleSubmit = () => {
@@ -71,7 +81,8 @@ const CreateBrandForm = () => {
                 </div>
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandItems">Brand Items</label>
-                    <button className="w-2/12" type="button" onClick={togglePopup}>Add New Product</button>
+                    <button className="block bg-gray-600 hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full xs:w-1/2 sm:w-1/4 text-left px-4 py-2 rounded-md min-h-12" 
+                        type="button" onClick={togglePopup}>Add Products</button>
                 </div>
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandLogo">Brand Logo</label>

@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
               <li><SelectedLink to="/settings">Settings</SelectedLink></li>
               <li><SelectedLink to="/sell">Sell</SelectedLink></li>
               { userData?.plan !== "Free" &&
-                <li><SelectedLink to="/create-brand">Create Brand</SelectedLink></li>
+                <li className="text-sm xs:text-base"><SelectedLink to="/create-brand">New Brand</SelectedLink></li>
               }
             </ul>
           </div>
