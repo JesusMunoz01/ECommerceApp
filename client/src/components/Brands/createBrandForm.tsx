@@ -9,13 +9,14 @@ type BrandData = {
     name: string;
     description: string;
     image: string;
-    products: string[];
+    products: number[];
 }
 
 const CreateBrandForm = () => {
     const { user } = useAuth0();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+    //const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+    const [brandData, setBrandData] = useState<BrandData>({ name: '', description: '', image: '', products: [] });
     const userProducts = useUserProductsQuery(user?.sub?.split('|')[1]);
 
     const createBrandQuery = useMutation({
@@ -37,8 +38,14 @@ const CreateBrandForm = () => {
         }
     })
 
+    const handleSubmit = () => {
+        createBrandQuery.mutate(brandData);
+    }
+
     const handleProductSelection = (products: number[]) => {
-        setSelectedProducts((prev) => [...prev, ...products]);
+        //setSelectedProducts((prev) => [...prev, ...products]);
+        //setBrandData((prev) => ({ ...prev, products: products.map((product) => product.toString()) }));
+        setBrandData((prev) => ({ ...prev, products: products }));
     }
 
     const togglePopup = () => {
@@ -54,11 +61,11 @@ const CreateBrandForm = () => {
                 }
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandName">Brand Name</label>
-                    <input type="text"/>
+                    <input type="text" onChange={(e) => setBrandData((prev) => ({ ...prev, name: e.target.value }))} />
                 </div>
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandDescription">Brand Description</label>
-                    <textarea rows={3}></textarea>
+                    <textarea rows={3} onChange={(e) => setBrandData((prev) => ({ ...prev, description: e.target.value }))} />
                 </div>
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandItems">Brand Items</label>
@@ -69,7 +76,7 @@ const CreateBrandForm = () => {
                     <input type="file" className="text-base" />
                 </div>
                 <div className="w-1/2 max-w-72">
-                    <Button action={()=>{}}>Submit</Button>
+                    <Button action={handleSubmit}>Submit</Button>
                 </div>
             </form>
     )

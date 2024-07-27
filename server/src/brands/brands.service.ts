@@ -11,7 +11,7 @@ export class BrandsService {
   async create(createBrandDto: CreateBrandDto) {
     try {
       await this.connection.query('INSERT INTO brands (name, description, image, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', 
-      [createBrandDto.name, createBrandDto.description, createBrandDto.image]);
+        [createBrandDto.name, createBrandDto.description, createBrandDto.image]);
       return { message: 'Brand page created successfully', data: createBrandDto}
     } catch (error) {
       console.log(error)
