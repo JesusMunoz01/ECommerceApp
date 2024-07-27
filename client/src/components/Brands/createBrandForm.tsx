@@ -13,7 +13,7 @@ type BrandData = {
 }
 
 const CreateBrandForm = () => {
-    const { user } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     //const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
     const [brandData, setBrandData] = useState<BrandData>({ name: '', description: '', image: '', products: [] });
@@ -22,10 +22,12 @@ const CreateBrandForm = () => {
     const createBrandQuery = useMutation({
         mutationKey: ['createBrand'],
         mutationFn: async (brand: BrandData) => {
+            const token = await getAccessTokenSilently();
             const response = await fetch('/api/brands', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify(brand)
             });

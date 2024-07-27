@@ -2,7 +2,7 @@ export class CreateBrandDto {
     name: string;
     description: string;
     image: string;
-    products: string[];
+    products: number[];
     createdAt: Date;
     updatedAt: Date;
 }
