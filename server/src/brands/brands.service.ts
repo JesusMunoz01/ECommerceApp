@@ -8,10 +8,17 @@ export class BrandsService {
   constructor(private appService: AppService) {}
   private connection = this.appService.connection;
 
-  async create(createBrandDto: CreateBrandDto) {
+  async create(createBrandDto: CreateBrandDto, ownerId: string) {
     try {
-      await this.connection.query('INSERT INTO brands (name, description, image, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', 
-      [createBrandDto.name, createBrandDto.description, createBrandDto.image]);
+      const result = await this.connection.query(
+        'INSERT INTO brands (name, description, image, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', 
+        [createBrandDto.name, createBrandDto.description, createBrandDto.image]
+      );
+
+      const brandId = result.insertId; 
+      
+      await this.addProducts(brandId, ownerId, createBrandDto.products);
+      
       return { message: 'Brand page created successfully', data: createBrandDto}
     } catch (error) {
       console.log(error)

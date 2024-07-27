@@ -1,6 +1,6 @@
 interface ButtonProps {
     action: () => void;
-    text: string;
+    text?: string;
     children?: React.ReactNode;
 }
 

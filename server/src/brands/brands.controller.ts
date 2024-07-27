@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
@@ -10,8 +10,9 @@ export class BrandsController {
 
   @UseGuards(AuthGuard("jwt"))
   @Post()
-  create(@Body() createBrandDto: CreateBrandDto) {
-    return this.brandsService.create(createBrandDto);
+  create(@Body() createBrandDto: CreateBrandDto, @Request() req) {
+    const userId = req.user.id;
+    return this.brandsService.create(createBrandDto, userId);
   }
 
   @Get()
