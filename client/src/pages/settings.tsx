@@ -6,16 +6,40 @@ import DeleteButton from '../components/Buttons/DeleteButton';
 import AccountSecurity from '../components/User/AccountSecurity';
 import UserOrders from '../components/User/UserOrders';
 import Button from '../components/Buttons/Button';
+import { useMutation } from '@tanstack/react-query';
+import { useAuth0 } from '@auth0/auth0-react';
 
 type editType = "profile" | "security";
 
 const SettingsPage = () => {
+  const { user, getAccessTokenSilently, logout } = useAuth0();
   const [type, setType] = useState<editType>("profile");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSecurityOpen, setIsSecurityOpen] = useState(false);
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+
+  const deletionMutation = useMutation({
+    mutationKey: ['deleteUser', user?.sub],
+    mutationFn: async () => {
+      const token = await getAccessTokenSilently();
+      const response = await fetch(`/api/users/${user?.sub}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      // Logout user and redirect to homepage
+      logout({ logoutParams: { returnTo: window.location.origin } });
+    }
+  })
 
   const handleToggle = (state: boolean, setState: (state: boolean) => void, type?: editType) => () => {
     setIsProfileOpen(false);
@@ -35,7 +59,7 @@ const SettingsPage = () => {
           <ConfirmationPopup 
             title="Delete User"
             message="Are you sure you want to delete your account?"
-            onConfirm={() => console.log('User deleted')}
+            onConfirm={deletionMutation.mutate}
             onCancel={handleToggle(isDelete, setIsDelete)}
           />
         </div>
