@@ -3,6 +3,7 @@ import { AppService } from 'src/app.service';
 import { UserDto } from './dto/userUpdate.dto';
 import { promisify } from 'util';
 import { ManagementClient } from 'auth0';
+import { StripeService } from 'src/payment/payment.service';
 
 export type UpdateFields = {
     email?: string;
@@ -12,8 +13,9 @@ export type UpdateFields = {
 
 @Injectable()
 export class UsersService {
-    constructor(private appService: AppService) {}
+    constructor(private appService: AppService, private stripeService: StripeService) {}
     private connection = this.appService.connection;
+    private readonly stripe = this.stripeService.stripe;
 
     private management = new ManagementClient({
         domain: process.env.AUTH0_ISSUER_URL,
@@ -204,16 +206,32 @@ export class UsersService {
         }
     }
 
-    async deleteUser(userID: string): Promise<{ message: string; }> {
-        const userResponse = await fetch(`${process.env.AUTH0_MANAGEMENT_AUDIENCE}users/${userID}`, {
-            headers: {
-            authorization: `Bearer ${await this.getAccessToken()}`,
-            }
-        });
-        const userData = await userResponse.json();
-        const user = userData.user_id;
+    async deleteUser(userID: string, authUserID: string): Promise<{ message: string; }> {
+        if(userID !== authUserID.split('|')[1]) {
+            return { message: "Unauthorized" };
+        }
+
         try{
-            await this.connection.query(`DELETE FROM users WHERE id = ?`, [user], (err, results) => {
+            // Get user db data
+            const user = new Promise((resolve, reject) => {
+                this.connection.query(`SELECT * FROM users WHERE id = ?`, [userID], (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        reject({ message: "Error deleting user" });
+                    }
+                    resolve(results);
+                });
+            });
+
+            // TODO: Use db data for stripe subscription deletion
+
+            // TODO: Delete customer from stripe
+
+            // Delete user from Auth0
+            await this.management.users.delete({ id: authUserID });
+
+            // Delete user from db
+            await this.connection.query(`DELETE FROM users WHERE id = ?`, [userID], (err, results) => {
                 if(err) {
                     console.log(err);
                     return { message: "Error deleting user" };
@@ -222,8 +240,7 @@ export class UsersService {
                 return { message: "User deleted successfully" };
             });
         }catch(err) {
-            console.log(err);
-            return { message: "Error deleting user" };
+            return {message: "Failed to delete user"}
         }
     }
 
