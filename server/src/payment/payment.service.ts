@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
-  private readonly stripe: Stripe;
+  public readonly stripe: Stripe;
   private connection = this.appService.connection;
 
   constructor(private appService: AppService) {
