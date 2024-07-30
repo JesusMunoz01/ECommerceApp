@@ -213,7 +213,7 @@ export class UsersService {
 
         try{
             // Get user db data
-            const user = new Promise((resolve, reject) => {
+            const user: UserDto = await new Promise((resolve, reject) => {
                 this.connection.query(`SELECT * FROM users WHERE id = ?`, [userID], (err, results) => {
                     if(err) {
                         console.log(err);
@@ -225,7 +225,16 @@ export class UsersService {
 
             // TODO: Use db data for stripe subscription deletion
 
+            const subscriptions = await this.stripe.subscriptions.list({ customer: user.sid });
+            if(subscriptions.data.length > 0) {
+                for(const subscription of subscriptions.data) {
+                    await this.stripe.subscriptions.cancel(subscription.id);
+                }
+            }
+
             // TODO: Delete customer from stripe
+
+            await this.stripe.customers.del(user.sid);
 
             // Delete user from Auth0
             await this.management.users.delete({ id: authUserID });
