@@ -94,7 +94,7 @@ export class StripeService {
   async createUpgradeSubscription(planId, userId): Promise<string> {
     
     const couponId = await this.createCoupon();
-    let planName;
+    let planName = "Enterprise";
 
     const dbUserId = userId.split('|')[1]
 

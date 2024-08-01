@@ -24,7 +24,7 @@ const SettingsPage = () => {
     mutationKey: ['deleteUser', user?.sub],
     mutationFn: async () => {
       const token = await getAccessTokenSilently();
-      const response = await fetch(`/api/users/${user?.sub}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${user?.sub?.split('|')[1]}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`

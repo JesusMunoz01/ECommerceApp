@@ -20,7 +20,7 @@ export class UsersService {
     private management = new ManagementClient({
         domain: process.env.AUTH0_ISSUER_URL,
         clientId: process.env.API_CLIENT_ID,
-        clientSecret: process.env.API_CLIENT_SECRE,
+        clientSecret: process.env.API_CLIENT_SECRET,
         audience: process.env.AUTH0_MANAGEMENT_AUDIENCE,
       });
 
@@ -228,21 +228,26 @@ export class UsersService {
                 });
             });
 
-            // TODO: Use db data for stripe subscription deletion
+            // Use db data for stripe subscription deletion
 
-            const subscriptions = await this.stripe.subscriptions.list({ customer: user.sid });
-            if(subscriptions.data.length > 0) {
-                for(const subscription of subscriptions.data) {
-                    await this.stripe.subscriptions.cancel(subscription.id);
-                }
-            }
 
-            // TODO: Delete customer from stripe
+            // if(user[0].sid && user[0].sactive) {
+            //     const subscriptions = await this.stripe.subscriptions.list({ customer: user.sid });
+            //     if(subscriptions && subscriptions.data.length > 0) {
+            //         for(const subscription of subscriptions.data) {
+            //             await this.stripe.subscriptions.cancel(subscription.id);
+            //         }
+            //     }
+            // }
 
-            await this.stripe.customers.del(user.sid);
+            // Check if customer exists in stripe and delete it
+
+            // const customer = await this.stripe.customers.retrieve(user[0].pid);
+            // if(customer)
+            //     await this.stripe.customers.del(user[0].sid);
 
             // Delete user from Auth0
-            await this.management.users.delete({ id: authUserID });
+            const test = await this.management.users.delete({ id: authUserID });
 
             // Delete user from db
             await this.connection.query(`DELETE FROM users WHERE id = ?`, [userID], (err, results) => {
@@ -254,6 +259,7 @@ export class UsersService {
                 return { message: "User deleted successfully" };
             });
         }catch(err) {
+            console.log(err)
             return {message: "Failed to delete user"}
         }
     }
