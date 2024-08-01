@@ -1,5 +1,5 @@
 interface ButtonProps {
-    action: () => void;
+    action: (e?: React.FormEvent) => void;
     text?: string;
     children?: React.ReactNode;
 }

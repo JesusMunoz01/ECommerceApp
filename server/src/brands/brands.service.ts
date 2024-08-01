@@ -10,14 +10,21 @@ export class BrandsService {
 
   async create(createBrandDto: CreateBrandDto, ownerId: string) {
     try {
-      const result = await this.connection.query(
-        'INSERT INTO brands (name, description, image, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', 
-        [createBrandDto.name, createBrandDto.description, createBrandDto.image]
-      );
+      const result: any = await new Promise((resolve, reject) => {
+        this.connection.query('INSERT INTO brands (name, description, image, brandOwner, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())', 
+          [createBrandDto.name, createBrandDto.description, createBrandDto.image, ownerId.split('|')[1]], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        })
+      });
 
       const brandId = result.insertId; 
       
-      await this.addProducts(brandId, ownerId, createBrandDto.products);
+      await this.addProducts(brandId, ownerId.split('|')[1], createBrandDto.products);
       
       return { message: 'Brand page created successfully', data: createBrandDto}
     } catch (error) {

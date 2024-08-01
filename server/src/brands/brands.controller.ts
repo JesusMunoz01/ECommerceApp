@@ -11,7 +11,7 @@ export class BrandsController {
   @UseGuards(AuthGuard("jwt"))
   @Post()
   create(@Body() createBrandDto: CreateBrandDto, @Request() req) {
-    const userId = req.user.id;
+    const userId = req.user.sub;
     return this.brandsService.create(createBrandDto, userId);
   }
 
