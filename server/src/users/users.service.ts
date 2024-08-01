@@ -46,7 +46,12 @@ export class UsersService {
         const queryAsync = promisify(this.connection.query).bind(this.connection);
         // Check the user's plan end date and update the user's plan if necessary
         const userEndDate = await queryAsync(`SELECT endingDate FROM users WHERE id = ?`, [userID]);
-        // console.log(userEndDate);
+        
+        console.log(userEndDate);
+        
+        // TODO: Use the console log to see how a new user data looks like, currently it leads to an error
+        // cannot read properties of undefined (reading 'endingDate')
+
         if(userEndDate[0].endingDate && userEndDate[0].endingDate < new Date()) {
             try{
                 await this.connection.query(`UPDATE users SET sname = ?, sactive = ?, endingDate = NULL, updated_at = NOW() WHERE id = ?`, 

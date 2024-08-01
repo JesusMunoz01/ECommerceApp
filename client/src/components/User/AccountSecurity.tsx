@@ -57,9 +57,12 @@ const AccountSecurity = ({onClick}: AccountSecurityProps) => {
                 <div className="flex flex-col ml-2 gap-2 h-full">
                     <h2>Verification Status: {user?.email_verified ? "Verified": "Not Verified"}</h2>
                     <h2>Subscription Name: {userData?.plan}</h2>
-                    <h2>Subscription Status: {userData?.subActive ? "Active" : "Cancelled"}</h2>
-                    {userData?.subEndDate && userData.subActive ? <h2>Next Payment Date: {userData?.subEndDate}</h2> :
-                        <h2>Subscription Ends: {userData?.subEndDate}</h2>}
+                    <h2>Subscription Status: {!userData?.subEndDate ? "N/A" : userData?.subActive ? "Active" : "Cancelled"}</h2>
+                    {   
+                        !userData?.subEndDate ? <></> :
+                        userData?.subEndDate && userData.subActive ? <h2>Next Payment Date: {userData?.subEndDate}</h2> :
+                        <h2>Subscription Ends: {userData?.subEndDate}</h2>
+                    }
                 </div>
             </div>
             <div className="flex justify-center items-center gap-4">

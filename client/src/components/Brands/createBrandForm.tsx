@@ -26,7 +26,7 @@ const CreateBrandForm = () => {
         mutationKey: ['createBrand'],
         mutationFn: async (brand: BrandData) => {
             const token = await getAccessTokenSilently();
-            const response = await fetch('/api/brands', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -50,7 +50,8 @@ const CreateBrandForm = () => {
         },
     })
 
-    const handleSubmit = () => {
+    const handleSubmit = (e?: React.FormEvent) => {
+        e?.preventDefault();
         createBrandQuery.mutate(brandData);
     }
 
@@ -65,12 +66,13 @@ const CreateBrandForm = () => {
     }
 
     return (
-            <form className="flex flex-col justify-center items-center w-full max-w-2xl gap-2 border-slate-500 border p-2">
-                {isPopupVisible && 
+        <>
+            {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
                     <ProductSelectionPopup products={userProducts.data.products} onClose={togglePopup} onProductsAction={handleProductSelection} />
                 </div>
-                }
+            }
+            <form className="flex flex-col justify-center items-center w-full max-w-2xl gap-2 border-slate-500 border p-2">
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandName">Brand Name</label>
                     <input type="text" onChange={(e) => setBrandData((prev) => ({ ...prev, name: e.target.value }))} />
@@ -92,6 +94,7 @@ const CreateBrandForm = () => {
                     <Button action={handleSubmit}>Submit</Button>
                 </div>
             </form>
+        </>
     )
 }
 
