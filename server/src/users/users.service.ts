@@ -17,12 +17,21 @@ export class UsersService {
     private connection = this.appService.connection;
     private readonly stripe = this.stripeService.stripe;
 
-    private management = new ManagementClient({
-        domain: process.env.AUTH0_ISSUER_URL,
-        clientId: process.env.API_CLIENT_ID,
-        clientSecret: process.env.API_CLIENT_SECRET,
-        audience: process.env.AUTH0_MANAGEMENT_AUDIENCE,
-      });
+    async getManagementClient() {
+        const token = await this.getAccessToken();
+        return new ManagementClient({
+            domain: process.env.AUTH0_DOMAIN,
+            token: token
+        });
+    }
+
+    // private management = new ManagementClient({
+    //     domain: process.env.AUTH0_DOMAIN,
+    //     clientId: process.env.API_CLIENT_ID,
+    //     clientSecret: process.env.API_CLIENT_SECRET,
+    //     audience: process.env.AUTH0_MANAGEMENT_AUDIENCE,
+    //     token
+    //   });
 
     // Calls Auth0's /oauth/token endpoint to get an access token
     async getAccessToken() {
@@ -39,8 +48,33 @@ export class UsersService {
             body: formData
         });
         const aToken = await getAPIToken.json();
+        console.log(aToken);
         return aToken.access_token;
     }
+    
+
+    async deleteAuthUser(authID: string){
+        try {
+          const management = await this.getManagementClient();
+          await management.users.delete({ id: authID });
+          console.log(`User with ID ${authID} has been deleted.`);
+        } catch (error) {
+            console.error('Error deleting user:', error);
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error('Error response from Auth0 API:', error.response.data);
+            console.error('Status code:', error.response.status);
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.error('No response received:', error.request);
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Error setting up request:', error.message);
+          }
+          console.error('Error config:', error.config);
+        }
+      };
 
     async checkSubscription(userID: string): Promise<{ message: string; }> {
         const queryAsync = promisify(this.connection.query).bind(this.connection);
@@ -193,7 +227,8 @@ export class UsersService {
         }
 
         try{
-            await this.management.users.update( { id: userID }, updateFields );
+            const management = await this.getManagementClient();
+            await management.users.update( { id: userID }, updateFields );
             const fields = ["email", "name"];
             const filledFields = Object.keys(data).filter(key => data[key] && fields.includes(key));
             const sqlQuery = `UPDATE users SET ${filledFields.map(key => `${key} = ?`).join(", ")}, updated_at = NOW() WHERE id = ?`;
@@ -247,7 +282,8 @@ export class UsersService {
             //     await this.stripe.customers.del(user[0].sid);
 
             // Delete user from Auth0
-            const test = await this.management.users.delete({ id: authUserID });
+            
+            await this.deleteAuthUser(authUserID);
 
             // Delete user from db
             await this.connection.query(`DELETE FROM users WHERE id = ?`, [userID], (err, results) => {
