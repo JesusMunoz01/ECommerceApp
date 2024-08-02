@@ -25,14 +25,6 @@ export class UsersService {
         });
     }
 
-    // private management = new ManagementClient({
-    //     domain: process.env.AUTH0_DOMAIN,
-    //     clientId: process.env.API_CLIENT_ID,
-    //     clientSecret: process.env.API_CLIENT_SECRET,
-    //     audience: process.env.AUTH0_MANAGEMENT_AUDIENCE,
-    //     token
-    //   });
-
     // Calls Auth0's /oauth/token endpoint to get an access token
     async getAccessToken() {
         const formData = new URLSearchParams();
@@ -51,7 +43,36 @@ export class UsersService {
         console.log(aToken);
         return aToken.access_token;
     }
-    
+
+    async deleteStripeData(userID: string){
+        try{
+            const user = await new Promise((resolve, reject) => {
+                this.connection.query(`SELECT * FROM users WHERE id = ?`, [userID], (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        reject({ message: "Error deleting user" });
+                    }
+                    resolve(results);
+                });
+            });
+
+            if(user[0].sid && user[0].sactive) {
+                const subscriptions = await this.stripe.subscriptions.list({ customer: user[0].sid });
+                if(subscriptions && subscriptions.data.length > 0) {
+                    for(const subscription of subscriptions.data) {
+                        await this.stripe.subscriptions.cancel(subscription.id);
+                    }
+                }
+            }
+
+            if(user[0].pid) {
+                await this.stripe.customers.del(user[0].sid);
+            }
+        }catch(err) {
+            console.log(err);
+            return { message: "Error deleting user" };
+        }
+    }
 
     async deleteAuthUser(authID: string){
         try {
@@ -252,34 +273,10 @@ export class UsersService {
         }
 
         try{
-            // Get user db data
-            const user: UserDto = await new Promise((resolve, reject) => {
-                this.connection.query(`SELECT * FROM users WHERE id = ?`, [userID], (err, results) => {
-                    if(err) {
-                        console.log(err);
-                        reject({ message: "Error deleting user" });
-                    }
-                    resolve(results);
-                });
-            });
 
             // Use db data for stripe subscription deletion
 
-
-            // if(user[0].sid && user[0].sactive) {
-            //     const subscriptions = await this.stripe.subscriptions.list({ customer: user.sid });
-            //     if(subscriptions && subscriptions.data.length > 0) {
-            //         for(const subscription of subscriptions.data) {
-            //             await this.stripe.subscriptions.cancel(subscription.id);
-            //         }
-            //     }
-            // }
-
-            // Check if customer exists in stripe and delete it
-
-            // const customer = await this.stripe.customers.retrieve(user[0].pid);
-            // if(customer)
-            //     await this.stripe.customers.del(user[0].sid);
+            await this.deleteStripeData(userID);
 
             // Delete user from Auth0
             
