@@ -40,7 +40,6 @@ export class UsersService {
             body: formData
         });
         const aToken = await getAPIToken.json();
-        console.log(aToken);
         return aToken.access_token;
     }
 
@@ -273,13 +272,10 @@ export class UsersService {
         }
 
         try{
-
             // Use db data for stripe subscription deletion
-
             await this.deleteStripeData(userID);
 
-            // Delete user from Auth0
-            
+            // Delete user from Auth0 
             await this.deleteAuthUser(authUserID);
 
             // Delete user from db
@@ -291,6 +287,9 @@ export class UsersService {
                 console.log(results);
                 return { message: "User deleted successfully" };
             });
+
+            return { message: "User deleted successfully" };
+
         }catch(err) {
             console.log(err)
             return {message: "Failed to delete user"}
