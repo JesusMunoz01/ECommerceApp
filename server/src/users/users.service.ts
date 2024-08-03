@@ -40,7 +40,6 @@ export class UsersService {
             body: formData
         });
         const aToken = await getAPIToken.json();
-        console.log(aToken);
         return aToken.access_token;
     }
 
