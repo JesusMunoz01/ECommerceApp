@@ -247,8 +247,11 @@ export class UsersService {
         }
 
         try{
-            const management = await this.getManagementClient();
-            await management.users.update( { id: userID }, updateFields );
+            if(updateFields.password) {
+                const management = await this.getManagementClient();
+                await management.users.update( { id: userID }, updateFields );
+                return { message: "Password updated successfully" };
+            }
             const fields = ["email", "name"];
             const filledFields = Object.keys(data).filter(key => data[key] && fields.includes(key));
             const sqlQuery = `UPDATE users SET ${filledFields.map(key => `${key} = ?`).join(", ")}, updated_at = NOW() WHERE id = ?`;

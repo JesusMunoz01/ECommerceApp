@@ -19,6 +19,7 @@ const SettingsPage = () => {
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+  console.log(user?.sub)
 
   const deletionMutation = useMutation({
     mutationKey: ['deleteUser', user?.sub],

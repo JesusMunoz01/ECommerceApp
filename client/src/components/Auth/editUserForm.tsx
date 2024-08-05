@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const initialUser = {
     name: "",
@@ -19,6 +20,7 @@ const EditUserForm = ({onCancel, type}: EditUserFormProps) => {
     const { user, getAccessTokenSilently } = useAuth0();
     const [updatedUser, setUpdatedUser] = useState(initialUser);
     const [error, setError] = useState({ name: '', email: '', password: '' });
+    const navigate = useNavigate();
     // const editUser = useMutation({
     //     mutationKey: ['editUser'],
     //     mutationFn: async () => {
@@ -104,13 +106,14 @@ const EditUserForm = ({onCancel, type}: EditUserFormProps) => {
         return isValid;
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) {
             return;
         }
         //editUser.mutate();
         editUserAuth.mutate();
+        navigate('/account');
     };
 
     return (
