@@ -36,7 +36,7 @@ const ProductCard = ({product, addToCart}: ProductCardProps) => {
             {/* <img src={product.image} alt={product.name} className="w-full h-64 object-cover object-center"/> */}
             <div className="p-6 flex flex-col h-full justify-between gap-2">
                 <div className="min-h-2/3">
-                    <h3 className="text-gray-900 text-xl font-medium mb-2 flex justify-between">
+                    <h3 className="text-gray-900 text-xl font-medium mb-2 flex justify-between flex-col">
                         <span>{product.name}</span>
                         <span>${product.price}</span>
                     </h3>
