@@ -181,6 +181,37 @@ export class BrandsService {
 
   async addProducts(id: number, uid: string, products: number[]) {
     try{
+      // Check user owns the products and brand
+      const productCheck:any = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM products WHERE id IN (?) AND ownerId = ?', [products, uid], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+
+      if (productCheck.length !== products.length) {
+        throw new Error('User does not own all products');
+      }
+
+      const brandCheck:any = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM brands WHERE id = ? AND brandOwner = ?', [id, uid], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+
+      if (brandCheck.length === 0) {
+        throw new Error('User does not own brand');
+      }
+
       // Insert into ProductBrands junction table, the brandId and productIds
       const formattedProducts = products.map((product) => [id, product, uid]);
       await this.connection.query('INSERT INTO productbrand (brandId, productId, ownerId) VALUES ?', [formattedProducts]);
