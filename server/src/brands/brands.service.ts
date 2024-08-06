@@ -117,15 +117,22 @@ export class BrandsService {
   async findUserBrandProducts(bid: number, uid: string) {
     try {
       const result: [] = await new Promise((resolve, reject) => {
-        this.connection.query('SELECT * FROM products WHERE id IN (SELECT productId FROM productbrand WHERE brandId = ?) AND ownerId = ?', [bid, uid], (err, results) => {
-          if (err) {
-            console.log(err);
-            reject(err);
-            return;
+        this.connection.query(
+          `SELECT p.*, pb.brandId 
+           FROM products p
+           JOIN productbrand pb ON p.id = pb.productId
+           WHERE pb.brandId = ? AND p.ownerId = ?`,
+          [bid, uid],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              reject(err);
+              return;
+            }
+            resolve(results);
           }
-          resolve(results);
-        });
-      })
+        );
+      });
 
       if (!result || result.length === 0) {
         throw new Error('Products not found');

@@ -104,11 +104,13 @@ const EditBrandPage = () => {
     if(userData.brands.length === 0) return <div>No brands found</div>;
     if(!brand) return <div>Brand not found</div>;
 
+    console.log(userProducts);
+
     return (
         <div className="flex flex-row divide-x-2 w-full overflow-auto h-full">
             {isPopupVisible && 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1000 }}>
-                    <ProductSelectionPopup products={actionType === 'add' ? userProducts.data.products.filter((product:any) => product.brandId !== Number(id))
+                    <ProductSelectionPopup products={actionType === 'add' ? brandProductQuery.data.products.filter((product:any) => product.brandId !== Number(id))
                         : brandProductQuery.data.products.map((product:any) => ({ id: product.id, name: product.name }))} 
                         actionType={actionType} onClose={togglePopup} onProductsAction={actionType === 'add' ? addProducts : removeProducts} />
                 </div>
