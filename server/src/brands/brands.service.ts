@@ -72,6 +72,7 @@ export class BrandsService {
       }
 
         // Get products for brand
+        // Select all products where the product id is in the productbrand table with the brand id
         const products = await new Promise((resolve, reject) => {
           this.connection.query('SELECT * FROM products WHERE id IN (SELECT productId FROM productbrand WHERE brandId = ?)', [id], (err, results) => {
             if (err) {
@@ -82,8 +83,6 @@ export class BrandsService {
             resolve(results);
           });
         });
-
-        console.log(products)
 
       return { message: 'Brand page found successfully', brand: result, products: products};
     } catch (error) {
@@ -116,6 +115,10 @@ export class BrandsService {
 
   async findUserBrandProducts(bid: number, uid: string) {
     try {
+      // Selects all columns from product table and label it as p, and selects the brandId from the productbrand table and labels it as pb
+      // Specifies products table as the primary table as p
+      // Joins the productbrand table as pb on the condition that the product id is equal to the product id in the productbrand table
+      // Filters the products by the brand id and the user id
       const result: [] = await new Promise((resolve, reject) => {
         this.connection.query(
           `SELECT p.*, pb.brandId 
