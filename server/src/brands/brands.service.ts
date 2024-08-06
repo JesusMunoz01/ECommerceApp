@@ -73,7 +73,7 @@ export class BrandsService {
 
         // Get products for brand
         const products = await new Promise((resolve, reject) => {
-          this.connection.query('SELECT * FROM products WHERE brandId = ?', [id], (err, results) => {
+          this.connection.query('SELECT * FROM products WHERE id IN (SELECT productId FROM productbrand WHERE brandId = ?)', [id], (err, results) => {
             if (err) {
               console.log(err);
               reject(err);
@@ -82,6 +82,8 @@ export class BrandsService {
             resolve(results);
           });
         });
+
+        console.log(products)
 
       return { message: 'Brand page found successfully', brand: result, products: products};
     } catch (error) {
@@ -115,7 +117,7 @@ export class BrandsService {
   async findUserBrandProducts(bid: number, uid: string) {
     try {
       const result: [] = await new Promise((resolve, reject) => {
-        this.connection.query('SELECT * FROM products WHERE brandId = ? and ownerId = ?', [bid, uid], (err, results) => {
+        this.connection.query('SELECT * FROM products WHERE id IN (SELECT productId FROM productbrand WHERE brandId = ?) AND ownerId = ?', [bid, uid], (err, results) => {
           if (err) {
             console.log(err);
             reject(err);
@@ -123,7 +125,7 @@ export class BrandsService {
           }
           resolve(results);
         });
-      });
+      })
 
       if (!result || result.length === 0) {
         throw new Error('Products not found');
@@ -213,8 +215,8 @@ export class BrandsService {
       }
 
       // Insert into ProductBrands junction table, the brandId and productIds
-      const formattedProducts = products.map((product) => [id, product, uid]);
-      await this.connection.query('INSERT INTO productbrand (brandId, productId, ownerId) VALUES ?', [formattedProducts]);
+      const formattedProducts = products.map((product) => [id, product]);
+      await this.connection.query('INSERT INTO productbrand (brandId, productId) VALUES ?', [formattedProducts]);
       return { message: 'Products added successfully', data: products}
     }
     catch (error) {
@@ -235,8 +237,24 @@ export class BrandsService {
 
   async removeProducts(uid: string, products: number[]) {
     try{
-      const formattedProducts = products.map((product) => `${product}`).join(',');
-      await this.connection.query('UPDATE products SET brandId = NULL WHERE id IN (?) AND ownerId = ?', [formattedProducts, uid]);
+      // Check user owns the products
+      const productCheck:any = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM products WHERE id IN (?) AND ownerId = ?', [products, uid], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+
+      if (productCheck.length !== products.length) {
+        throw new Error('User does not own all products');
+      }
+
+      // Remove products from ProductBrands junction table
+      await this.connection.query('DELETE FROM productbrand WHERE productId IN (?)', [products]);
       return { message: 'Products removed successfully', data: products}
     }
     catch (error) {
