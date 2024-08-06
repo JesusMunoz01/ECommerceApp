@@ -72,8 +72,9 @@ export class BrandsService {
       }
 
         // Get products for brand
+        // Select all products where the product id is in the productbrand table with the brand id
         const products = await new Promise((resolve, reject) => {
-          this.connection.query('SELECT * FROM products WHERE brandId = ?', [id], (err, results) => {
+          this.connection.query('SELECT * FROM products WHERE id IN (SELECT productId FROM productbrand WHERE brandId = ?)', [id], (err, results) => {
             if (err) {
               console.log(err);
               reject(err);
@@ -114,15 +115,26 @@ export class BrandsService {
 
   async findUserBrandProducts(bid: number, uid: string) {
     try {
+      // Selects all columns from product table and label it as p, and selects the brandId from the productbrand table and labels it as pb
+      // Specifies products table as the primary table as p
+      // Joins the productbrand table as pb on the condition that the product id is equal to the product id in the productbrand table
+      // Filters the products by the brand id and the user id
       const result: [] = await new Promise((resolve, reject) => {
-        this.connection.query('SELECT * FROM products WHERE brandId = ? and ownerId = ?', [bid, uid], (err, results) => {
-          if (err) {
-            console.log(err);
-            reject(err);
-            return;
+        this.connection.query(
+          `SELECT p.*, pb.brandId 
+           FROM products p
+           JOIN productbrand pb ON p.id = pb.productId
+           WHERE pb.brandId = ? AND p.ownerId = ?`,
+          [bid, uid],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              reject(err);
+              return;
+            }
+            resolve(results);
           }
-          resolve(results);
-        });
+        );
       });
 
       if (!result || result.length === 0) {
@@ -181,8 +193,40 @@ export class BrandsService {
 
   async addProducts(id: number, uid: string, products: number[]) {
     try{
-      const formattedProducts = products.map((product) => `${product}`).join(',');
-      await this.connection.query('UPDATE products SET brandId = ? WHERE id IN (?) AND ownerId = ?', [id, formattedProducts, uid]);
+      // Check user owns the products and brand
+      const productCheck:any = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM products WHERE id IN (?) AND ownerId = ?', [products, uid], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+
+      if (productCheck.length !== products.length) {
+        throw new Error('User does not own all products');
+      }
+
+      const brandCheck:any = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM brands WHERE id = ? AND brandOwner = ?', [id, uid], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+
+      if (brandCheck.length === 0) {
+        throw new Error('User does not own brand');
+      }
+
+      // Insert into ProductBrands junction table, the brandId and productIds
+      const formattedProducts = products.map((product) => [id, product]);
+      await this.connection.query('INSERT INTO productbrand (brandId, productId) VALUES ?', [formattedProducts]);
       return { message: 'Products added successfully', data: products}
     }
     catch (error) {
@@ -203,8 +247,24 @@ export class BrandsService {
 
   async removeProducts(uid: string, products: number[]) {
     try{
-      const formattedProducts = products.map((product) => `${product}`).join(',');
-      await this.connection.query('UPDATE products SET brandId = NULL WHERE id IN (?) AND ownerId = ?', [formattedProducts, uid]);
+      // Check user owns the products
+      const productCheck:any = await new Promise((resolve, reject) => {
+        this.connection.query('SELECT * FROM products WHERE id IN (?) AND ownerId = ?', [products, uid], (err, results) => {
+          if (err) {
+            console.log(err);
+            reject(err);
+            return;
+          }
+          resolve(results);
+        });
+      });
+
+      if (productCheck.length !== products.length) {
+        throw new Error('User does not own all products');
+      }
+
+      // Remove products from ProductBrands junction table
+      await this.connection.query('DELETE FROM productbrand WHERE productId IN (?)', [products]);
       return { message: 'Products removed successfully', data: products}
     }
     catch (error) {
