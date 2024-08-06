@@ -181,8 +181,9 @@ export class BrandsService {
 
   async addProducts(id: number, uid: string, products: number[]) {
     try{
-      const formattedProducts = products.map((product) => `${product}`).join(',');
-      await this.connection.query('UPDATE products SET brandId = ? WHERE id IN (?) AND ownerId = ?', [id, formattedProducts, uid]);
+      // Insert into ProductBrands junction table, the brandId and productIds
+      const formattedProducts = products.map((product) => [id, product, uid]);
+      await this.connection.query('INSERT INTO productbrand (brandId, productId, ownerId) VALUES ?', [formattedProducts]);
       return { message: 'Products added successfully', data: products}
     }
     catch (error) {
