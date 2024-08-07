@@ -58,7 +58,7 @@ Cypress.Commands.add('login2', () => {
   cy.url().should('include', '/');
 });
 
-Cypress.Commands.add('login2', () => {
+Cypress.Commands.add('login2Updated', () => {
   cy.intercept('GET', '**/u/login*', (req) => {
       console.log('Intercepting Auth0 login redirection...');
       // Handle the redirection if needed
@@ -67,7 +67,7 @@ Cypress.Commands.add('login2', () => {
   cy.get('button').contains('Log In').click();
   cy.wait('@authRedirect');
   cy.origin('https://dev-4rk7o1cuxvewyedu.us.auth0.com', () => {
-      cy.get('input[name="username"]').type(Cypress.env('auth_emailUpdate'));
+      cy.get('input[name="username"]').type(Cypress.env('auth_username2'));
       cy.get('input[name="password"]').type(Cypress.env('auth_passwordUpdate'));
       cy.get('button[name="action"]').eq(0).contains('Continue').click();
   });
