@@ -54,10 +54,21 @@ describe('Account Tests', () => {
         cy.contains('Test Product Updated').should('not.exist');
     });
 
+    it("should be able to see current information", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/settings');
+        cy.contains('Personal Information').click();
+        cy.contains(`Username: ${Cypress.env('auth_username')}`).should('be.visible');
+        cy.contains(`Email: ${Cypress.env('auth_username')}`).should('be.visible');
+        cy.contains("Plan: Free").should('be.visible');
+    });
+
     it("should be able to edit the user", () => {
         cy.login();
         cy.wait(1000);
         cy.visit('http://localhost:5173/settings');
+        cy.contains('Personal Information').click();
         cy.contains('Edit User').click();
         cy.get("form").should('be.visible').and('contain', 'Edit User');
         cy.get('input[name="name"]').clear().type('Test User Updated');
