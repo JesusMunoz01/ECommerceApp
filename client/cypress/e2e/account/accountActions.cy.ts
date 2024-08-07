@@ -89,6 +89,26 @@ describe('Account Tests', () => {
         cy.contains("Subscription Status: N/A").should('be.visible');
     });
 
+    it("should be able to edit the security", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/settings');
+        cy.contains('Account Security').click();
+        cy.contains('Edit Password').click();
+        cy.get("form").should('be.visible').and('contain', 'Edit Password');
+        cy.get('input[name="password"]').clear().type(Cypress.env('auth_passwordUpdate'));
+        cy.get('input[name="confirmPassword"]').clear().type(Cypress.env('auth_passwordUpdate'));
+        cy.contains('Update').click();
+        cy.contains('Account Details').should('be.visible');
+    });
+
+    it("should attempt to login with the updated password", () => {
+        cy.login2Updated();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains(Cypress.env('auth_username2')).should('be.visible');
+    });
+
     it("should be able to bring out the delete user popup and click cancel", () => {
         cy.login();
         cy.wait(1000);
