@@ -54,25 +54,39 @@ describe('Account Tests', () => {
         cy.contains('Test Product Updated').should('not.exist');
     });
 
-    it("should be able to see current information", () => {
-        cy.login();
+    it("should be able to see current personal information", () => {
+        cy.login2();
         cy.wait(1000);
         cy.visit('http://localhost:5173/settings');
         cy.contains('Personal Information').click();
-        cy.contains(`Username: ${Cypress.env('auth_username')}`).should('be.visible');
-        cy.contains(`Email: ${Cypress.env('auth_username')}`).should('be.visible');
+        cy.contains(`Username: ${Cypress.env('auth_username2')}`).should('be.visible');
+        cy.contains(`Email: ${Cypress.env('auth_username2')}`).should('be.visible');
         cy.contains("Plan: Free").should('be.visible');
     });
 
     it("should be able to edit the user", () => {
-        cy.login();
+        cy.login2();
         cy.wait(1000);
         cy.visit('http://localhost:5173/settings');
         cy.contains('Personal Information').click();
-        cy.contains('Edit User').click();
+        cy.contains('Edit Profile').click();
         cy.get("form").should('be.visible').and('contain', 'Edit User');
-        cy.get('input[name="name"]').clear().type('Test User Updated');
+        cy.get('input[name="name"]').clear().type(Cypress.env('auth_usernameUpdate'));
+        cy.get('input[name="email"]').clear().type(Cypress.env('auth_emailUpdate'));
+        cy.get('input[name="confirmEmail"]').clear().type(Cypress.env('auth_emailUpdate'));
         cy.contains('Update').click();
+        cy.contains('Account Details').should('be.visible');
+        // Note: Update is in the database not Auth0
+    });
+
+    it("should be able to see current security information", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/settings');
+        cy.contains('Account Security').click();
+        cy.contains("Verification Status: Not Verified").should('be.visible');
+        cy.contains("Subscription Name: Free").should('be.visible');
+        cy.contains("Subscription Status: N/A").should('be.visible');
     });
 
     it("should be able to bring out the delete user popup and click cancel", () => {
