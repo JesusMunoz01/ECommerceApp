@@ -129,8 +129,6 @@ describe('Account Tests', () => {
     //     cy.contains('Are you sure you want to delete your account?').should('not.exist');
     // });
 
-    // TODO: Creating a new account
-
     it("should be able to create a new account", () => {
         cy.createAccount();
         cy.wait(1000);
@@ -141,5 +139,16 @@ describe('Account Tests', () => {
 
     // TODO: Upgrading to a paid plan
     // TODO: Deleting the account
+
+    it("should be able to delete the account", () => {
+        cy.loginAccount();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/settings');
+        cy.contains('Delete User').click();
+        cy.contains('Are you sure you want to delete your account?').should('be.visible');
+        cy.get('button').contains('Cancel').should('be.visible');
+        cy.get('button').contains('Confirm').should('be.visible');
+        cy.get('button').contains('Confirm').click();
+    });
 
 });

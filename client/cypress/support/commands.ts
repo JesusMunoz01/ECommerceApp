@@ -98,6 +98,22 @@ Cypress.Commands.add('createAccount', () => {
   cy.url().should('include', '/');
 });
 
+Cypress.Commands.add('loginAccount', () => {
+  cy.intercept('GET', '**/u/login*', (req) => {
+      console.log('Intercepting Auth0 login redirection...');
+      // Handle the redirection if needed
+    }).as('authRedirect');
+
+  cy.get('button').contains('Log In').click();
+  cy.wait('@authRedirect');
+  cy.origin('https://dev-4rk7o1cuxvewyedu.us.auth0.com', () => {
+      cy.get('input[name="username"]').type(Cypress.env('auth_createdUsername'));
+      cy.get('input[name="password"]').type(Cypress.env('auth_createdPassword'));
+      cy.get('button[name="action"]').eq(0).contains('Continue').click();
+  });
+  cy.url().should('include', '/');
+});
+
 declare global {
   namespace Cypress {
     interface Chainable {
