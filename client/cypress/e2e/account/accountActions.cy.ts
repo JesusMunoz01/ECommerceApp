@@ -129,4 +129,28 @@ describe('Account Tests', () => {
         cy.contains('Are you sure you want to delete your account?').should('not.exist');
     });
 
+    it("should be able to create a new account", () => {
+        cy.createAccount();
+        cy.wait(1000);
+        cy.get('button[name="accountButton"]').click();
+        cy.get('p').eq(0).contains(Cypress.env('auth_createdUsername'));
+        cy.get('p').eq(1).contains(Cypress.env('auth_createdPassword'))
+    });
+
+    // TODO: Upgrading to a paid plan
+
+    it("should be able to delete the account", () => {
+        cy.loginAccount();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/settings');
+        cy.contains('Delete User').click();
+        cy.contains('Are you sure you want to delete your account?').should('be.visible');
+        cy.get('button').contains('Cancel').should('be.visible');
+        cy.get('button').contains('Confirm').should('be.visible');
+        cy.get('button').contains('Confirm').click();
+        cy.contains('Are you sure you want to delete your account?').should('not.exist');
+        cy.url().should('include', '/');
+        cy.get('button').contains('Log In').should('be.visible');
+    });
+
 });
