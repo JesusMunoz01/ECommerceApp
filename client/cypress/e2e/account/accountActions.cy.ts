@@ -139,6 +139,20 @@ describe('Account Tests', () => {
 
     // TODO: Upgrading to a paid plan
 
+    // TODO: Create a brand page
+
+    // TODO: Modify the brand page
+
+    // TODO: Add a product to the brand page
+
+    // TODO: Delete a product from the brand page
+
+    // TODO: Cancel subscription
+
+    // TODO: Order Items
+
+    // TODO: View Order History
+
     it("should be able to delete the account", () => {
         cy.loginAccount();
         cy.wait(1000);
