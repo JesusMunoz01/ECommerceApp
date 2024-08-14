@@ -137,7 +137,6 @@ describe('Account Tests', () => {
         cy.get('p').eq(1).contains(Cypress.env('auth_createdPassword'))
     });
 
-    // TODO: Upgrading to a paid plan
 
     // TODO: Create a brand page
 
