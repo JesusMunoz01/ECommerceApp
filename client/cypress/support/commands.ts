@@ -114,6 +114,30 @@ Cypress.Commands.add('loginAccount', () => {
   cy.url().should('include', '/');
 });
 
+Cypress.Commands.add('subscribePremium', () => {
+  // Stripe Interception
+  cy.intercept('GET', 'checkout.stripe.com/*', (req) => {
+    console.log('Intercepting Stripe checkout...');
+    // Handle the redirection if needed
+  }).as('stripeCheckout');
+
+  cy.origin('checkout.stripe.com', () => {
+    cy.get('button').contains('Upgrade').click();
+    cy.url().should('include', '/upgrade');
+    cy.get('div').contains("Premium").find('button').contains('Subscribe').click();
+    cy.wait('@stripeCheckout');
+    cy.get('input[name="email"]').type(Cypress.env('auth_createdUsername'));
+    cy.get('input[name="cardnumber"]').type('4242424242424242');
+    cy.get('input[name="exp-date"]').type('12/29');
+    cy.get('input[name="cvc"]').type('424');
+    cy.get('input[name="billingName"]').type('Test User');
+    cy.get('input[name="billingPostalCode"]').type('42424');
+    cy.get('input[name="enableStripePass"]').uncheck();
+    cy.get('button').contains('Subscribe').click();
+  });
+  cy.url().should('include', '/');
+});
+
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -122,6 +146,7 @@ declare global {
       login2Updated(): Chainable<void>
       createAccount(): Chainable<void>
       loginAccount(): Chainable<void>
+      subscribePremium(): Chainable<void>
       //drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
       //dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
       //visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
