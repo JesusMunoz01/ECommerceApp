@@ -135,7 +135,7 @@ Cypress.Commands.add('subscribePremium', () => {
     cy.get('input[name="enableStripePass"]').uncheck();
     cy.get('button').contains('Subscribe').click();
   });
-  cy.url().should('include', '/account');
+  cy.url().should('include', '/');
 });
 
 declare global {
