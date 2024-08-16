@@ -75,20 +75,20 @@ const CreateBrandForm = () => {
             <form className="flex flex-col justify-center items-center w-full max-w-2xl gap-2 border-slate-500 border p-2">
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandName">Brand Name</label>
-                    <input type="text" onChange={(e) => setBrandData((prev) => ({ ...prev, name: e.target.value }))} />
+                    <input type="text" name="brandName" onChange={(e) => setBrandData((prev) => ({ ...prev, name: e.target.value }))} />
                 </div>
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandDescription">Brand Description</label>
-                    <textarea rows={3} onChange={(e) => setBrandData((prev) => ({ ...prev, description: e.target.value }))} />
+                    <textarea rows={3} name="brandDescription" onChange={(e) => setBrandData((prev) => ({ ...prev, description: e.target.value }))} />
                 </div>
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandItems">Brand Items</label>
                     <button className="block bg-gray-600 hover:bg-slate-400 focus:outline-non transition duration-150 ease-in-out w-full xs:w-1/2 sm:w-1/4 text-left px-4 py-2 rounded-md min-h-12" 
-                        type="button" onClick={togglePopup}>Add Products</button>
+                        type="button" name="brandItems" onClick={togglePopup}>Add Products</button>
                 </div>
                 <div className="mb-3 flex flex-col w-full max-w-2xl">
                     <label htmlFor="brandLogo">Brand Logo</label>
-                    <input type="file" className="text-base" />
+                    <input type="file" name="brandLogo" className="text-base" />
                 </div>
                 <div className="w-1/2 max-w-72">
                     <Button action={handleSubmit}>Submit</Button>
