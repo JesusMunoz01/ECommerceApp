@@ -153,7 +153,21 @@ describe('Account Tests', () => {
         cy.contains('New Brand').should('be.visible');
     });
 
-    // TODO: Create a brand page
+    it("should be able to create a brand page without products", () => {
+        cy.loginAccount();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/brands');
+        cy.contains('Test Brand').should('not.exist');
+        cy.visit('http://localhost:5173/account');
+        cy.contains('New Brand').click();
+        cy.get('input[name="brandName"]').type('Test Brand');
+        cy.get('textarea[name="brandDescription"]').type('Test Description');
+        cy.get('button').contains('Submit').click();
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand').should('be.visible');
+        cy.visit('http://localhost:5173/brands');
+        cy.contains('Test Brand').should('be.visible');
+    });
 
     // TODO: Modify the brand page
 
