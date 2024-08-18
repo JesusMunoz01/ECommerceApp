@@ -208,15 +208,15 @@ export class StripeService {
         // const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
 
-        const productIds = await Promise.all(lineItems.data.map(async (item) => {
-          const product = await this.stripe.products.retrieve(item.price.product.toString());
-          const productId = product.metadata.productId;
-          const intId = parseInt(productId);
-          return intId;
-        }));
+        // const productIds = await Promise.all(lineItems.data.map(async (item) => {
+        //   const product = await this.stripe.products.retrieve(item.price.product.toString());
+        //   const productId = product.metadata.productId;
+        //   const intId = parseInt(productId);
+        //   return intId;
+        // }));
 
         // Create order in database
-        const order = await new Promise((resolve, reject) => {
+        const order: any = await new Promise((resolve, reject) => {
           this.connection.query("INSERT INTO orders (userId, total, status, paymentMethod, shippingAddress) VALUES (?, ?, ?, ?, ?)",
             [userId, total, 'Completed', 'Credit Card', ''], (err, results) => {
             if (err) {
@@ -228,6 +228,20 @@ export class StripeService {
           });
         });
 
+        // Create order items in database
+        await Promise.all(lineItems.data.map(async (item) => {
+          await new Promise((resolve, reject) => {
+            this.connection.query("INSERT INTO orderItems (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",
+              [order.insertId, item.price.product, item.quantity, item.amount_subtotal], (err, results) => {
+              if (err) {
+                console.log(err);
+                reject({ message: "Error creating order items" });
+              } else {
+                resolve(results);
+              }
+            });
+          });
+        }));
 
 
         return event.data.object as Stripe.Checkout.Session;
