@@ -217,7 +217,8 @@ export class StripeService {
 
         // Create order in database
         const order = await new Promise((resolve, reject) => {
-          this.connection.query(`INSERT INTO orders (productsID, ownerID, price, status) VALUES (?, ?, ?, "Pending")`, [productIds, userId, total], (err, results) => {
+          this.connection.query("INSERT INTO orders (userId, total, status, paymentMethod, shippingAddress) VALUES (?, ?, ?, ?, ?)",
+            [userId, total, 'Completed', 'Credit Card', ''], (err, results) => {
             if (err) {
               console.log(err);
               reject({ message: "Error creating order" });
@@ -226,6 +227,9 @@ export class StripeService {
             }
           });
         });
+
+
+
         return event.data.object as Stripe.Checkout.Session;
       // Payment failed --------------------------------------
       case 'checkout.session.failed':
