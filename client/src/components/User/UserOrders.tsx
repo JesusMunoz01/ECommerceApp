@@ -1,3 +1,5 @@
+import { useAuth0 } from "@auth0/auth0-react";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 type Order = {
@@ -33,10 +35,25 @@ const testOrders: Order[] = [
 
 const UserOrders = () => {
     const [orders, setOrders] = useState<Order[]>([]);
+    const {user, getAccessTokenSilently} = useAuth0();
+
+    const orderQuery = useQuery({
+        queryKey: ["orders"],
+        queryFn: async () => {
+            const token = getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/${user?.sub}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.json();
+        },
+    });
 
     useEffect(() => {
         // Fetch orders from API
         setOrders(testOrders);
+        setOrders(orderQuery.data as Order[]);
     }, []);
     
     return (
