@@ -18,12 +18,12 @@ export class OrdersController {
         if(req.user !== userID) {
             return { message: "Unauthorized" };
         }
-        return this.ordersService.getOrder(req.user, userID);
+        return this.ordersService.getUserOrders(req.user);
     }
 
-    @Get('/user/:id/:productID')
-    async getUserOrder(@Req() req, @Param("id") productID: string): Promise<{ message: string; }> {
-        return this.ordersService.getOrder(req.user, productID);
+    @Get('/:id')
+    async getOrder(@Req() req, @Param("orderId") orderID: number): Promise<{ message: string; }> {
+        return this.ordersService.getOrder(req.user, orderID);
     }
 
     @Post('/create')

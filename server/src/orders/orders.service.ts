@@ -59,16 +59,34 @@ export class OrdersService {
         }
     }
 
-    async getOrder(userID: string, orderID: string): Promise<{ message: string; }> {
+    async getOrder(userID: string, orderID: number): Promise<{ message: string; order?:any }> {
         try{
-            await this.connection.query(`SELECT * FROM orders WHERE user_id = ? AND id = ?`, [userID, orderID], (err, results) => {
-                if(err) {
-                    console.log(err);
-                    return { message: "Error getting order" };
-                }
-                console.log(results);
-                return { message: "Order retrieved successfully" };
-            });
+            const order = await new Promise((resolve, reject) => {
+                this.connection.query(`
+                    SELECT 
+                        o.*,
+                        p.id AS productId, 
+                        p.name AS productName, 
+                        p.price AS productPrice, 
+                        oi.quantity 
+                    FROM 
+                        orders o
+                    JOIN 
+                        orderItems oi ON o.id = oi.orderId
+                    JOIN 
+                        products p ON oi.productId = p.id
+                    WHERE
+                        o.userId = ? AND o.id = ?;
+                    `, [userID.split('|')[1], orderID], (err, results) => {
+                    if(err) {
+                        console.log(err);
+                        reject({ message: "Error getting order" });
+                    }
+                    console.log(results);
+                    resolve(results);
+                })
+            })
+            return { message: "Order retrieved successfully", order };
         }
         catch(err) {
             console.log(err);
