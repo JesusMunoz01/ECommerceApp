@@ -1,14 +1,17 @@
+import { useAuth0 } from "@auth0/auth0-react";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-type Order = {
+type Orders = {
     id: string;
     createdAt: string;
     status: string;
     items: { id: string; name: string; price: number }[];
     total: number;
+    // TODO: ADD REMAINING FIELDS TO MATCH SQL QUERY
 };
 
-const testOrders: Order[] = [
+const testOrders: Orders[] = [
     {
         id: "1",
         createdAt: "2021-09-01T12:00:00",
@@ -32,11 +35,26 @@ const testOrders: Order[] = [
 ];
 
 const UserOrders = () => {
-    const [orders, setOrders] = useState<Order[]>([]);
+    const [orders, setOrders] = useState<Orders[]>([]);
+    const {user, getAccessTokenSilently} = useAuth0();
+
+    const ordersQuery = useQuery({
+        queryKey: ["orders"],
+        queryFn: async () => {
+            const token = getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/user/${user?.sub}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.json();
+        },
+    });
 
     useEffect(() => {
         // Fetch orders from API
         setOrders(testOrders);
+        setOrders(ordersQuery.data as Orders[]);
     }, []);
     
     return (
