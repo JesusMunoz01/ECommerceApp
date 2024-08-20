@@ -21,8 +21,8 @@ export class OrdersController {
         return this.ordersService.getOrder(req.user, userID);
     }
 
-    @Get(':id')
-    async getOrder(@Req() req, @Param("id") productID: string): Promise<{ message: string; }> {
+    @Get('/user/:id/:productID')
+    async getUserOrder(@Req() req, @Param("id") productID: string): Promise<{ message: string; }> {
         return this.ordersService.getOrder(req.user, productID);
     }
 
