@@ -9,7 +9,7 @@ The backend uses TypeScript and contains various routes and functions to create,
 ## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
 ## Running the app

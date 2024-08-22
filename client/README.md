@@ -9,13 +9,13 @@ The frontend uses React + TypeScript and contains various components/pages, tail
 ## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
 ## Running the app
 
 ```bash
-$ npm run dev
+npm run dev
 ```
 
 ## Tests
@@ -23,7 +23,7 @@ $ npm run dev
 This application uses cypress for running tests, you can run the following command to initialize cypress tests
 
 ```bash
-$ npx cypress open
+npx cypress open
 ```
 
 **_NOTE:_** Before running: Create a .env file following the example.env format to successfully start the frontend.

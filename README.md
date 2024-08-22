@@ -53,3 +53,12 @@ npm run dev
 - Auth0
 - React Query
 - Stripe
+
+#### Testing
+
+The frontend uses cypress testing, you can open the tests by using the following commands.
+
+``` shell
+cd client
+npx cypress open
+```
