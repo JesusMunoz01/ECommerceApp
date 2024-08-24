@@ -62,3 +62,4 @@ The frontend uses cypress testing, you can open the tests by using the following
 cd client
 npx cypress open
 ```
+**_NOTE:_** You must create cypress.env.json file for the client and server example.cypress.env.json format to successfully run the tests. Some of these will require an auth0 account so that it can test logging in and performing actions.
