@@ -22,7 +22,7 @@ const editForm = {
 
 const EditBrandForm = ({ brandDetails }: EditBrandFormProps) => {
     const { user, getAccessTokenSilently } = useAuth0();
-    const [newBrandDetails, setNewBrandDetails] = useState<EditBrandFormState>({...editForm, id: brandDetails.id});
+    const [newBrandDetails, setNewBrandDetails] = useState<EditBrandFormState>({ ...editForm, id: brandDetails.id });
     const [validationMessages, setValidationMessages] = useState({ name: '', description: '' });
     const fileInputRef = useRef(null);
     const { userData, setUser } = useUser();
@@ -74,13 +74,13 @@ const EditBrandForm = ({ brandDetails }: EditBrandFormProps) => {
             return;
         }
         await updateBrandQuery.mutate();
-        const completeForm = { 
+        const completeForm = {
             name: newBrandDetails.name !== '' ? newBrandDetails.name : brand.name,
             description: newBrandDetails.description !== '' ? newBrandDetails.description : brand.description,
             image: newBrandDetails.image !== '' ? newBrandDetails.image : brand.image,
             id: newBrandDetails.id
         }
-        const updatedData = userData.brands.map(b => b.id === completeForm.id ? {...completeForm, brandOwner: brand.brandOwner} : b);
+        const updatedData = userData.brands.map(b => b.id === completeForm.id ? { ...completeForm, brandOwner: brand.brandOwner } : b);
         const newUserData = { ...userData, brands: updatedData };
         setUser(newUserData);
         setBrand(completeForm);
@@ -102,17 +102,20 @@ const EditBrandForm = ({ brandDetails }: EditBrandFormProps) => {
             </div>
             <form className="flex flex-col w-full gap-2" onSubmit={handleSubmit}>
                 <label className="mr-1">New Name:</label>
-                <input className="w-3/4 pl-2" type="text" value={newBrandDetails.name} onChange={(e) => setNewBrandDetails({ ...newBrandDetails, name: e.target.value })} />
+                <input className="w-3/4 pl-2" type="text" value={newBrandDetails.name} name="brandName"
+                    onChange={(e) => setNewBrandDetails({ ...newBrandDetails, name: e.target.value })} />
                 {validationMessages.name && <p className="text-red-500">{validationMessages.name}</p>}
                 <label className="mr-1">New Description:</label>
-                <textarea className="w-full pl-2" rows={4} value={newBrandDetails.description} onChange={(e) => setNewBrandDetails({ ...newBrandDetails, description: e.target.value })} />
+                <textarea className="w-full pl-2" rows={4} value={newBrandDetails.description} name="brandDescription"
+                    onChange={(e) => setNewBrandDetails({ ...newBrandDetails, description: e.target.value })} />
                 {validationMessages.description && <p className="text-red-500">{validationMessages.description}</p>}
                 <label className="mr-1">New Image:</label>
-                <input ref={fileInputRef} id="fileInput" className="hidden" type="file" accept="image/*" onChange={(e) => setNewBrandDetails({ ...newBrandDetails, image: e.target.value })} />
+                <input ref={fileInputRef} id="fileInput" className="hidden" type="file" accept="image/*" name="brandImage"
+                    onChange={(e) => setNewBrandDetails({ ...newBrandDetails, image: e.target.value })} />
                 <label htmlFor="fileInput" className="w-3/4 cursor-pointer inline-block text-center py-2 bg-blue-500 text-white self-center">
                     Choose File
                 </label>
-                <button type="submit" className="w-1/2 self-center mt-10 bg-gray-600">Save Changes</button>
+                <button type="submit" className="w-1/2 self-center mt-10 bg-gray-600" name="submitBrandChanges">Save Changes</button>
             </form>
         </div>
     )
