@@ -169,7 +169,19 @@ describe('Account Tests', () => {
         cy.contains('Test Brand').should('be.visible');
     });
 
-    // TODO: Modify the brand page
+    it("should be able to modify the brand page", () => {
+        cy.loginAccount();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
+        cy.get('input[name="brandName"]').clear().type('Test Brand Updated');
+        cy.get("textarea[name='brandDescription']").clear().type('Test Description Updated');
+        cy.get('button').contains('Update').click();
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand Updated').should('be.visible');
+        cy.visit('http://localhost:5173/brands');
+        cy.contains('Test Brand Updated').should('be.visible');
+    });
 
     // TODO: Add a product to the brand page
 

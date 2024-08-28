@@ -104,6 +104,7 @@ const EditBrandPage = () => {
     if(userData.brands.length === 0) return <div>No brands found</div>;
     if(!brand) return <div>Brand not found</div>;
 
+    // TODO: Double check userProducts usage
     console.log(userProducts);
 
     return (
@@ -129,8 +130,8 @@ const EditBrandPage = () => {
                     </div>}
                     {brandProductQuery.data && brandProductQuery.data.products.length === 0 && <div>No Products Found</div>}
                     <div className="flex gap-2">
-                        <button className="w-2/12" onClick={() => togglePopup('add')}>Add New Product</button>
-                        <button className="w-2/12 bg-red-800" onClick={() => togglePopup('remove')}>Remove A Product</button>
+                        <button className="w-2/12" name="addProduct" onClick={() => togglePopup('add')}>Add New Product</button>
+                        <button className="w-2/12 bg-red-800" name="removeProduct" onClick={() => togglePopup('remove')}>Remove A Product</button>
                     </div>
                 </div>
             </div>
