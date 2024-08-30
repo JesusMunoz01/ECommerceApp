@@ -183,9 +183,13 @@ describe('Account Tests', () => {
         cy.contains('Test Brand Updated').should('be.visible');
     });
 
-    // TODO: Add a product to the brand page
+    // TODO: Create a product and add it to the brand page
 
     // TODO: Delete a product from the brand page
+
+    // TODO: Create a brand page with a starting product
+
+    // TODO: Delete brand page
 
     // TODO: Cancel subscription
 
