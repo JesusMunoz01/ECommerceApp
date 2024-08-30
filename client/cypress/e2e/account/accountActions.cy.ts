@@ -167,6 +167,7 @@ describe('Account Tests', () => {
         cy.contains('Test Brand').should('be.visible');
         cy.visit('http://localhost:5173/brands');
         cy.contains('Test Brand').should('be.visible');
+        cy.contains("No Products Found").should('be.visible');
     });
 
     it("should be able to modify the brand page", () => {
@@ -190,12 +191,39 @@ describe('Account Tests', () => {
         cy.wait(1000);
         cy.visit('http://localhost:5173/account');
         cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
+        //cy.contains("No Products Found").should('be.visible');
         cy.get("button[name='addProduct']").click()
         cy.contains("Your Products:").should('be.visible')
         cy.get("input[name='productCheckbox']").should("not.exist");
     })
 
     // TODO: Create a product and add it to the brand page
+
+    it("should be able to create a product and add it to brand page", () => {
+        cy.loginAccount();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/sell');
+        cy.get('input[name="name"]').type('Test Chair');
+        cy.get('textarea[name="description"]').type('Test Chair for creating products');
+        cy.get('input[name="price"]').clear().type('300');
+        cy.get('input[name="stock"]').clear().type('10');
+        cy.get('input[name="discountNumber"]').clear().type('0');
+        cy.get('button').contains('Create Product').click();
+        
+        // Check profile to see if the product is created
+        cy.visit('http://localhost:5173/account');
+        cy.wait(1000);
+        cy.contains('Test Product').should('be.visible');
+
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
+        cy.get("button[name='addProduct']").click()
+        cy.contains("Your Products:").should('be.visible')
+        cy.get("input[name='productCheckbox']").should("be.visible");
+        cy.get("input[name='productCheckbox']").first().check();
+        cy.get("button[name='productSelectionBtn']").click()
+        cy.contains("Test Chair").should('be.visible');
+    })
 
     // TODO: Delete a product from the brand page
 

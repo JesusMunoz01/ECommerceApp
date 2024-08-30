@@ -43,7 +43,9 @@ return (
             </div>
             ))}
         </div>
-        <button className="ml-2 p-1" onClick={() => onProductsAction(selectedProducts)}>{actionType === "add" ? "Add selected products": "Remove selected products" }</button>
+        <button className="ml-2 p-1" name="productSelectionBtn" onClick={() => onProductsAction(selectedProducts)}>
+            {actionType === "add" ? "Add selected products": "Remove selected products" }
+        </button>
         <Link to="/sell"><button className="ml-2 p-1">Create a product</button></Link>
     </div>
     </div>
