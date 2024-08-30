@@ -35,6 +35,7 @@ return (
                 <input
                 className="mr-2"
                 type="checkbox"
+                name="productCheckbox"
                 checked={selectedProducts.includes(product.id)}
                 onChange={() => handleSelectProduct(product.id)}
                 />

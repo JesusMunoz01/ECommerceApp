@@ -183,6 +183,18 @@ describe('Account Tests', () => {
         cy.contains('Test Brand Updated').should('be.visible');
     });
 
+    // TODO: Attempt to open the add product popup when editing a brand page
+
+    it("should be able to open the add products popup and have no items", () => {
+        cy.loginAccount();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
+        cy.get("button[name='addProduct']").click()
+        cy.contains("Your Products:").should('be.visible')
+        cy.get("input[name='productCheckbox']").should("not.exist");
+    })
+
     // TODO: Create a product and add it to the brand page
 
     // TODO: Delete a product from the brand page
