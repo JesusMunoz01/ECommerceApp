@@ -116,16 +116,19 @@ Cypress.Commands.add('loginAccount', () => {
 
 Cypress.Commands.add('subscribePremium', () => {
   // Stripe Interception
-  cy.intercept('GET', 'checkout.stripe.com/*', (req) => {
+  cy.intercept('GET', 'https://checkout.stripe.com/*', (req) => {
     console.log('Intercepting Stripe checkout...');
     // Handle the redirection if needed
   }).as('stripeCheckout');
 
-  cy.origin('checkout.stripe.com', () => {
-    cy.get('button').contains('Upgrade').click();
-    cy.url().should('include', '/upgrade');
-    cy.get('div').contains("Premium").find('button').contains('Subscribe').click();
-    cy.wait('@stripeCheckout');
+  cy.get('button').contains('Upgrade').click();
+  cy.url().should('include', '/upgrade');
+  cy.wait(2000);
+  cy.get('div').contains("Premium").get('button').contains('Subscribe').click();
+  ///cy.wait('@stripeCheckout');
+  cy.wait(3000)
+
+  cy.origin('https://checkout.stripe.com', () => {
     cy.get('input[name="email"]').type(Cypress.env('auth_createdUsername'));
     cy.get('input[name="cardnumber"]').type('4242424242424242');
     cy.get('input[name="exp-date"]').type('12/29');
