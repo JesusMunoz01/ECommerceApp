@@ -158,15 +158,15 @@ describe('Account Tests', () => {
         cy.get('button').contains('Log In').should('be.visible');
     });
 
-    it("should be able to upgrade to a paid plan", () => {
-        cy.loginAccount();
-        cy.wait(1000);
-        cy.subscribePremium();
-        cy.visit('http://localhost:5173/account');
-        cy.contains('Plan: Premium').should('be.visible');
-        cy.contains('New Brand').should('be.visible');
-    });
-    Issue with stripe redirect
+    // it("should be able to upgrade to a paid plan", () => {
+    //     cy.loginAccount();
+    //     cy.wait(1000);
+    //     cy.subscribePremium();
+    //     cy.visit('http://localhost:5173/account');
+    //     cy.contains('Plan: Premium').should('be.visible');
+    //     cy.contains('New Brand').should('be.visible');
+    // });
+    // Issue with stripe redirect
 
     it("should be able to see brand options in account page with an active subscription", () => {
         cy.login2();
