@@ -235,9 +235,9 @@ export class BrandsService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, uid: string) {
     try {
-      await this.connection.query('DELETE FROM brands WHERE id = ?', [id]);
+      await this.connection.query('DELETE FROM brands WHERE id = ? AND brandOwner = ?', [id, uid.split('|')[1]]);
       return { message: 'Brand page deleted successfully', data: id}
     } catch (error) {
       console.log(error)
