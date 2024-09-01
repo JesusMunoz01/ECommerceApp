@@ -200,7 +200,7 @@ describe('Account Tests', () => {
     //     cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
     //     cy.get('input[name="brandName"]').clear().type('Test Brand Updated');
     //     cy.get("textarea[name='brandDescription']").clear().type('Test Description Updated');
-    //     cy.get('button').contains('Update').click();
+    //     cy.get('button').contains('Save Changes').click();
     //     cy.visit('http://localhost:5173/account');
     //     cy.contains('Test Brand Updated').should('be.visible');
     //     cy.visit('http://localhost:5173/brands');
@@ -209,16 +209,16 @@ describe('Account Tests', () => {
 
     // // TODO: Attempt to open the add product popup when editing a brand page
 
-    // it("should be able to open the add products popup and have no items", () => {
-    //     cy.login2();
-    //     cy.wait(1000);
-    //     cy.visit('http://localhost:5173/account');
-    //     cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
-    //     //cy.contains("No Products Found").should('be.visible');
-    //     cy.get("button[name='addProduct']").click()
-    //     cy.contains("Your Products:").should('be.visible')
-    //     cy.get("input[name='productCheckbox']").should("not.exist");
-    // })
+    it("should be able to open the add products popup and have no items", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
+        //cy.contains("No Products Found").should('be.visible');
+        cy.get("button[name='addProduct']").click()
+        cy.contains("Your Products:").should('be.visible')
+        cy.get("input[name='productCheckbox']").should("not.exist");
+    })
 
     // // TODO: Create a product and add it to the brand page
 

@@ -136,9 +136,13 @@ export class BrandsService {
           }
         );
       });
-
-      if (!result || result.length === 0) {
+      
+      if (!result) {
         throw new Error('Products not found');
+      }
+
+      if(result.length === 0) {
+        return { message: 'No products found for brand', products: []};
       }
 
       return { message: 'Brand products found successfully', products: result};
