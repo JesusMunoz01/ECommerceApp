@@ -63,7 +63,12 @@ export class ProductsService {
 
     async getUserProducts(userID: string): Promise<{ message: string; products?: any; }> {
         return new Promise<{ message: string; products?: any; }>((resolve, reject) => {
-            this.connection.query(`SELECT * FROM products WHERE ownerId = ?`, [userID], (err, results) => {
+            this.connection.query(`
+                SELECT p.*, pb.brandId
+                FROM products p
+                LEFT JOIN productbrand pb ON p.id = pb.productId
+                WHERE p.ownerId = ?`, [userID], (err, results) => {
+                    console.log(results);
                 if(err) {
                     console.log(err);
                     reject({ message: "Error getting user products" });
