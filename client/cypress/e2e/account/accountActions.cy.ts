@@ -172,7 +172,7 @@ describe('Account Tests', () => {
         cy.login2();
         cy.wait(1000);
         cy.visit('http://localhost:5173/account');
-        cy.contains('New Brand').should('not.exist');
+        cy.contains('New Brand').should('be.visible');
     });
 
     it("should be able to create a brand page without products", () => {
@@ -189,6 +189,7 @@ describe('Account Tests', () => {
         cy.contains('Test Brand').should('be.visible');
         cy.visit('http://localhost:5173/brands');
         cy.contains('Test Brand').should('be.visible');
+        cy.contains('Test Brand').click();
         cy.contains("No Products Found").should('be.visible');
     });
 
@@ -199,27 +200,23 @@ describe('Account Tests', () => {
         cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
         cy.get('input[name="brandName"]').clear().type('Test Brand Updated');
         cy.get("textarea[name='brandDescription']").clear().type('Test Description Updated');
-        cy.get('button').contains('Update').click();
+        cy.get('button').contains('Save Changes').click();
         cy.visit('http://localhost:5173/account');
         cy.contains('Test Brand Updated').should('be.visible');
         cy.visit('http://localhost:5173/brands');
         cy.contains('Test Brand Updated').should('be.visible');
     });
 
-    // TODO: Attempt to open the add product popup when editing a brand page
-
     it("should be able to open the add products popup and have no items", () => {
         cy.login2();
         cy.wait(1000);
         cy.visit('http://localhost:5173/account');
         cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
-        //cy.contains("No Products Found").should('be.visible');
         cy.get("button[name='addProduct']").click()
         cy.contains("Your Products:").should('be.visible')
+        cy.contains("No Products Found").should('be.visible');
         cy.get("input[name='productCheckbox']").should("not.exist");
     })
-
-    // TODO: Create a product and add it to the brand page
 
     it("should be able to create a product and add it to brand page", () => {
         cy.login2();
@@ -235,10 +232,10 @@ describe('Account Tests', () => {
         // Check profile to see if the product is created
         cy.visit('http://localhost:5173/account');
         cy.wait(1000);
-        cy.contains('Test Product').should('be.visible');
+        cy.contains('Test Chair').should('be.visible');
 
         cy.visit('http://localhost:5173/account');
-        cy.contains('Test Brand').parent().parent().get('button').contains('Edit').click();
+        cy.contains('Test Brand Updated').parent().parent().find('button').contains('Edit').click();
         cy.get("button[name='addProduct']").click()
         cy.contains("Your Products:").should('be.visible')
         cy.get("input[name='productCheckbox']").should("be.visible");
@@ -248,6 +245,8 @@ describe('Account Tests', () => {
     })
 
     // TODO: Delete a product from the brand page
+
+    // TODO: Delete the product and brand page
 
     // TODO: Create a brand page with a starting product
 

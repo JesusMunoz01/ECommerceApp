@@ -50,8 +50,9 @@ export class BrandsController {
 
   @UseGuards(AuthGuard("jwt"))
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.brandsService.remove(+id);
+  remove(@Param('id') id: string, @Request() req) {
+    const userId = req.user.sub;
+    return this.brandsService.remove(+id, userId);
   }
 
   @UseGuards(AuthGuard("jwt"))

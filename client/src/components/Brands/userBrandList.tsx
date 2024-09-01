@@ -36,7 +36,7 @@ const UserBrandPagesList = () => {
         mutationKey: ['deletePage'],
         mutationFn: async (id: number) => {
             const token = await getAccessTokenSilently()
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}/${user?.sub}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands/${id}`, {
                 method: 'DELETE',  headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -49,6 +49,7 @@ const UserBrandPagesList = () => {
                 queryClient.invalidateQueries({
                     queryKey: ['userBrands', user?.id]
                 });
+                window.location.reload();
         }
     });
 

@@ -29,23 +29,30 @@ return (
             <button className="w-1/12 bg-red-700" onClick={onClose}>Close</button>
         </div>
         <p className="p-2">(Products already in brand will not appear here)</p>
-        <div className="h-2/4 p-2 mb-8">
-            {products.map((product) => (
-            <div key={product.id}>
-                <input
-                className="mr-2"
-                type="checkbox"
-                name="productCheckbox"
-                checked={selectedProducts.includes(product.id)}
-                onChange={() => handleSelectProduct(product.id)}
-                />
-                {product.name}
-            </div>
-            ))}
-        </div>
-        <button className="ml-2 p-1" name="productSelectionBtn" onClick={() => onProductsAction(selectedProducts)}>
-            {actionType === "add" ? "Add selected products": "Remove selected products" }
-        </button>
+        {products.length === 0 ? 
+            <div className="h-1/4 p-2 mb-8">
+                No products found
+            </div> :
+            <>
+                <div className="h-2/4 p-2 mb-8">
+                    {products.map((product) => (
+                    <div key={product.id}>
+                        <input
+                        className="mr-2"
+                        type="checkbox"
+                        name="productCheckbox"
+                        checked={selectedProducts.includes(product.id)}
+                        onChange={() => handleSelectProduct(product.id)}
+                        />
+                        {product.name}
+                    </div>
+                    ))}
+                </div>
+                <button className="ml-2 p-1" name="productSelectionBtn" onClick={() => onProductsAction(selectedProducts)}>
+                    {actionType === "add" ? "Add selected products": "Remove selected products" }
+                </button>
+            </>
+        }
         <Link to="/sell"><button className="ml-2 p-1">Create a product</button></Link>
     </div>
     </div>

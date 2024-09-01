@@ -136,9 +136,13 @@ export class BrandsService {
           }
         );
       });
-
-      if (!result || result.length === 0) {
+      
+      if (!result) {
         throw new Error('Products not found');
+      }
+
+      if(result.length === 0) {
+        return { message: 'No products found for brand', products: []};
       }
 
       return { message: 'Brand products found successfully', products: result};
@@ -235,9 +239,9 @@ export class BrandsService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, uid: string) {
     try {
-      await this.connection.query('DELETE FROM brands WHERE id = ?', [id]);
+      await this.connection.query('DELETE FROM brands WHERE id = ? AND brandOwner = ?', [id, uid.split('|')[1]]);
       return { message: 'Brand page deleted successfully', data: id}
     } catch (error) {
       console.log(error)
