@@ -246,7 +246,31 @@ describe('Account Tests', () => {
 
     // TODO: Delete a product from the brand page
 
+    it("should be able to delete the product from the brand page", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand Updated').parent().parent().find('button').contains('Edit').click();
+        cy.get("button[name='removeProduct']").click()
+        cy.contains("Your Products:").should('be.visible')
+        cy.get("input[name='productCheckbox']").should("be.visible");
+        cy.get("input[name='productCheckbox']").first().check();
+        cy.get("button[name='productSelectionBtn']").click()
+        cy.contains("Test Chair").should('not.exist');
+    })
+
     // TODO: Delete the product and brand page
+
+    it("should be able to delete the product and brand page", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Chair').parent().parent().find('button').contains('Delete').click();
+        cy.contains('Test Brand Updated').parent().parent().find('button').contains('Delete').click();
+        cy.wait(1000);
+        cy.contains('Test Brand Updated').should('not.exist');
+        cy.contains('Test Chair').should('not.exist');
+    })
 
     // TODO: Create a brand page with a starting product
 

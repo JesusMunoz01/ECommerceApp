@@ -51,7 +51,7 @@ export class ProductsService {
                     console.log(err);
                     return { message: "Error getting product" };
                 }
-                console.log(results);
+                // console.log(results);
                 return { message: "Product retrieved successfully" };
             });
         }
@@ -68,7 +68,7 @@ export class ProductsService {
                 FROM products p
                 LEFT JOIN productbrand pb ON p.id = pb.productId
                 WHERE p.ownerId = ?`, [userID], (err, results) => {
-                    console.log(results);
+                    // console.log(results);
                 if(err) {
                     console.log(err);
                     reject({ message: "Error getting user products" });
