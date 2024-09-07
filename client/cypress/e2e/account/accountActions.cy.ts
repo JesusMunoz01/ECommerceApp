@@ -244,8 +244,6 @@ describe('Account Tests', () => {
         cy.contains("Test Chair").should('be.visible');
     })
 
-    // TODO: Delete a product from the brand page
-
     it("should be able to delete the product from the brand page", () => {
         cy.login2();
         cy.wait(1000);
@@ -259,24 +257,41 @@ describe('Account Tests', () => {
         cy.contains("Test Chair").should('not.exist');
     })
 
-    // TODO: Delete the product and brand page
-
-    it("should be able to delete the product and brand page", () => {
+    it("should be able to delete brand page", () => {
         cy.login2();
         cy.wait(1000);
         cy.visit('http://localhost:5173/account');
-        cy.contains('Test Chair').parent().parent().find('button').contains('Delete').click();
         cy.contains('Test Brand Updated').parent().parent().find('button').contains('Delete').click();
         cy.wait(1000);
         cy.contains('Test Brand Updated').should('not.exist');
-        cy.contains('Test Chair').should('not.exist');
     })
 
     // TODO: Create a brand page with a starting product
 
+    it("should be able to create a brand page with a starting product", () => {
+        cy.login2();
+        cy.visit('http://localhost:5173/account');
+        cy.wait(1000);
+        cy.contains('Test Chair').should('be.visible');
+        cy.contains('New Brand').click();
+        cy.get('input[name="brandName"]').type('Test Brand');
+        cy.get('textarea[name="brandDescription"]').type('Test Description');
+        cy.get('button[name="brandItems"]').click();
+        cy.get("input[name='productCheckbox']").first().check();
+        cy.get('button').contains('Add selected products').click();
+        cy.get('button').contains('Submit').click();
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand').should('be.visible');
+        cy.visit('http://localhost:5173/brands');
+        cy.contains('Test Brand').should('be.visible');
+        cy.contains('Test Brand').click();
+        cy.contains("Test Chair").should('be.visible');
+    });
+
     // TODO: Delete brand page
 
     // TODO: Cancel subscription
+    // SKIP FOR NOW: Issue with stripe redirect
 
     // TODO: Order Items
 
