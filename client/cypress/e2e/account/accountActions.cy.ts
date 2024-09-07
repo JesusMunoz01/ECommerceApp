@@ -266,8 +266,6 @@ describe('Account Tests', () => {
         cy.contains('Test Brand Updated').should('not.exist');
     })
 
-    // TODO: Create a brand page with a starting product
-
     it("should be able to create a brand page with a starting product", () => {
         cy.login2();
         cy.visit('http://localhost:5173/account');
@@ -288,7 +286,16 @@ describe('Account Tests', () => {
         cy.contains("Test Chair").should('be.visible');
     });
 
-    // TODO: Delete brand page
+    it("should be able to delete brand page and the test chair", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.contains('Test Chair').parent().parent().find('button').contains('Delete').click();
+        cy.contains('Test Brand Updated').parent().parent().find('button').contains('Delete').click();
+        cy.wait(1000);
+        cy.contains('Test Brand Updated').should('not.exist');
+        cy.contains('Test Chair').should('not.exist');
+    })
 
     // TODO: Cancel subscription
     // SKIP FOR NOW: Issue with stripe redirect
