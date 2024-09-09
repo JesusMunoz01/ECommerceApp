@@ -181,6 +181,7 @@ describe('Account Tests', () => {
         cy.visit('http://localhost:5173/brands');
         cy.contains('Test Brand').should('not.exist');
         cy.visit('http://localhost:5173/account');
+        cy.wait(2000)
         cy.contains('New Brand').click();
         cy.get('input[name="brandName"]').type('Test Brand');
         cy.get('textarea[name="brandDescription"]').type('Test Description');
@@ -268,6 +269,7 @@ describe('Account Tests', () => {
 
     it("should be able to create a brand page with a starting product", () => {
         cy.login2();
+        cy.wait(1000)
         cy.visit('http://localhost:5173/account');
         cy.wait(1000);
         cy.contains('Test Chair').should('be.visible');
@@ -290,10 +292,10 @@ describe('Account Tests', () => {
         cy.login2();
         cy.wait(1000);
         cy.visit('http://localhost:5173/account');
+        cy.contains('Test Brand').parent().parent().find('button').contains('Delete').click();
         cy.contains('Test Chair').parent().parent().find('button').contains('Delete').click();
-        cy.contains('Test Brand Updated').parent().parent().find('button').contains('Delete').click();
         cy.wait(1000);
-        cy.contains('Test Brand Updated').should('not.exist');
+        cy.contains('Test Brand').should('not.exist');
         cy.contains('Test Chair').should('not.exist');
     })
 

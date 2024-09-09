@@ -59,6 +59,7 @@ const CreateBrandForm = () => {
         //setSelectedProducts((prev) => [...prev, ...products]);
         //setBrandData((prev) => ({ ...prev, products: products.map((product) => product.toString()) }));
         setBrandData((prev) => ({ ...prev, products: products }));
+        setIsPopupVisible((prev) => !prev)
     }
 
     const togglePopup = () => {
