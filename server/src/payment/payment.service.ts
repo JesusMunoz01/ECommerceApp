@@ -207,7 +207,6 @@ export class StripeService {
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;
-        // const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
 
         // const productIds = await Promise.all(lineItems.data.map(async (item) => {
@@ -217,11 +216,30 @@ export class StripeService {
         //   return intId;
         // }));
 
+        // Retrieve the PaymentIntent to get the payment method
+        const paymentIntentId = session.payment_intent as string;
+        const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+
+          // Extract payment method details
+        const paymentMethodId = paymentIntent.payment_method as string;
+        const paymentMethod = await this.stripe.paymentMethods.retrieve(paymentMethodId);
+
+        // Get payment method type (e.g., card) and brand if available
+        const paymentMethodType = paymentMethod.type;
+        const paymentTime = paymentIntent.created
+
+
+        // Retrieve the shipping address from the session
+        const shippingDetails = session.shipping_details;
+        const shippingAddress = shippingDetails
+          ? `${shippingDetails.address.line1}, ${shippingDetails.address.city}, ${shippingDetails.address.country}`
+          : "N/A"
+
         const orderData: OrderDto = {
           userId,
           total,
-          shippingAddress: "",
-          paymentMethod: "",
+          shippingAddress,
+          paymentMethod: paymentMethodType,
           status: "Completed"
         }
 
