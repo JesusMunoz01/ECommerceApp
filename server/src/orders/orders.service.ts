@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { OrderDto } from './dto/order.dto';
+import Stripe from 'stripe';
 
 @Injectable()
 export class OrdersService {
@@ -95,20 +96,39 @@ export class OrdersService {
         }
     }
 
-    async createOrder(userID: string, orderData: OrderDto): Promise<{ message: string; }> {
+    async createOrder(orderData: OrderDto, lineItems: Stripe.Response<Stripe.ApiList<Stripe.LineItem>>): Promise<{ message: string; }> {
         try{
-            await this.connection.query(`INSERT INTO orders (id, productsID, ownerID, price, status, created_at, updated_at) VALUES 
-            (?, ?, ?, ?, ?, NOW(), NOW())`, [orderData.id, orderData.productsID, userID, orderData.price, orderData.status], (err, results) => {
-                if(err) {
+            const order: any = await new Promise((resolve, reject) => {
+                this.connection.query("INSERT INTO orders (userId, total, status, paymentMethod, shippingAddress) VALUES (?, ?, ?, ?, ?)",
+                  [orderData.userId, orderData.total, orderData.status, orderData.paymentMethod, orderData.shippingAddress], (err, results) => {
+                  if (err) {
                     console.log(err);
-                    return { message: "Error creating order" };
-                }
-                console.log(results);
-                return { message: "Order created successfully" };
-            });
+                    reject({ message: "Error creating order" });
+                  } else {
+                    resolve(results);
+                  }
+                });
+              });
+      
+              // Create order items in database
+              // TODO: Verify if product IDs are correct
+              await Promise.all(lineItems.data.map(async (item) => {
+                await new Promise((resolve, reject) => {
+                  this.connection.query("INSERT INTO orderItems (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",
+                    [order.insertId, item.price.product, item.quantity, item.amount_subtotal], (err, results) => {
+                    if (err) {
+                      console.log(err);
+                      reject({ message: "Error creating order items" });
+                    } else {
+                      resolve(results);
+                    }
+                  });
+                });
+              }));
         }
         catch(err) {
             console.log(err);
+            // TODO: Delete order if failed (here or payment.service.ts)
             return { message: "Error creating order" };
         }
     }

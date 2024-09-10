@@ -1,7 +1,7 @@
 export class OrderDto {
-    userID: string;
+    userId: string;
     total: number;
-    status: "pending" | "completed" | "cancelled";
+    status: "Pending" | "Completed" | "Cancelled";
     paymentMethod: string;
     shippingAddress: string;
 }
