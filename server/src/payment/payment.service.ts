@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
+import { OrderDto } from 'src/orders/dto/order.dto';
+import { OrdersService } from 'src/orders/orders.service';
 import { ProductDto } from 'src/products/dto/product.dto';
 import Stripe from 'stripe';
 
@@ -8,7 +10,7 @@ export class StripeService {
   public readonly stripe: Stripe;
   private connection = this.appService.connection;
 
-  constructor(private appService: AppService) {
+  constructor(private appService: AppService, private readonly orderService: OrdersService) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-10-16',
     });
@@ -205,7 +207,6 @@ export class StripeService {
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;
-        // const currency = session.currency;
         const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
 
         // const productIds = await Promise.all(lineItems.data.map(async (item) => {
@@ -215,33 +216,37 @@ export class StripeService {
         //   return intId;
         // }));
 
-        // Create order in database
-        const order: any = await new Promise((resolve, reject) => {
-          this.connection.query("INSERT INTO orders (userId, total, status, paymentMethod, shippingAddress) VALUES (?, ?, ?, ?, ?)",
-            [userId, total, 'Completed', 'Credit Card', ''], (err, results) => {
-            if (err) {
-              console.log(err);
-              reject({ message: "Error creating order" });
-            } else {
-              resolve(results);
-            }
-          });
-        });
+        // Retrieve the PaymentIntent to get the payment method
+        const paymentIntentId = session.payment_intent as string;
+        const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
 
-        // Create order items in database
-        await Promise.all(lineItems.data.map(async (item) => {
-          await new Promise((resolve, reject) => {
-            this.connection.query("INSERT INTO orderItems (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",
-              [order.insertId, item.price.product, item.quantity, item.amount_subtotal], (err, results) => {
-              if (err) {
-                console.log(err);
-                reject({ message: "Error creating order items" });
-              } else {
-                resolve(results);
-              }
-            });
-          });
-        }));
+          // Extract payment method details
+        const paymentMethodId = paymentIntent.payment_method as string;
+        const paymentMethod = await this.stripe.paymentMethods.retrieve(paymentMethodId);
+
+        // Get payment method type (e.g., card) and brand if available
+        const paymentMethodType = paymentMethod.type;
+        const paymentTime = paymentIntent.created
+
+
+        // Retrieve the shipping address from the session
+        const shippingDetails = session.shipping_details;
+        const shippingAddress = shippingDetails
+          ? `${shippingDetails.address.line1}, ${shippingDetails.address.city}, ${shippingDetails.address.country}`
+          : "N/A"
+
+        const orderData: OrderDto = {
+          userId,
+          total,
+          shippingAddress,
+          paymentMethod: paymentMethodType,
+          status: "Completed"
+        }
+
+        // Create order in database
+        this.orderService.createOrder(orderData, lineItems)
+
+        // TODO: Delete order if failed (here or order.service.ts)
 
 
         return event.data.object as Stripe.Checkout.Session;

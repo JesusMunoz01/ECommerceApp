@@ -1,7 +1,14 @@
 export class OrderDto {
-    readonly id: string;
-    readonly productsID: string[];
-    readonly ownerID: string;
-    readonly price: number;
-    status: "pending" | "completed" | "cancelled";
+    userId: string;
+    total: number;
+    status: "Pending" | "Completed" | "Cancelled";
+    paymentMethod: string;
+    shippingAddress: string;
+}
+
+export class OrderItemDto {
+    orderId: number;
+    productId: number;
+    quantity: number;
+    price: number;
 }

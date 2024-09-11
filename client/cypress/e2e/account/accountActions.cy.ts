@@ -303,6 +303,7 @@ describe('Account Tests', () => {
     // SKIP FOR NOW: Issue with stripe redirect
 
     // TODO: Order Items
+    // Stripe redirect
 
     // TODO: View Order History
 
