@@ -12,3 +12,5 @@ export class OrderItemDto {
     quantity: number;
     price: number;
 }
+
+export interface CompleteOrderDto extends OrderDto, OrderItemDto {}
