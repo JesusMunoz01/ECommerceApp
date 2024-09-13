@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
-import { OrderDto } from './dto/order.dto';
+import { CompleteOrderDto, OrderDto } from './dto/order.dto';
 import Stripe from 'stripe';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class OrdersService {
 
     async getUserOrders(userID: string): Promise<{ message: string; orders?: any }> {
         try{
-            const orders = await new Promise((resolve, reject) => {
+            const orders: CompleteOrderDto[] = await new Promise((resolve, reject) => {
                 this.connection.query(`
                     SELECT 
                         o.*,

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { OrderDto } from 'src/orders/dto/order.dto';
 import { OrdersService } from 'src/orders/orders.service';
-import { ProductDto } from 'src/products/dto/product.dto';
 import Stripe from 'stripe';
 
 @Injectable()
@@ -124,7 +123,7 @@ export class StripeService {
     return session.url;
   }
 
-  async cancelSubscription(userId): Promise<string> {
+  async cancelSubscription(userId: string): Promise<string> {
     try{
       const subID:string = await new Promise((resolve, reject) => {
         this.connection.query(`SELECT sid FROM users WHERE id = ?`, [userId.split('|')[1]], (err, results) => {
