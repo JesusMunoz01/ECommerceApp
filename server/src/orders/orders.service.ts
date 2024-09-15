@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
-import { CompleteOrderDto, OrderDto } from './dto/order.dto';
+import { CompleteOrderDto, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
 import { StripeService } from 'src/payment/payment.service';
 import Stripe from 'stripe';
 
@@ -99,7 +99,7 @@ export class OrdersService {
         }
     }
 
-    async createOrder(orderData: OrderDto, lineItems: Stripe.Response<Stripe.ApiList<Stripe.LineItem>>): Promise<{ message: string; }> {
+    async createOrder(orderData: OrderDto, orderItems: StripeItem[]): Promise<{ message: string; }> {
         try{
             const order: any = await new Promise((resolve, reject) => {
                 this.connection.query("INSERT INTO orders (userId, total, status, paymentMethod, shippingAddress) VALUES (?, ?, ?, ?, ?)",
@@ -115,13 +115,10 @@ export class OrdersService {
       
               // Create order items in database
               // TODO: Verify if product IDs are correct
-              await Promise.all(lineItems.data.map(async (item) => {
-                    const product = await this.stripe.products.retrieve(item.price.product.toString());
-                    const productId = product.metadata.productId;
-                    const intId = parseInt(productId);
+              await Promise.all(orderItems.map(async (item) => {
                 await new Promise((resolve, reject) => {
                   this.connection.query("INSERT INTO orderItems (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",
-                    [order.insertId, item.price.product, item.quantity, item.amount_subtotal], (err, results) => {
+                    [order.insertId, item.id, item.quantity, item.subtotal], (err, results) => {
                     if (err) {
                       console.log(err);
                       reject({ message: "Error creating order items" });
