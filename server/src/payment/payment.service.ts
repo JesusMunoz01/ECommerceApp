@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { OrderDto } from 'src/orders/dto/order.dto';
 import { OrdersService } from 'src/orders/orders.service';
@@ -9,7 +9,8 @@ export class StripeService {
   public readonly stripe: Stripe;
   private connection = this.appService.connection;
 
-  constructor(private appService: AppService, private readonly orderService: OrdersService) {
+  constructor(private appService: AppService, 
+    @Inject(forwardRef(() => OrdersService)) private readonly orderService: OrdersService) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-10-16',
     });

@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { CompleteOrderDto, OrderDto } from './dto/order.dto';
+import { StripeService } from 'src/payment/payment.service';
 import Stripe from 'stripe';
 
 @Injectable()
 export class OrdersService {
-    constructor(private appService: AppService) {}
+    constructor(private appService: AppService, 
+        @Inject(forwardRef(() => StripeService)) private stripeService: StripeService) {}
     private connection = this.appService.connection;
+    private readonly stripe = this.stripeService.stripe
 
     async getOrders(userID: string): Promise<{ message: string; }> {
         try{
@@ -113,6 +116,9 @@ export class OrdersService {
               // Create order items in database
               // TODO: Verify if product IDs are correct
               await Promise.all(lineItems.data.map(async (item) => {
+                    const product = await this.stripe.products.retrieve(item.price.product.toString());
+                    const productId = product.metadata.productId;
+                    const intId = parseInt(productId);
                 await new Promise((resolve, reject) => {
                   this.connection.query("INSERT INTO orderItems (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",
                     [order.insertId, item.price.product, item.quantity, item.amount_subtotal], (err, results) => {
