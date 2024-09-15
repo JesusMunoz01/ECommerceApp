@@ -114,7 +114,6 @@ export class OrdersService {
               });
       
               // Create order items in database
-              // TODO: Verify if product IDs are correct
               await Promise.all(orderItems.map(async (item) => {
                 await new Promise((resolve, reject) => {
                   this.connection.query("INSERT INTO orderItems (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",

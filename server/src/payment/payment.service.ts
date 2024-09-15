@@ -204,7 +204,7 @@ export class StripeService {
         if(!event.data.object.client_reference_id)
           break;
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log(session)
+        // console.log(session)
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;
