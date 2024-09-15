@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { OrderDto } from 'src/orders/dto/order.dto';
 import { OrdersService } from 'src/orders/orders.service';
@@ -9,7 +9,8 @@ export class StripeService {
   public readonly stripe: Stripe;
   private connection = this.appService.connection;
 
-  constructor(private appService: AppService, private readonly orderService: OrdersService) {
+  constructor(private appService: AppService, 
+    @Inject(forwardRef(() => OrdersService)) private readonly orderService: OrdersService) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-10-16',
     });
@@ -33,6 +34,7 @@ export class StripeService {
           product_data: {
             name: item.name,
             metadata: {
+              test: "test",
               productId: item.id,
             }
             //images: [item.image],
@@ -202,18 +204,25 @@ export class StripeService {
         if(!event.data.object.client_reference_id)
           break;
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log(session)
+        // console.log(session)
         const orderId = session.id;
         const userId = session.client_reference_id;
         const total = session.amount_total;
-        const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { limit: 100 });
-
-        // const productIds = await Promise.all(lineItems.data.map(async (item) => {
-        //   const product = await this.stripe.products.retrieve(item.price.product.toString());
-        //   const productId = product.metadata.productId;
-        //   const intId = parseInt(productId);
-        //   return intId;
-        // }));
+        const lineItems = await this.stripe.checkout.sessions.listLineItems(orderId, { 
+          limit: 100, 
+          expand: ["data.price.product"]  // Ensure product metadata is expanded
+        });
+        
+        const orderItems = lineItems.data.map((item) => {
+          const product = <Stripe.Product>(item.price.product);
+          const productId = product.metadata.productId;  // Get productId from metadata
+      
+          return {
+            id: parseInt(productId),  // Assuming productId is a numeric string
+            quantity: item.quantity,
+            subtotal: item.amount_subtotal
+          };
+        });
 
         // Retrieve the PaymentIntent to get the payment method
         const paymentIntentId = session.payment_intent as string;
@@ -243,7 +252,7 @@ export class StripeService {
         }
 
         // Create order in database
-        this.orderService.createOrder(orderData, lineItems)
+        this.orderService.createOrder(orderData, orderItems)
 
         // TODO: Delete order if failed (here or order.service.ts)
 

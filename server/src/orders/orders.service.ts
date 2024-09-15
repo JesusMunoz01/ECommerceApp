@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
-import { CompleteOrderDto, OrderDto } from './dto/order.dto';
+import { CompleteOrderDto, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
+import { StripeService } from 'src/payment/payment.service';
 import Stripe from 'stripe';
 
 @Injectable()
 export class OrdersService {
-    constructor(private appService: AppService) {}
+    constructor(private appService: AppService, 
+        @Inject(forwardRef(() => StripeService)) private stripeService: StripeService) {}
     private connection = this.appService.connection;
+    private readonly stripe = this.stripeService.stripe
 
     async getOrders(userID: string): Promise<{ message: string; }> {
         try{
@@ -96,7 +99,7 @@ export class OrdersService {
         }
     }
 
-    async createOrder(orderData: OrderDto, lineItems: Stripe.Response<Stripe.ApiList<Stripe.LineItem>>): Promise<{ message: string; }> {
+    async createOrder(orderData: OrderDto, orderItems: StripeItem[]): Promise<{ message: string; }> {
         try{
             const order: any = await new Promise((resolve, reject) => {
                 this.connection.query("INSERT INTO orders (userId, total, status, paymentMethod, shippingAddress) VALUES (?, ?, ?, ?, ?)",
@@ -111,11 +114,10 @@ export class OrdersService {
               });
       
               // Create order items in database
-              // TODO: Verify if product IDs are correct
-              await Promise.all(lineItems.data.map(async (item) => {
+              await Promise.all(orderItems.map(async (item) => {
                 await new Promise((resolve, reject) => {
                   this.connection.query("INSERT INTO orderItems (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)",
-                    [order.insertId, item.price.product, item.quantity, item.amount_subtotal], (err, results) => {
+                    [order.insertId, item.id, item.quantity, item.subtotal], (err, results) => {
                     if (err) {
                       console.log(err);
                       reject({ message: "Error creating order items" });

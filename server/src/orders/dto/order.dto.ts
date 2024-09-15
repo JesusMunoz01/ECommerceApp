@@ -13,4 +13,10 @@ export class OrderItemDto {
     price: number;
 }
 
+export class StripeItem {
+    id: number;
+    subtotal: number;
+    quantity: number
+}
+
 export interface CompleteOrderDto extends OrderDto, OrderItemDto {}
