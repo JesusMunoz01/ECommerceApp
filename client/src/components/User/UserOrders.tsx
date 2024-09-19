@@ -3,12 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 type Orders = {
-    id: string;
-    createdAt: string;
-    status: string;
-    items: { id: string; name: string; price: number }[];
+    userId: string;
     total: number;
-    // TODO: ADD REMAINING FIELDS TO MATCH SQL QUERY
+    status: "Pending" | "Completed" | "Cancelled";
+    paymentMethod: string;
+    shippingAddress: string;
+    orderId: number;
+    productId: number;
+    quantity: number;
+    price: number;
 };
 
 const UserOrders = () => {
@@ -30,8 +33,6 @@ const UserOrders = () => {
     });
 
     useEffect(() => {
-        // Fetch orders from API
-        setOrders(testOrders);
         setOrders(ordersQuery.data as Orders[]);
     }, []);
     
@@ -39,7 +40,8 @@ const UserOrders = () => {
         <div className="flex flex-col gap-1 h-full">
         <h1 className="mb-2 min-h-20 text-3xl md:text-6xl">Your Orders</h1>
         <div>
-        {orders.map((order) => (
+        {/* TODO: Modify to user ordersQuery.data */}
+        {/* {orders.map((order) => (
             <div key={order.id} className="border-t flex flex-col gap-2 mb-2">
             <h2 className="mt-2">Order ID: {order.id}</h2>
             <p>Total: ${order.total}</p>
@@ -54,7 +56,7 @@ const UserOrders = () => {
                 ))}
             </ul>
             </div>
-        ))}
+        ))} */}
         </div>
         </div>
     );
