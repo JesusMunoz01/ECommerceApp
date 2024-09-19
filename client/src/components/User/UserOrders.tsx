@@ -11,29 +11,6 @@ type Orders = {
     // TODO: ADD REMAINING FIELDS TO MATCH SQL QUERY
 };
 
-const testOrders: Orders[] = [
-    {
-        id: "1",
-        createdAt: "2021-09-01T12:00:00",
-        status: "Delivered",
-        items: [
-            { id: "1", name: "Item 1", price: 10 },
-            { id: "2", name: "Item 2", price: 20 },
-        ],
-        total: 30,
-    },
-    {
-        id: "2",
-        createdAt: "2021-09-02T12:00:00",
-        status: "Shipped",
-        items: [
-            { id: "3", name: "Item 3", price: 30 },
-            { id: "4", name: "Item 4", price: 40 },
-        ],
-        total: 70,
-    },
-];
-
 const UserOrders = () => {
     const [orders, setOrders] = useState<Orders[]>([]);
     const {user, getAccessTokenSilently} = useAuth0();
@@ -47,6 +24,7 @@ const UserOrders = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log(response.json())
             return response.json();
         },
     });
