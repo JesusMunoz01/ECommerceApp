@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { OrdersService } from './orders.service';
-import { OrderDto } from './dto/order.dto';
 
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(AuthGuard('jwt'))
 @Controller('orders')
 export class OrdersController {
     constructor(private readonly ordersService: OrdersService) {}
@@ -15,10 +14,12 @@ export class OrdersController {
 
     @Get("/user/:id")
     async getUserOrders(@Req() req, @Param("id") userID: string): Promise<{ message: string; }> {
-        if(req.user !== userID) {
+
+        if(req.user.sub !== userID) {
             return { message: "Unauthorized" };
         }
-        return this.ordersService.getUserOrders(req.user);
+
+        return this.ordersService.getUserOrders(req.user.sub);
     }
 
     @Get('/:id')
