@@ -21,14 +21,14 @@ const UserOrders = () => {
     const ordersQuery = useQuery({
         queryKey: ["orders"],
         queryFn: async () => {
-            const token = getAccessTokenSilently();
+            const token = await getAccessTokenSilently();
             const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/user/${user?.sub}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log(response.json())
-            return response.json();
+            console.log(await response.json())
+            return await response.json();
         },
     });
 
