@@ -41,22 +41,21 @@ const UserOrders = () => {
         <div className="flex flex-col gap-1 h-full">
             <h1 className="mb-2 min-h-20 text-3xl md:text-6xl">Your Orders</h1>
             <div>
-            {/* TODO: Modify to user ordersQuery.data */}
             {/* TODO: Format orders so that it has one order id with all the items */}
-            {ordersQuery.data.orders.map((order: Orders) => (
+            {ordersQuery.data.fullOrders.map((order: any) => (
                 <div key={order.id} className="border-t flex flex-col gap-2 mb-2">
                 <h2 className="mt-2">Order ID: {order.id}</h2>
                 <p>Total: ${order.total}</p>
                 <p>Order Date: {new Date(order.createdAt).toLocaleString()}</p>
                 <p>Order Status: {order.status}</p>
                 <h3>Items:</h3>
-                {/* <ul>
-                    {order.items.map((item) => (
-                    <li key={item.id}>
-                        {item.name} - ${item.price}
+                <ul>
+                    {order.items.map((item: any, index: number) => (
+                    <li key={index}>
+                        {index+1}. {item.productName} (${item.productPrice})
                     </li>
                     ))}
-                </ul> */}
+                </ul>
                 </div>
             ))}
             </div>

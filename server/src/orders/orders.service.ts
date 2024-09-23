@@ -93,7 +93,6 @@ export class OrdersService {
                             return { ...order, items };
                         })
                     );
-                    console.log(ordersWithItems)
                     resolve(ordersWithItems);
                 } catch (error) {
                     reject(error);
