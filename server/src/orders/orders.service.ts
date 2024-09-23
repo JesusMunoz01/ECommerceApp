@@ -28,7 +28,7 @@ export class OrdersService {
         }
     }
 
-    async getUserOrders(userID: string): Promise<{ message: string; orders?: any }> {
+    async getUserOrders(userID: string): Promise<{ message: string; fullOrders?: any }> {
         try{
             // const orders: CompleteOrderDto[] = await new Promise((resolve, reject) => {
                 // this.connection.query(`
@@ -66,33 +66,41 @@ export class OrdersService {
                             resolve(results);
                     })
                 })
-            const orderItems = orderDetails.map(async (order) => {
-                const items: any = await new Promise((resolve, reject) => {
-                    this.connection.query(`
-                        SELECT 
-                            oi.quantity,
-                            p.name AS productName, 
-                            p.price AS productPrice
-                        FROM 
-                            orderitems oi
-                        JOIN 
-                            products p ON oi.productId = p.id
-                        WHERE 
-                            oi.orderId = ?;
-                        `, [order.id], (err, results) => {
-                        if(err) {
-                            console.log(err);
-                            reject({ message: "Error getting user orders" });
-                        }
-                        console.log(results);
-                        resolve(results);
-                    })
-                })
-                return {...order, items}
-            })
-            console.log(await orderItems)
-            const orders = orderItems
-            return { message: "User orders retrieved successfully", orders };
+            const fullOrders = await new Promise(async (resolve, reject) => {
+                try {
+                    const ordersWithItems = await Promise.all(
+                        orderDetails.map(async (order) => {
+                            const items: any = await new Promise((resolve, reject) => {
+                                this.connection.query(`
+                                    SELECT 
+                                        oi.quantity,
+                                        p.name AS productName, 
+                                        p.price AS productPrice
+                                    FROM 
+                                        orderitems oi
+                                    JOIN 
+                                        products p ON oi.productId = p.id
+                                    WHERE 
+                                        oi.orderId = ?;
+                                    `, [order.id], (err, results) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return reject({ message: "Error getting user orders" });
+                                    }
+                                    resolve(results);
+                                });
+                            });
+                            return { ...order, items };
+                        })
+                    );
+                    console.log(ordersWithItems)
+                    resolve(ordersWithItems);
+                } catch (error) {
+                    reject(error);
+                }
+            });                
+
+            return { message: "User orders retrieved successfully", fullOrders };
         }
         catch(err) {
             console.log(err);
