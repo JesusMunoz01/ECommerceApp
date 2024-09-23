@@ -28,34 +28,78 @@ export class OrdersService {
         }
     }
 
-    async getUserOrders(userID: string): Promise<{ message: string; orders?: any }> {
+    async getUserOrders(userID: string): Promise<{ message: string; fullOrders?: any }> {
         try{
-            const orders: CompleteOrderDto[] = await new Promise((resolve, reject) => {
-                this.connection.query(`
-                    SELECT 
-                        o.*,
-                        p.id AS productId, 
-                        p.name AS productName, 
-                        p.price AS productPrice, 
-                        oi.quantity 
-                    FROM 
-                        orders o
-                    JOIN 
-                        orderItems oi ON o.id = oi.orderId
-                    JOIN 
-                        products p ON oi.productId = p.id
-                    WHERE 
-                        o.userId = ?;
-                    `, [userID.split('|')[1]], (err, results) => {
-                    if(err) {
-                        console.log(err);
-                        reject({ message: "Error getting user orders" });
-                    }
-                    console.log(results);
-                    resolve(results);
+            // const orders: CompleteOrderDto[] = await new Promise((resolve, reject) => {
+                // this.connection.query(`
+                //     SELECT 
+                //         o.*,
+                //         p.id AS productId, 
+                //         p.name AS productName, 
+                //         p.price AS productPrice, 
+                //         oi.quantity 
+                //     FROM 
+                //         orders o
+                //     JOIN 
+                //         orderItems oi ON o.id = oi.orderId
+                //     JOIN 
+                //         products p ON oi.productId = p.id
+                //     WHERE 
+                //         o.userId = ?;
+                //     `, [userID.split('|')[1]], (err, results) => {
+                //     if(err) {
+                //         console.log(err);
+                //         reject({ message: "Error getting user orders" });
+                //     }
+                //     console.log(results);
+                //     resolve(results);
+                // })
+            // })
+            const orderDetails: any = await new Promise((resolve, reject) => {
+                this.connection.query(`SELECT * from orders WHERE userId = ?`, [userID.split('|')[1]], 
+                    (err, results) => {
+                            if(err) {
+                                console.log(err);
+                                reject({ message: "Error getting user orders" });
+                            }
+                            //console.log(results);
+                            resolve(results);
+                    })
                 })
-            })
-            return { message: "User orders retrieved successfully", orders };
+            const fullOrders = await new Promise(async (resolve, reject) => {
+                try {
+                    const ordersWithItems = await Promise.all(
+                        orderDetails.map(async (order) => {
+                            const items: any = await new Promise((resolve, reject) => {
+                                this.connection.query(`
+                                    SELECT 
+                                        oi.quantity,
+                                        p.name AS productName, 
+                                        p.price AS productPrice
+                                    FROM 
+                                        orderitems oi
+                                    JOIN 
+                                        products p ON oi.productId = p.id
+                                    WHERE 
+                                        oi.orderId = ?;
+                                    `, [order.id], (err, results) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return reject({ message: "Error getting user orders" });
+                                    }
+                                    resolve(results);
+                                });
+                            });
+                            return { ...order, items };
+                        })
+                    );
+                    resolve(ordersWithItems);
+                } catch (error) {
+                    reject(error);
+                }
+            });                
+
+            return { message: "User orders retrieved successfully", fullOrders };
         }
         catch(err) {
             console.log(err);
