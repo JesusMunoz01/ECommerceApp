@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
-import { CompleteOrderDto, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
+import { OrderDetails, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
 import { StripeService } from 'src/payment/payment.service';
 import Stripe from 'stripe';
 
@@ -30,32 +30,7 @@ export class OrdersService {
 
     async getUserOrders(userID: string): Promise<{ message: string; fullOrders?: any }> {
         try{
-            // const orders: CompleteOrderDto[] = await new Promise((resolve, reject) => {
-                // this.connection.query(`
-                //     SELECT 
-                //         o.*,
-                //         p.id AS productId, 
-                //         p.name AS productName, 
-                //         p.price AS productPrice, 
-                //         oi.quantity 
-                //     FROM 
-                //         orders o
-                //     JOIN 
-                //         orderItems oi ON o.id = oi.orderId
-                //     JOIN 
-                //         products p ON oi.productId = p.id
-                //     WHERE 
-                //         o.userId = ?;
-                //     `, [userID.split('|')[1]], (err, results) => {
-                //     if(err) {
-                //         console.log(err);
-                //         reject({ message: "Error getting user orders" });
-                //     }
-                //     console.log(results);
-                //     resolve(results);
-                // })
-            // })
-            const orderDetails: any = await new Promise((resolve, reject) => {
+            const orderDetails: OrderDetails[] = await new Promise((resolve, reject) => {
                 this.connection.query(`SELECT * from orders WHERE userId = ?`, [userID.split('|')[1]], 
                     (err, results) => {
                             if(err) {
@@ -70,7 +45,7 @@ export class OrdersService {
                 try {
                     const ordersWithItems = await Promise.all(
                         orderDetails.map(async (order) => {
-                            const items: any = await new Promise((resolve, reject) => {
+                            const items: OrderItemDto = await new Promise((resolve, reject) => {
                                 this.connection.query(`
                                     SELECT 
                                         oi.quantity,

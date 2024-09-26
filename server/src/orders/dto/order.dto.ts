@@ -10,7 +10,8 @@ export class OrderItemDto {
     orderId: number;
     productId: number;
     quantity: number;
-    price: number;
+    productName: string;
+    productPrice: number;
 }
 
 export class StripeItem {
@@ -19,4 +20,6 @@ export class StripeItem {
     quantity: number
 }
 
-export interface CompleteOrderDto extends OrderDto, OrderItemDto {}
+export interface OrderDetails extends OrderDto {
+    id: number;
+}
