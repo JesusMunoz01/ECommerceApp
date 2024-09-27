@@ -43,8 +43,14 @@ export class OrdersService {
                 })
             const fullOrders = await new Promise(async (resolve, reject) => {
                 try {
+
+                    // Sort orderDetails by the `created` date in descending order
+                    const sortedOrderDetails = orderDetails.sort((a, b) => {
+                        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                    });
+
                     const ordersWithItems = await Promise.all(
-                        orderDetails.map(async (order) => {
+                        sortedOrderDetails.map(async (order) => {
                             const items: OrderItemDto = await new Promise((resolve, reject) => {
                                 this.connection.query(`
                                     SELECT 

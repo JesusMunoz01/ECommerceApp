@@ -1,9 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { orderFilter, productFilter } from "../../utils/productFilter";
+import { orderFilter } from "../../utils/productFilter";
 
-type OrderItems = {
+export type OrderItems = {
     orderId: number;
     productId: number;
     quantity: number;
@@ -11,7 +11,7 @@ type OrderItems = {
     productPrice: number;
 }
 
-type Orders = {
+export type Orders = {
     id: number
     userId: string;
     total: number;
