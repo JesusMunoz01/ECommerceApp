@@ -65,7 +65,9 @@ export class OrdersService {
                                     resolve(results);
                                 });
                             });
-                            return { ...order, items };
+                            // Destructure to only send needed details
+                            const {userId, ...orderInfo} = order
+                            return { ...orderInfo, items };
                         })
                     );
                     resolve(ordersWithItems);
