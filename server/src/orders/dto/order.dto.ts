@@ -22,4 +22,5 @@ export class StripeItem {
 
 export interface OrderDetails extends OrderDto {
     id: number;
+    createdAt: Date;
 }
