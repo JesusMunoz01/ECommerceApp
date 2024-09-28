@@ -59,18 +59,20 @@ const UserOrders = () => {
                 
                 {orderFilter(ordersQuery.data.fullOrders, filter).map((order: Orders) => (
                     <div key={order.id} className="border-t flex flex-col gap-2 mb-2">
-                    <h2 className="mt-2">Order ID: {order.id}</h2>
-                    <p>Total: ${order.total}</p>
-                    <p>Order Date: {new Date(order.createdAt).toLocaleString()}</p>
-                    <p>Order Status: {order.status}</p>
-                    <h3>Items:</h3>
-                    <ul>
-                        {order.items.map((item: OrderItems, index: number) => (
-                        <li key={index}>
-                            {index+1}. {item.productName} (${item.productPrice})
-                        </li>
-                        ))}
-                    </ul>
+                        <h2 className="mt-2">Order ID: {order.id}</h2>
+                        <p>Total: ${order.total}</p>
+                        <p>Order Date: {new Date(order.createdAt).toLocaleString()}</p>
+                        <p>Order Status: {order.status}</p>
+                        <div>
+                            <h3>Items:</h3>
+                            <ul className="pl-2">
+                                {order.items.map((item: OrderItems, index: number) => (
+                                <li key={index}>
+                                    {index+1}. {item.productName} (${item.productPrice})
+                                </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 ))}
             </div>
