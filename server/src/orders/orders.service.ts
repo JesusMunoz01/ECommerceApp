@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
-import { OrderDetails, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
+import { Order, OrderDetails, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
 import { StripeService } from 'src/payment/payment.service';
 import Stripe from 'stripe';
 
@@ -28,7 +28,7 @@ export class OrdersService {
         }
     }
 
-    async getUserOrders(userID: string): Promise<{ message: string; fullOrders?: any }> {
+    async getUserOrders(userID: string): Promise<{ message: string; fullOrders?: Order[] }> {
         try{
             const orderDetails: OrderDetails[] = await new Promise((resolve, reject) => {
                 this.connection.query(`SELECT * from orders WHERE userId = ?`, [userID.split('|')[1]], 
@@ -41,7 +41,7 @@ export class OrdersService {
                             resolve(results);
                     })
                 })
-            const fullOrders = await new Promise(async (resolve, reject) => {
+            const fullOrders: Order[] = await new Promise(async (resolve, reject) => {
                 try {
 
                     // Sort orderDetails by the `created` date in descending order
@@ -49,7 +49,7 @@ export class OrdersService {
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     });
 
-                    const ordersWithItems = await Promise.all(
+                    const ordersWithItems: Order[] = await Promise.all(
                         sortedOrderDetails.map(async (order) => {
                             const items: OrderItemDto = await new Promise((resolve, reject) => {
                                 this.connection.query(`

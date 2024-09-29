@@ -20,6 +20,16 @@ export class StripeItem {
     quantity: number
 }
 
+export interface Order {
+    items: OrderItemDto;
+    id: number;
+    createdAt: Date;
+    total: number;
+    status: "Pending" | "Completed" | "Cancelled";
+    paymentMethod: string;
+    shippingAddress: string
+}
+
 export interface OrderDetails extends OrderDto {
     id: number;
     createdAt: Date;
