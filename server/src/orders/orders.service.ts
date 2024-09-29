@@ -1,15 +1,11 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Order, OrderDetails, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
-import { StripeService } from 'src/payment/payment.service';
-import Stripe from 'stripe';
 
 @Injectable()
 export class OrdersService {
-    constructor(private appService: AppService, 
-        @Inject(forwardRef(() => StripeService)) private stripeService: StripeService) {}
+    constructor(private appService: AppService) {}
     private connection = this.appService.connection;
-    private readonly stripe = this.stripeService.stripe
 
     async getOrders(userID: string): Promise<{ message: string; }> {
         try{
