@@ -86,10 +86,10 @@ export class OrdersService {
         }
     }
 
-    async getOrder(userID: string, orderID: number): Promise<{ message: string; order?:any }> {
+    async getOrder(userID: string, orderID: number): Promise<{ message: string; order?: OrderDto & OrderItemDto }> {
         // TODO: Test query and format results
         try{
-            const order = await new Promise((resolve, reject) => {
+            const order: OrderDto & OrderItemDto = await new Promise((resolve, reject) => {
                 this.connection.query(`
                     SELECT 
                         o.*,
