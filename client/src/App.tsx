@@ -16,6 +16,7 @@ import BrandPage from './pages/brand.tsx'
 import EditBrandPage from './pages/editBrand.tsx'
 import { useUser } from './utils/userContext.tsx'
 import CreateBrandPage from './pages/createBrand.tsx'
+import OrderPage from './pages/order.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
@@ -94,6 +95,7 @@ function App() {
                     <SettingsPage />
                   </div>} />
                   <Route path='/brand/edit/:id' element={<EditBrandPage />} />
+                  <Route path='/order/:id' element={<OrderPage />} />
                 </>
               )}
         </Routes>
