@@ -10,7 +10,7 @@ const OrderPage = () => {
         queryKey: ["order", id],
         queryFn: async () => {
             const token = getAccessTokenSilently()
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/order/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/${id}`, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -18,6 +18,7 @@ const OrderPage = () => {
               if (!response.ok) {
                 throw new Error('Network response was not ok');
               }
+              console.log(response.json())
               return response.json()
         }
     })
@@ -34,6 +35,7 @@ const OrderPage = () => {
             <h2>ID: {tempData.id}</h2>
             <div>
                 <h2>Order Details</h2>
+                {/* <h3>Status: {}</h3> */}
                 <h3>Items:</h3>
                 <ul>
                     {tempData.items.map((item, index) => (
