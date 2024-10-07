@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { orderFilter } from "../../utils/productFilter";
+import { Link } from "react-router-dom";
 
 export type OrderItems = {
     orderId: number;
@@ -59,7 +60,7 @@ const UserOrders = () => {
                 
                 {orderFilter(ordersQuery.data.fullOrders, filter).map((order: Orders) => (
                     <div key={order.id} className="border-t flex flex-col gap-2 mb-2">
-                        <h2 className="mt-2">Order ID: {order.id}</h2>
+                        <Link to={`/order/${order.id}`}><h2 className="mt-2">Order ID: {order.id}</h2></Link>
                         <p>Total: ${order.total}</p>
                         <p>Order Date: {new Date(order.createdAt).toLocaleString()}</p>
                         <p>Order Status: {order.status}</p>

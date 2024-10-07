@@ -27,7 +27,7 @@ export class OrdersController {
         return this.ordersService.getOrder(req.user, orderID);
     }
 
-    @Patch(':id/cancel')
+    @Patch('/:id/cancel')
     async cancelOrder(@Req() req, @Param("id") productID: string): Promise<{ message: string; }> {
         return this.ordersService.cancelOrder(req.user, productID);
     }
