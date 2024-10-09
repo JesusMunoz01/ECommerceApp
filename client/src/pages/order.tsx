@@ -9,7 +9,7 @@ const OrderPage = () => {
     const orderQuery = useQuery({
         queryKey: ["order", id],
         queryFn: async () => {
-            const token = getAccessTokenSilently()
+            const token = await getAccessTokenSilently()
             const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/${id}`, {
                 headers: {
                   Authorization: `Bearer ${token}`
@@ -30,7 +30,7 @@ const OrderPage = () => {
     }
 
     return (
-        <div>
+        <div className="flex flex-col justify-center items-center">
             <h1>Your Order</h1>
             <h2>ID: {tempData.id}</h2>
             <div>
