@@ -18,28 +18,25 @@ const OrderPage = () => {
               if (!response.ok) {
                 throw new Error('Network response was not ok');
               }
-              console.log(response.json())
-              return response.json()
+              const data = await response.json()
+              console.log(data)
+              return data
         }
     })
 
-    const tempData = {
-        id,
-        date: Date.now(),
-        items: [{id:1, name: "item"}, {id:2, name: "item"}]
-    }
+    if(orderQuery.isLoading) return <h1>Loading...</h1>
 
     return (
         <div className="flex flex-col justify-center items-center">
             <h1>Your Order</h1>
-            <h2>ID: {tempData.id}</h2>
+            <h2>ID: {orderQuery.data.order[0].id}</h2>
             <div>
                 <h2>Order Details</h2>
                 {/* <h3>Status: {}</h3> */}
                 <h3>Items:</h3>
                 <ul>
-                    {tempData.items.map((item, index) => (
-                        <li>{index + 1}: {item.name}</li>
+                    {orderQuery.data.order.map((item:any, index:number) => (
+                        <li>{index + 1}: {item.productName} - ${item.productPrice}</li>
                     ))}
                 </ul>
             </div>
