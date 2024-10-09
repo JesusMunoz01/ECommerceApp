@@ -32,11 +32,13 @@ const OrderPage = () => {
             <h2>ID: {orderQuery.data.order[0].id}</h2>
             <div>
                 <h2>Order Details</h2>
-                {/* <h3>Status: {}</h3> */}
+                <h3>Status: {orderQuery.data.order[0].status}</h3>
+                <h3>Total: ${orderQuery.data.order[0].total}</h3>
+                <h3>Date Ordered: {orderQuery.data.order[0].createdAt}</h3>
                 <h3>Items:</h3>
                 <ul>
                     {orderQuery.data.order.map((item:any, index:number) => (
-                        <li>{index + 1}: {item.productName} - ${item.productPrice}</li>
+                        <li>{index + 1}: (Qt: {item.quantity}) {item.productName} - ${item.productPrice}</li>
                     ))}
                 </ul>
             </div>
