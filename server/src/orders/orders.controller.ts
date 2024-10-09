@@ -22,9 +22,9 @@ export class OrdersController {
         return this.ordersService.getUserOrders(req.user.sub);
     }
 
-    @Get('/:id')
+    @Get('/:orderId')
     async getOrder(@Req() req, @Param("orderId") orderID: number): Promise<{ message: string; }> {
-        return this.ordersService.getOrder(req.user, orderID);
+        return this.ordersService.getOrder(req.user.sub, orderID);
     }
 
     @Patch('/:id/cancel')
