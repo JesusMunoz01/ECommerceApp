@@ -90,7 +90,8 @@ export class OrdersService {
         try{
             const orderDetails: OrderDetails = await new Promise((resolve, reject) => {
                 this.connection.query(`
-                    SELECT 
+                    SELECT
+                        id,
                         total, 
                         orderDate, 
                         status,
@@ -105,7 +106,7 @@ export class OrdersService {
                                 reject({ message: "Error getting user orders" });
                             }
                             //console.log(results);
-                            resolve(results);
+                            resolve(results[0]);
                     })
             })
             const orderItems: OrderItemDto = await new Promise((resolve, reject) => {
@@ -113,14 +114,14 @@ export class OrdersService {
                     SELECT 
                         oi.quantity,
                         p.name AS productName, 
-                        p.price AS productPrice,
+                        p.price AS productPrice
                     FROM 
                         orderitems oi
                     JOIN 
                         products p ON oi.productId = p.id
                     WHERE
-                        o.userId = ? AND o.id = ?;
-                    `, [userID.split('|')[1], orderID], (err, results) => {
+                        oi.orderId = ?;
+                    `, [orderID], (err, results) => {
                     if(err) {
                         console.log(err);
                         reject({ message: "Error getting order" });
@@ -130,8 +131,19 @@ export class OrdersService {
                 })
             })
 
-            const {userId, ...orderInfo} = orderDetails
-            const  order = {...orderInfo, items: orderItems}
+            const {userId, orderDate, ...orderInfo} = orderDetails
+            console.log(orderDate)
+            const formattedDate = orderDate.toLocaleString("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+              });
+              console.log(formattedDate)
+            const  order = {...orderInfo, orderDate: formattedDate, items: orderItems}
             return { message: "Order retrieved successfully", order };
         }
         catch(err) {

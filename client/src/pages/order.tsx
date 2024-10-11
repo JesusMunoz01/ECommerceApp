@@ -29,16 +29,16 @@ const OrderPage = () => {
     return (
         <div className="flex flex-col justify-center items-center">
             <h1>Your Order</h1>
-            <h2>ID: {orderQuery.data.order[0].id}</h2>
+            <h2>ID: {orderQuery.data.order.id}</h2>
             <div>
                 <h2>Order Details</h2>
-                <h3>Status: {orderQuery.data.order[0].status}</h3>
-                <h3>Total: ${orderQuery.data.order[0].total}</h3>
-                <h3>Date Ordered: {orderQuery.data.order[0].createdAt}</h3>
+                <h3>Status: {orderQuery.data.order.status}</h3>
+                <h3>Total: ${orderQuery.data.order.total}</h3>
+                <h3>Date Ordered: {orderQuery.data.order.orderDate}</h3>
                 <h3>Items:</h3>
                 <ul>
-                    {orderQuery.data.order.map((item:any, index:number) => (
-                        <li>{index + 1}: (Qt: {item.quantity}) {item.productName} - ${item.productPrice}</li>
+                    {orderQuery.data.order.items.map((item:any, index:number) => (
+                        <li key={index}>{index + 1}: (Qt: {item.quantity}) {item.productName} - ${item.productPrice}</li>
                     ))}
                 </ul>
             </div>
