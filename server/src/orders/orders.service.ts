@@ -26,7 +26,7 @@ export class OrdersService {
 
     async getUserOrders(userID: string): Promise<{ message: string; fullOrders?: Order[] }> {
         try{
-            const orderDetails: OrderDetails[] = await new Promise((resolve, reject) => {
+            const ordersDetails: OrderDetails[] = await new Promise((resolve, reject) => {
                 this.connection.query(`SELECT * from orders WHERE userId = ?`, [userID.split('|')[1]], 
                     (err, results) => {
                             if(err) {
@@ -41,12 +41,12 @@ export class OrdersService {
                 try {
 
                     // Sort orderDetails by the `created` date in descending order
-                    const sortedOrderDetails = orderDetails.sort((a, b) => {
+                    const sortedOrdersDetails = ordersDetails.sort((a, b) => {
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     });
 
                     const ordersWithItems: Order[] = await Promise.all(
-                        sortedOrderDetails.map(async (order) => {
+                        sortedOrdersDetails.map(async (order) => {
                             const items: OrderItemDto = await new Promise((resolve, reject) => {
                                 this.connection.query(`
                                     SELECT 
@@ -86,22 +86,36 @@ export class OrdersService {
         }
     }
 
-    async getOrder(userID: string, orderID: number): Promise<{ message: string; order?: OrderDto & OrderItemDto }> {
-        // TODO: Test query and format results
-        console.log(orderID)
+    async getOrder(userID: string, orderID: number): Promise<{ message: string; order?: Order }> {
         try{
-            const order: OrderDto & OrderItemDto = await new Promise((resolve, reject) => {
+            const orderDetails: OrderDetails = await new Promise((resolve, reject) => {
                 this.connection.query(`
                     SELECT 
-                        o.*,
-                        p.id AS productId, 
-                        p.name AS productName, 
-                        p.price AS productPrice, 
-                        oi.quantity 
+                        total, 
+                        orderDate, 
+                        status,
+                        shippingAddress 
                     FROM 
-                        orders o
-                    JOIN 
-                        orderItems oi ON o.id = oi.orderId
+                        orders 
+                    WHERE 
+                        userId = ? and id = ?`, [userID.split('|')[1], orderID], 
+                    (err, results) => {
+                            if(err) {
+                                console.log(err);
+                                reject({ message: "Error getting user orders" });
+                            }
+                            //console.log(results);
+                            resolve(results);
+                    })
+            })
+            const orderItems: OrderItemDto = await new Promise((resolve, reject) => {
+                this.connection.query(`
+                    SELECT 
+                        oi.quantity,
+                        p.name AS productName, 
+                        p.price AS productPrice,
+                    FROM 
+                        orderitems oi
                     JOIN 
                         products p ON oi.productId = p.id
                     WHERE
@@ -115,6 +129,9 @@ export class OrdersService {
                     resolve(results);
                 })
             })
+
+            const {userId, ...orderInfo} = orderDetails
+            const  order = {...orderInfo, items: orderItems}
             return { message: "Order retrieved successfully", order };
         }
         catch(err) {
