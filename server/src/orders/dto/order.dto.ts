@@ -23,7 +23,7 @@ export class StripeItem {
 export interface Order {
     items: OrderItemDto;
     id: number;
-    createdAt: Date;
+    createdAt: Date | String;
     total: number;
     status: "Pending" | "Completed" | "Cancelled";
     paymentMethod: string;
@@ -33,4 +33,5 @@ export interface Order {
 export interface OrderDetails extends OrderDto {
     id: number;
     createdAt: Date;
+    orderDate?: Date;
 }

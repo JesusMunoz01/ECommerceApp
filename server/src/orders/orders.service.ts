@@ -26,7 +26,7 @@ export class OrdersService {
 
     async getUserOrders(userID: string): Promise<{ message: string; fullOrders?: Order[] }> {
         try{
-            const orderDetails: OrderDetails[] = await new Promise((resolve, reject) => {
+            const ordersDetails: OrderDetails[] = await new Promise((resolve, reject) => {
                 this.connection.query(`SELECT * from orders WHERE userId = ?`, [userID.split('|')[1]], 
                     (err, results) => {
                             if(err) {
@@ -41,12 +41,12 @@ export class OrdersService {
                 try {
 
                     // Sort orderDetails by the `created` date in descending order
-                    const sortedOrderDetails = orderDetails.sort((a, b) => {
+                    const sortedOrdersDetails = ordersDetails.sort((a, b) => {
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                     });
 
                     const ordersWithItems: Order[] = await Promise.all(
-                        sortedOrderDetails.map(async (order) => {
+                        sortedOrdersDetails.map(async (order) => {
                             const items: OrderItemDto = await new Promise((resolve, reject) => {
                                 this.connection.query(`
                                     SELECT 
@@ -86,27 +86,42 @@ export class OrdersService {
         }
     }
 
-    async getOrder(userID: string, orderID: number): Promise<{ message: string; order?: OrderDto & OrderItemDto }> {
-        // TODO: Test query and format results
-        console.log(orderID)
+    async getOrder(userID: string, orderID: number): Promise<{ message: string; order?: Order }> {
         try{
-            const order: OrderDto & OrderItemDto = await new Promise((resolve, reject) => {
+            const orderDetails: OrderDetails = await new Promise((resolve, reject) => {
+                this.connection.query(`
+                    SELECT
+                        id,
+                        total, 
+                        orderDate, 
+                        status,
+                        shippingAddress 
+                    FROM 
+                        orders 
+                    WHERE 
+                        userId = ? and id = ?`, [userID.split('|')[1], orderID], 
+                    (err, results) => {
+                            if(err) {
+                                console.log(err);
+                                reject({ message: "Error getting user orders" });
+                            }
+                            //console.log(results);
+                            resolve(results[0]);
+                    })
+            })
+            const orderItems: OrderItemDto = await new Promise((resolve, reject) => {
                 this.connection.query(`
                     SELECT 
-                        o.*,
-                        p.id AS productId, 
+                        oi.quantity,
                         p.name AS productName, 
-                        p.price AS productPrice, 
-                        oi.quantity 
+                        p.price AS productPrice
                     FROM 
-                        orders o
-                    JOIN 
-                        orderItems oi ON o.id = oi.orderId
+                        orderitems oi
                     JOIN 
                         products p ON oi.productId = p.id
                     WHERE
-                        o.userId = ? AND o.id = ?;
-                    `, [userID.split('|')[1], orderID], (err, results) => {
+                        oi.orderId = ?;
+                    `, [orderID], (err, results) => {
                     if(err) {
                         console.log(err);
                         reject({ message: "Error getting order" });
@@ -115,6 +130,20 @@ export class OrdersService {
                     resolve(results);
                 })
             })
+
+            const {userId, orderDate, ...orderInfo} = orderDetails
+            console.log(orderDate)
+            const formattedDate = orderDate.toLocaleString("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+              });
+              console.log(formattedDate)
+            const  order = {...orderInfo, orderDate: formattedDate, items: orderItems}
             return { message: "Order retrieved successfully", order };
         }
         catch(err) {
