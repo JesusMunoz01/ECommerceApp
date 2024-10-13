@@ -126,13 +126,13 @@ export class OrdersService {
                         console.log(err);
                         reject({ message: "Error getting order" });
                     }
-                    console.log(results);
+                    
                     resolve(results);
                 })
             })
 
             const {userId, orderDate, ...orderInfo} = orderDetails
-            console.log(orderDate)
+
             const formattedDate = orderDate.toLocaleString("en-US", {
                 month: "2-digit",
                 day: "2-digit",
@@ -142,7 +142,7 @@ export class OrdersService {
                 second: "2-digit",
                 hour12: false
               });
-              console.log(formattedDate)
+
             const  order = {...orderInfo, orderDate: formattedDate, items: orderItems}
             return { message: "Order retrieved successfully", order };
         }
