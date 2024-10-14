@@ -60,7 +60,7 @@ const UserOrders = () => {
                 
                 {orderFilter(ordersQuery.data.fullOrders, filter).map((order: Orders) => (
                     <div key={order.id} className="border-t flex flex-col gap-2 mb-2">
-                        <Link to={`/order/${order.id}`}><h2 className="mt-2">Order ID: {order.id}</h2></Link>
+                        <Link to={`/order/${order.id}`} className="w-fit"><h2 className="mt-2 underline hover:text-blue-500">Order ID: {order.id}</h2></Link>
                         <p>Total: ${order.total}</p>
                         <p>Order Date: {new Date(order.createdAt).toLocaleString()}</p>
                         <p>Order Status: {order.status}</p>
