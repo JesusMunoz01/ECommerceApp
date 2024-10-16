@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import ProductCard, { Product } from "../components/Products/productCard";
-import { useQuery } from "@tanstack/react-query";
 import { CartItem } from "./cart";
 
 type HomePageProps = {

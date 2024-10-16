@@ -6,10 +6,17 @@ import { useEffect, useRef, useState } from "react";
 import { BsCart4 } from "react-icons/bs";
 import SelectedLink from "../Links/selectedLink";
 import { useUser } from "../../utils/userContext";
+import { Product } from "../Products/productCard";
 
-const Navbar = () => {
+type NavbarProps = {
+    products?: Product[];
+}
+
+const Navbar = ({products}: NavbarProps) => {
     const { user, isAuthenticated } = useAuth0();
     const [userMenu, setUserMenu] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [suggestions, setSuggestions] = useState<Product[]>([]);
     const userMenuRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,6 +25,21 @@ const Navbar = () => {
     const toggleUserMenu = () => {
         setUserMenu(!userMenu);
     };
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+    
+        if (value.length > 0 && products) {
+            const filteredProducts = products.filter(product =>
+                product.name.toLowerCase().includes(value.toLowerCase())
+            );
+            setSuggestions(filteredProducts);
+        } else {
+            setSuggestions([]); // Clear suggestions when input is empty
+        }
+    };
+    
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -38,7 +60,7 @@ const Navbar = () => {
 
     return (
         <nav className="navbar bg-slate-600 w-full h-1/6 overflow-hidden">
-            <div className="p-2 xs:p-6 max-w mx-auto flex items-center justify-between w-full h-5/6">
+            <div className="p-2 xs:p-6 max-w mx-auto flex items-center justify-between w-full h-5/6 relative">
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
                 </div> */}
@@ -49,12 +71,27 @@ const Navbar = () => {
                 </div>
                 <div className="sm:flex items-center gap-1 md:gap-4 w-2/6 md:w-2/4 hidden h-5/6">
                     <div className="flex border border-gray-300 bg-neutral-700 h-10 rounded-lg w-5/6 divide-x divide-white">
-                    <input type="text" placeholder="Search" className="w-6/6 md:w-5/6 h-full rounded-l-lg pl-2"/>
-                    <select className="md:flex w-1/6 rounded-r-lg hidden">
-                        <option value="all">All</option>
-                        <option value="brands">Brands</option>
-                        <option value="products">Products</option>
-                    </select>
+                        <input type="text" placeholder="Search" className="w-6/6 md:w-5/6 h-full rounded-l-lg pl-2" onChange={handleSearchChange}
+                            value={searchTerm}/>
+                        <select className="md:flex w-1/6 rounded-r-lg hidden">
+                            <option value="all">All</option>
+                            <option value="brands">Brands</option>
+                            <option value="products">Products</option>
+                        </select>
+                        {/* Suggestion dropdown */}
+                        {suggestions.length > 0 && (
+                            <ul className="fixed left-0 right-10 top-16 bg-white text-black shadow-lg rounded-lg mt-1 max-h-60 overflow-y-auto w-3/12 md:w-2/6 justify-self-center">
+                                {suggestions.map((product) => (
+                                    <li
+                                        key={product.id}
+                                        onClick={() => setSearchTerm(product.name)} // When clicking, set search term
+                                        className="p-2 cursor-pointer hover:bg-gray-200"
+                                    >
+                                        {product.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                     <button className="bg-green-500 text-sm md:text-base min-w-14 text-white p-1 sm:p-2 rounded-lg md:w-1/6 sm:w-fit flex justify-center">Search</button>
                 </div>
