@@ -17,12 +17,27 @@ import EditBrandPage from './pages/editBrand.tsx'
 import { useUser } from './utils/userContext.tsx'
 import CreateBrandPage from './pages/createBrand.tsx'
 import OrderPage from './pages/order.tsx'
+import { Product } from './components/Products/productCard.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
   const [cart, setCart] = useState<CartItem[]>([])
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { userData, setUser } = useUser(); 
+  const { userData, setUser } = useUser();
+  const [products, setProducts] = useState<Product[]>([]);
+  const productQuery = useQuery({
+      queryKey: ['products'], 
+      queryFn: async () => {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/products`);
+          const data = await response.json();
+          return data;
+      }});
+
+  useEffect(() => {
+      if(productQuery.isSuccess) {
+          setProducts(productQuery.data.products);
+      }
+  }, [productQuery]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -57,14 +72,17 @@ function App() {
     }
   }, [userQuery.data]);
 
+  if(productQuery.isLoading) return <div>Loading...</div>;
+  if(productQuery.isError) return <div>Error fetching products</div>;
+
   return (
     <>
       <div className='App'>
       <Router>
-        <Navbar />
+        <Navbar products={products}/>
         <div className='routes'>
         <Routes>
-          <Route path="/" element={<HomePage setCart={setCart}/>} />
+          <Route path="/" element={<HomePage setCart={setCart} products={products}/>} />
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
           <Route path='/upgrade' element={<UpgradePage role={userData?.plan}/>} />
           <Route path='/brands' element={<BrandsPage />} />
