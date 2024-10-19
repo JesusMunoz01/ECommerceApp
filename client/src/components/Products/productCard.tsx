@@ -32,17 +32,18 @@ const ProductCard = ({product, addToCart}: ProductCardProps) => {
     };
 
     return (
-        <div className="bg-slate-300 shadow-lg rounded-lg overflow-hidden xs:w-3/4 xs:mx-auto sm:w-full">
+        <div className="bg-slate-300 shadow-lg rounded-lg overflow-hidden xs:w-3/4 xs:mx-auto sm:w-full min-h-96 h-full">
             {/* <img src={product.image} alt={product.name} className="w-full h-64 object-cover object-center"/> */}
-            <div className="p-6 flex flex-col h-full justify-between gap-2">
-                <div className="min-h-2/3">
+            <div className="p-6 flex flex-col h-full justify-between">
+                <div className="h-11/12">
                     <h3 className="text-gray-900 text-xl font-medium mb-2 flex justify-between flex-col">
                         <span>{product.name}</span>
                         <span>${product.price}</span>
                     </h3>
-                    <p className="text-gray-600 text-sm mb-2">{product.description}</p>
+                    <img src="http://localhost:3000/static/images/test-image.png" alt="test" className="mb-2"/>
+                    <p className="text-gray-600 text-sm mb-2 max-h-24">{product.description}</p>
                 </div>
-                <div className="flex justify-evenly items-center gap-2 md:flex-col min-h-1/3">
+                <div className="flex justify-evenly items-center gap-2 md:flex-col h-1/12">
                     {addToCart && <>
                     <div className="flex items-center justify-center gap-1">
                         <button className="flex justify-center items-center w-10 sm:w-12 h-6" onClick={() => setQuantity((prev) => prev - 1)}>-</button>

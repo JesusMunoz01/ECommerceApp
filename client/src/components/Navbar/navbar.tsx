@@ -60,7 +60,7 @@ const Navbar = ({products}: NavbarProps) => {
 
     return (
         <nav className="navbar bg-slate-600 w-full h-1/6 overflow-hidden">
-            <div className="p-2 xs:p-6 max-w mx-auto flex items-center justify-between w-full h-5/6 relative">
+            <div className="p-2 max-w mx-auto flex items-center justify-between w-full h-5/6 relative">
                 {/* <div className="navbar-logo">
                     <a href="/">Home</a>
                 </div> */}
