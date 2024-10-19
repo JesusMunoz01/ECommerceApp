@@ -76,8 +76,7 @@ function App() {
   if(productQuery.isError) return <div>Error fetching products</div>;
 
   return (
-    <>
-      <div className='App'>
+    <div className='App'>
       <Router>
         <Navbar products={products}/>
         <div className='routes'>
@@ -119,8 +118,7 @@ function App() {
         </Routes>
         </div>
       </Router>
-      </div>
-    </>
+    </div>
   )
 };
 
