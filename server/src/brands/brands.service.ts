@@ -2,6 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { AppService } from 'src/app.service';
+import { ProductDto } from 'src/products/dto/product.dto';
+
+type InsertResult = {
+  affectedRows: number;
+  insertId: number; // Assuming your `brands` table has an auto-incrementing ID
+};
+
+type BrandQuery = {
+  name: string,
+  description: string,
+  image: string,
+  brandOwner: string
+}
+
+type UserBrandProducts = ProductDto & {
+  brandId: number
+}
 
 @Injectable()
 export class BrandsService {
@@ -10,7 +27,7 @@ export class BrandsService {
 
   async create(createBrandDto: CreateBrandDto, ownerId: string) {
     try {
-      const result: any = await new Promise((resolve, reject) => {
+      const result: InsertResult = await new Promise((resolve, reject) => {
         this.connection.query('INSERT INTO brands (name, description, image, brandOwner, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())', 
           [createBrandDto.name, createBrandDto.description, createBrandDto.image, ownerId.split('|')[1]], (err, results) => {
           if (err) {
@@ -35,7 +52,7 @@ export class BrandsService {
 
   async findAll() {
     try {
-      const result = await new Promise((resolve, reject) => {
+      const result: BrandQuery[] = await new Promise((resolve, reject) => {
         this.connection.query('SELECT * FROM brands', (err, results) => {
           if (err) {
             console.log(err);
@@ -56,7 +73,7 @@ export class BrandsService {
 
   async findOne(id: number) {
     try {
-      const result: [] = await new Promise((resolve, reject) => {
+      const result: BrandQuery[] = await new Promise((resolve, reject) => {
         this.connection.query('SELECT * FROM brands WHERE id = ?', [id], (err, results) => {
           if (err) {
             console.log(err);
@@ -73,7 +90,7 @@ export class BrandsService {
 
         // Get products for brand
         // Select all products where the product id is in the productbrand table with the brand id
-        const products = await new Promise((resolve, reject) => {
+        const products: ProductDto[] = await new Promise((resolve, reject) => {
           this.connection.query('SELECT * FROM products WHERE id IN (SELECT productId FROM productbrand WHERE brandId = ?)', [id], (err, results) => {
             if (err) {
               console.log(err);
@@ -92,7 +109,7 @@ export class BrandsService {
 
   async findByOwner(ownerId: string) {
     try {
-      const result: [] = await new Promise((resolve, reject) => {
+      const result: BrandQuery[] = await new Promise((resolve, reject) => {
         this.connection.query('SELECT * FROM brands WHERE brandOwner = ?', [ownerId], (err, results) => {
           if (err) {
             console.log(err);
@@ -119,7 +136,7 @@ export class BrandsService {
       // Specifies products table as the primary table as p
       // Joins the productbrand table as pb on the condition that the product id is equal to the product id in the productbrand table
       // Filters the products by the brand id and the user id
-      const result: [] = await new Promise((resolve, reject) => {
+      const result: UserBrandProducts[] = await new Promise((resolve, reject) => {
         this.connection.query(
           `SELECT p.*, pb.brandId 
            FROM products p
@@ -198,7 +215,7 @@ export class BrandsService {
   async addProducts(id: number, uid: string, products: number[]) {
     try{
       // Check user owns the products and brand
-      const productCheck:any = await new Promise((resolve, reject) => {
+      const productCheck: ProductDto[] = await new Promise((resolve, reject) => {
         this.connection.query('SELECT * FROM products WHERE id IN (?) AND ownerId = ?', [products, uid], (err, results) => {
           if (err) {
             console.log(err);
@@ -213,7 +230,7 @@ export class BrandsService {
         throw new Error('User does not own all products');
       }
 
-      const brandCheck:any = await new Promise((resolve, reject) => {
+      const brandCheck: BrandQuery[] = await new Promise((resolve, reject) => {
         this.connection.query('SELECT * FROM brands WHERE id = ? AND brandOwner = ?', [id, uid], (err, results) => {
           if (err) {
             console.log(err);
@@ -252,7 +269,7 @@ export class BrandsService {
   async removeProducts(uid: string, products: number[]) {
     try{
       // Check user owns the products
-      const productCheck:any = await new Promise((resolve, reject) => {
+      const productCheck: ProductDto[] = await new Promise((resolve, reject) => {
         this.connection.query('SELECT * FROM products WHERE id IN (?) AND ownerId = ?', [products, uid], (err, results) => {
           if (err) {
             console.log(err);

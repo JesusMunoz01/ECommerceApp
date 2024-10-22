@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Order, OrderDetails, OrderDto, OrderItemDto, StripeItem } from './dto/order.dto';
 
+type OrderInsertResponse = {
+    affectedRows: number;
+    insertId: number; // Assuming you have an auto-incrementing ID for orders
+    warningStatus: number;
+};
+
 @Injectable()
 export class OrdersService {
     constructor(private appService: AppService) {}
@@ -154,7 +160,7 @@ export class OrdersService {
 
     async createOrder(orderData: OrderDto, orderItems: StripeItem[]): Promise<{ message: string; }> {
         try{
-            const order: any = await new Promise((resolve, reject) => {
+            const order: OrderInsertResponse = await new Promise((resolve, reject) => {
                 this.connection.query("INSERT INTO orders (userId, total, status, paymentMethod, shippingAddress) VALUES (?, ?, ?, ?, ?)",
                   [orderData.userId, orderData.total, orderData.status, orderData.paymentMethod, orderData.shippingAddress], (err, results) => {
                   if (err) {
