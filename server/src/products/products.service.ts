@@ -61,8 +61,8 @@ export class ProductsService {
         }
     }
 
-    async getUserProducts(userID: string): Promise<{ message: string; products?: any; }> {
-        return new Promise<{ message: string; products?: any; }>((resolve, reject) => {
+    async getUserProducts(userID: string): Promise<{ message: string; products?: ProductDto; }> {
+        return new Promise<{ message: string; products?: ProductDto & {brandId: number}; }>((resolve, reject) => {
             this.connection.query(`
                 SELECT p.*, pb.brandId
                 FROM products p
@@ -110,7 +110,7 @@ export class ProductsService {
 
     async updateProduct(productID: string, data: UpdateProductDto): Promise<{ message: string; }> {
         try{
-            return new Promise<{ message: string; product?: any; }>(async (resolve, reject) => {
+            return new Promise<{ message: string; product?: UpdateProductDto; }>(async (resolve, reject) => {
             await this.connection.query(`SELECT * FROM products WHERE id = ?`, [productID], (err, results) => {
                 if (err) {
                   console.log(err);
@@ -135,7 +135,7 @@ export class ProductsService {
                     }
                     console.log(results);
                     resolve({ message: "Product updated successfully", product: {name: data.name, description: data.description, 
-                        price: data.price, stock: data.stock, discountNum: data.discountNumber}});
+                        price: data.price, stock: data.stock, discountNumber: data.discountNumber}});
                 });
             }
             )
