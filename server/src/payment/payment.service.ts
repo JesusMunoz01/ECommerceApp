@@ -173,7 +173,8 @@ export class StripeService {
     
     switch (event.type) {
       // Subscription created or updated --------------------------------------
-      case 'customer.subscription.updated' || 'customer.subscription.created':
+      case 'customer.subscription.updated':
+      case 'customer.subscription.created':
         const userSID = event.data.object.metadata.userId;
         const planName = event.data.object.metadata.planName;
         // console.log(planName)
