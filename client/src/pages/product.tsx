@@ -1,8 +1,55 @@
-const ProductPage = () => {
+import { useParams } from "react-router-dom"
+import { Product } from "../components/Products/productCard";
+import { CartItem } from "./cart";
+import { useState } from "react";
+
+type ProductPageProps = {
+    setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+    products: Product[]
+}
+
+const ProductPage = ({setCart, products}: ProductPageProps) => {
+    const { id } = useParams();
+    const [quantity, setQuantity] = useState(1);
+    const addToCart = (cartProduct: CartItem) => {
+        setCart((prevCart) => [...prevCart, cartProduct]);
+    };
+
+    const product = id ? products.find(p => p.id === parseInt(id)) : null;
+
+    if (!product) return <div>Product not found</div>;
+
+    const addProduct = () => {
+        if(addToCart){
+            addToCart({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: quantity,
+            });
+            setQuantity(1);
+        }
+    };
 
     return (
-        <div>
-            
+        <div className="flex h-full pt-2">
+            <div className="w-1/2">
+                {product.stock < 3 ? <strong>Only ${product.stock} left!</strong> : null}
+                <h1 className="text-center">{product.name}</h1>
+                <img src="http://localhost:3000/static/images/test-image.png" alt="test" className="mb-2 p-2"/>
+            </div>
+            <div className="w-1/2 flex flex-col gap-2 p-3">
+                <p className="text-2xl">Price: ${product.price}</p>
+                <p className="h-1/3 text-lg">{product.description}</p>
+                <div className="flex items-center justify-center gap-1">
+                        <button className="flex justify-center items-center w-10 sm:w-12 h-6" onClick={() => setQuantity((prev) => prev - 1)}>-</button>
+                        <p className="mx-2">{quantity}</p>
+                        <button className="flex justify-center items-center w-10 sm:w-12 h-6" onClick={() => setQuantity((prev) => prev + 1)}>+</button>
+                </div>
+                <div className="flex items-center justify-center">
+                    <button className="bg-green-600 text-white text-sm sm:text-base p-1 md:p-2 rounded-lg w-fit sm:w-2/4 md:w-3/4" onClick={addProduct}>Add to cart</button>
+                </div>
+            </div>
         </div>
     )
 }

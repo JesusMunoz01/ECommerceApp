@@ -80,7 +80,7 @@ function App() {
     <div className='App'>
       <Router>
         <Navbar products={products}/>
-        <div className='routes'>
+        <div className='routes h-full'>
         <Routes>
           <Route path="/" element={<HomePage setCart={setCart} products={products}/>} />
           <Route path='/product/:id' element={<ProductPage setCart={setCart} products={products}/>} />
