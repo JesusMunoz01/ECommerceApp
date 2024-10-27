@@ -7,6 +7,7 @@ type HomePageProps = {
 };
 
 const HomePage = ({setCart, products}: HomePageProps) => {
+    console.log(products)
 
     const addToCart = (cartProduct: CartItem) => {
         setCart((prevCart) => [...prevCart, cartProduct]);

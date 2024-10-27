@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CartItem } from "../../pages/cart";
+import { Link } from "react-router-dom";
 
 export type Product = {
     id: number;
@@ -37,7 +38,7 @@ const ProductCard = ({product, addToCart}: ProductCardProps) => {
             <div className="p-6 flex flex-col h-full justify-between">
                 <div className="h-11/12">
                     <h3 className="text-gray-900 text-xl font-medium mb-2 flex justify-between flex-col">
-                        <span>{product.name}</span>
+                        <Link to={`/product/${product.id}`}><span>{product.name}</span></Link>
                         <span>${product.price}</span>
                     </h3>
                     <img src="http://localhost:3000/static/images/test-image.png" alt="test" className="mb-2"/>

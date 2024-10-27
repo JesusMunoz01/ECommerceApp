@@ -18,6 +18,7 @@ import { useUser } from './utils/userContext.tsx'
 import CreateBrandPage from './pages/createBrand.tsx'
 import OrderPage from './pages/order.tsx'
 import { Product } from './components/Products/productCard.tsx'
+import ProductPage from './pages/product.tsx'
 
 function App() {
   const {isAuthenticated, user, getAccessTokenSilently} = useAuth0()
@@ -79,9 +80,10 @@ function App() {
     <div className='App'>
       <Router>
         <Navbar products={products}/>
-        <div className='routes'>
+        <div className='routes h-full'>
         <Routes>
           <Route path="/" element={<HomePage setCart={setCart} products={products}/>} />
+          <Route path='/product/:id' element={<ProductPage setCart={setCart} products={products}/>} />
           <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>} />
           <Route path='/upgrade' element={<UpgradePage role={userData?.plan}/>} />
           <Route path='/brands' element={<BrandsPage />} />
