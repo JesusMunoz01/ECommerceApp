@@ -201,10 +201,10 @@ export class ProductsService {
         }
     }
 
-    async createReview(itemID: string, reviewData: ReviewDto): Promise<{ message: string; }> {
+    async createReview(userId: string, itemID: string, reviewData: ReviewDto): Promise<{ message: string; }> {
         try{
             await this.connection.query(`INSERT INTO reviews (productID, userID, review, rating, created_at, updated_at) VALUES 
-            (?, ?, ?, ?, NOW(), NOW())`, [itemID, reviewData.userID, reviewData.review, reviewData.rating], (err, results) => {
+            (?, ?, ?, ?, NOW(), NOW())`, [itemID, userId.split("|")[1], reviewData.review, reviewData.rating], (err, results) => {
                 if(err) {
                     console.log(err);
                     return { message: "Error creating review" };
