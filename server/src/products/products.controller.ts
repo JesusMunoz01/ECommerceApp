@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductDto } from './dto/product.dto';
 import { UpdateProductDto } from './dto/updateProduct.dto';
@@ -39,8 +39,9 @@ export class ProductsController {
 
     @UseGuards(AuthGuard("jwt"))
     @Post(":id/reviews")
-    async createReview(@Param("id") itemID: string, @Body() reviewData: ReviewDto): Promise<{ message: string; }> {
-      return this.productsService.createReview(itemID, reviewData);
+    async createReview(@Param("id") itemID: string, @Body() reviewData: ReviewDto, @Request() req) : Promise<{ message: string; }> {
+      const userId = req.user.sub
+      return this.productsService.createReview(userId, itemID, reviewData);
     }
 
     @UseGuards(AuthGuard("jwt"))
