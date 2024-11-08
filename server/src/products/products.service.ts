@@ -203,6 +203,7 @@ export class ProductsService {
 
     async createReview(userId: string, itemID: string, reviewData: ReviewDto): Promise<{ message: string; }> {
         try{
+            // Search to see if there is already a review
             await this.connection.query(`INSERT INTO reviews (productID, userID, review, rating, created_at, updated_at) VALUES 
             (?, ?, ?, ?, NOW(), NOW())`, [itemID, userId.split("|")[1], reviewData.review, reviewData.rating], (err, results) => {
                 if(err) {
