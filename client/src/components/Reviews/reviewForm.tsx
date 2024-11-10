@@ -7,13 +7,9 @@ const ReviewForm = () => {
     const stars = [1, 2, 3, 4, 5]
 
     return (
-        <form>
-            <h2>Leave a Review</h2>
+        <form className="flex flex-col p-2 gap-2">
+            <h2 className="text-center">Leave a Review</h2>
             <div className="flex flex-col">
-                <label>Review:</label>
-                <textarea rows={5} />
-            </div>
-            <div>
                 <label>Rating:</label>
                 <div>
                     {stars.map((star) => (
@@ -29,6 +25,19 @@ const ReviewForm = () => {
                     ))}
                 </div>
             </div>
+            <div className="flex flex-col">
+                <label>Review:</label>
+                <textarea 
+                    className="p-1"
+                    rows={5}
+                    value={reviewText}
+                    onChange={(e) => {setReviewText(e.target.value)}}
+                />
+            </div>
+            <button className="bg-green-600 text-white text-sm sm:text-base p-1 md:p-2 rounded-lg w-fit sm:w-1/4 md:w-2/4 self-center" 
+                onClick={() => {}}>
+                Submit Review
+            </button>
         </form>
     )
 };

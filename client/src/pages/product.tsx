@@ -33,8 +33,8 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
     };
 
     return (
-        <div className="flex flex-col h-full pt-2">
-            <div className="flex flex-col md:flex-row h-fit pt-2">
+        <div className="flex flex-col pt-2 gap-4">
+            <div className="flex flex-col md:flex-row h-full">
                 <div className="md:w-1/2">
                     {product.stock < 3 ? <strong>Only ${product.stock} left!</strong> : null}
                     <h1 className="text-center text-3xl md:text-5xl p-2">{product.name}</h1>
@@ -53,7 +53,7 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
                     </div>
                 </div>
             </div>
-            <div>
+            <div className="flex flex-col self-center w-2/3">
                 <ReviewForm />
             </div>
         </div>
