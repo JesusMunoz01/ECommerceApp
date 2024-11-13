@@ -1,10 +1,51 @@
+import { useAuth0 } from "@auth0/auth0-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
+type Review = {
+    rating: number,
+    reviewText: string
+}
+
 const ReviewForm = () => {
+    const queryClient = useQueryClient();
+    const { getAccessTokenSilently } = useAuth0()
     const [rating, setRating] = useState(0)
     const [hoverRating, setHoverRating] = useState(0);
     const [reviewText, setReviewText] = useState("")
+    const submitMutation = useMutation({
+        mutationKey: ["createReview"],
+        mutationFn: async (review: Review) => {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/brands`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(review)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create brand');
+            }
+
+            return response.json();
+        },
+        // TODO: Update once review fetching is implemented
+        // onSuccess: () => {
+        //     queryClient.invalidateQueries({
+        //         queryKey: ["reviews"]
+        //     });
+        //     console.log('Brand created successfully');
+        //     navigate('/account');
+        // },
+    })
     const stars = [1, 2, 3, 4, 5]
+
+    const handleSubmit = () => {
+
+    }
 
     return (
         <form className="flex flex-col p-2 gap-2">
