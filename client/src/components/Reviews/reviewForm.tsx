@@ -1,10 +1,57 @@
+import { useAuth0 } from "@auth0/auth0-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-const ReviewForm = () => {
-    const [rating, setRating] = useState(0)
+type Review = {
+    rating: number,
+    reviewText: string
+}
+
+type ReviewForm = {
+    productId: number
+}
+
+const ReviewForm = ({productId} : ReviewForm) => {
+    //const queryClient = useQueryClient();
+    const { getAccessTokenSilently } = useAuth0()
+    const [reviewData, setReviewData] = useState<Review>({rating: 0, reviewText: ""})
     const [hoverRating, setHoverRating] = useState(0);
-    const [reviewText, setReviewText] = useState("")
+    const submitMutation = useMutation({
+        mutationKey: ["createReview"],
+        mutationFn: async () => {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${productId}/reviews`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(reviewData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create brand');
+            }
+
+            return response.json();
+        },
+        // TODO: Update once review fetching is implemented
+        // onSuccess: () => {
+        //     queryClient.invalidateQueries({
+        //         queryKey: ["reviews"]
+        //     });
+        //     console.log('Brand created successfully');
+        //     navigate('/account');
+        // },
+    })
     const stars = [1, 2, 3, 4, 5]
+
+    const handleSubmit = () => {
+        if(reviewData.rating === 0 || reviewData.reviewText === "")
+            return
+        
+        submitMutation.mutate()
+    }
 
     return (
         <form className="flex flex-col p-2 gap-2">
@@ -15,8 +62,8 @@ const ReviewForm = () => {
                     {stars.map((star) => (
                         <span
                         key={star}
-                        className={`cursor-pointer font-semibold ${star <= (hoverRating || rating) ? "text-yellow-500" : "text-gray-600"}`}
-                        onClick={() => setRating(star)}
+                        className={`cursor-pointer font-semibold ${star <= (hoverRating || reviewData.rating) ? "text-yellow-500" : "text-gray-600"}`}
+                        onClick={() => setReviewData((prev: Review) => ({...prev, rating: star}))}
                         onMouseEnter={() => setHoverRating(star)}
                         onMouseLeave={() => setHoverRating(0)}
                         >
@@ -30,12 +77,12 @@ const ReviewForm = () => {
                 <textarea 
                     className="p-1"
                     rows={5}
-                    value={reviewText}
-                    onChange={(e) => {setReviewText(e.target.value)}}
+                    value={reviewData.reviewText}
+                    onChange={(e) => {setReviewData((prev) => ({...prev, reviewText: e.target.value}))}}
                 />
             </div>
             <button className="bg-green-600 text-white text-sm sm:text-base p-1 md:p-2 rounded-lg w-fit sm:w-1/4 md:w-2/4 self-center" 
-                onClick={() => {}}>
+                onClick={handleSubmit}>
                 Submit Review
             </button>
         </form>

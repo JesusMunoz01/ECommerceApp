@@ -54,7 +54,7 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
                 </div>
             </div>
             <div className="flex flex-col self-center w-2/3">
-                <ReviewForm />
+                <ReviewForm productId={product.id}/>
             </div>
         </div>
     )
