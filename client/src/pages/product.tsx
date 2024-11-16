@@ -2,8 +2,9 @@ import { useParams } from "react-router-dom"
 import { Product } from "../components/Products/productCard";
 import { CartItem } from "./cart";
 import { useState } from "react";
-import ReviewForm from "../components/Reviews/reviewForm";
+import ReviewForm, { Review } from "../components/Reviews/reviewForm";
 import { useQuery } from "@tanstack/react-query";
+import Reviews from "../components/Reviews/reviews";
 
 type ProductPageProps = {
     setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
@@ -68,6 +69,7 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             </div>
             <div className="flex flex-col self-center w-2/3">
                 <ReviewForm productId={product.id}/>
+                {reviewsQuery.data.reviews.map((review: Review) => <Reviews review={review}/>)}
             </div>
         </div>
     )
