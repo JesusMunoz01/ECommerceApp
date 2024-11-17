@@ -1,8 +1,8 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
-type Review = {
+export type Review = {
     rating: number,
     reviewText: string
 }

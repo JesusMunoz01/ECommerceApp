@@ -2,7 +2,9 @@ import { useParams } from "react-router-dom"
 import { Product } from "../components/Products/productCard";
 import { CartItem } from "./cart";
 import { useState } from "react";
-import ReviewForm from "../components/Reviews/reviewForm";
+import ReviewForm, { Review } from "../components/Reviews/reviewForm";
+import { useQuery } from "@tanstack/react-query";
+import Reviews from "../components/Reviews/reviews";
 
 type ProductPageProps = {
     setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
@@ -15,6 +17,15 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
     const addToCart = (cartProduct: CartItem) => {
         setCart((prevCart) => [...prevCart, cartProduct]);
     };
+    const reviewsQuery = useQuery({
+        queryKey: ["reviews" + id],
+        queryFn: async () => {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${id}/reviews`)
+            const data = await response.json();
+            console.log(data)
+            return data
+        }
+    })
 
     const product = id ? products.find(p => p.id === parseInt(id)) : null;
 
@@ -31,6 +42,9 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             setQuantity(1);
         }
     };
+
+    if(reviewsQuery.isLoading)
+        return <h1>Loading...</h1>
 
     return (
         <div className="flex flex-col pt-2 gap-4">
@@ -55,6 +69,7 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             </div>
             <div className="flex flex-col self-center w-2/3">
                 <ReviewForm productId={product.id}/>
+                {reviewsQuery.data.reviews.map((review: Review) => <Reviews review={review}/>)}
             </div>
         </div>
     )
