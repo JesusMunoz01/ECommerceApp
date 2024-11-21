@@ -218,18 +218,27 @@ export class ProductsService {
     async createReview(userId: string, itemID: string, reviewData: ReviewDto): Promise<{ message: string; }> {
         try{
             // Search to see if there is already a review
-            const [existingReview] = await this.connection.query(
-                `SELECT * FROM reviews WHERE productID = ? AND userID = ?`,
-                [itemID, userId.split("|")[1]]
-            );
-    
+            const existingReview = await new Promise<ReviewDto>((resolve, reject) => {
+                this.connection.query(
+                    `SELECT * FROM reviews WHERE productId = ? AND ownerId = ?`,
+                    [itemID, userId.split("|")[1]],
+                    (err, results) => {
+                        if (err) {
+                            reject(err); // Handle error
+                        } else {
+                            resolve(results[0]); // Resolve results
+                        }
+                    }
+                );
+            });
+
             if (existingReview) {
                 return { message: "User has already reviewed this item" };
             }
 
             // Insert Review
-            await this.connection.query(`INSERT INTO reviews (productID, userID, review, rating, created_at, updated_at) VALUES 
-            (?, ?, ?, ?, NOW(), NOW())`, [itemID, userId.split("|")[1], reviewData.review, reviewData.rating], (err, results) => {
+            await this.connection.query(`INSERT INTO reviews (productId, ownerId, reviewText, rating, created_at, updated_at) VALUES 
+            (?, ?, ?, ?, NOW(), NOW())`, [itemID, userId.split("|")[1], reviewData.reviewText, reviewData.rating], (err, results) => {
                 if(err) {
                     console.log(err);
                     return { message: "Error creating review" };
