@@ -184,11 +184,30 @@ export class ProductsService {
         }
     }
 
-    async getProductReviews(id: string): Promise<{ message: string, reviews?: ReviewDto }> {
+    async getProductReviews(id: string): Promise<{ message: string, reviews?: ReviewDto[] }> {
         try{
-            const [reviews] = await this.connection.query(`SELECT * FROM reviews WHERE productID = ?`, [id]);
-
-            return {message: "Product reviews retrieved successfully", reviews: reviews,}
+            const reviews = await new Promise<ReviewDto[]>((resolve, reject) => {
+                this.connection.query(
+                    `SELECT * FROM reviews WHERE productID = ?`,
+                    [id],
+                    (err, results) => {
+                        if (err) {
+                            reject(err); // Handle error
+                        } else {
+                            resolve(results); // Resolve results
+                        }
+                    }
+                );
+            });
+    
+            if (!reviews || reviews.length === 0) {
+                return { message: "No reviews found for this product" };
+            }
+    
+            return {
+                message: "Product reviews retrieved successfully",
+                reviews,
+            };
         }
         catch(err) {
             console.log(err);
