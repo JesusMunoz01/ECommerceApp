@@ -1,6 +1,6 @@
 export class ReviewDto {
-    productID: string;
-    userID: string;
-    review: string;
+    productId: string;
+    ownerId: string;
+    reviewText: string;
     rating: number;
 }

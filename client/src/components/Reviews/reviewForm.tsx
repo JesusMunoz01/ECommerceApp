@@ -30,7 +30,7 @@ const ReviewForm = ({productId} : ReviewForm) => {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create brand');
+                throw new Error('Failed to create review');
             }
 
             return response.json();
@@ -46,10 +46,12 @@ const ReviewForm = ({productId} : ReviewForm) => {
     })
     const stars = [1, 2, 3, 4, 5]
 
-    const handleSubmit = () => {
-        if(reviewData.rating === 0 || reviewData.reviewText === "")
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        if(reviewData.rating === 0 || reviewData.reviewText === ""){
+            console.log("error")
             return
-        
+        }
         submitMutation.mutate()
     }
 
@@ -82,7 +84,7 @@ const ReviewForm = ({productId} : ReviewForm) => {
                 />
             </div>
             <button className="bg-green-600 text-white text-sm sm:text-base p-1 md:p-2 rounded-lg w-fit sm:w-1/4 md:w-2/4 self-center" 
-                onClick={handleSubmit}>
+                onClick={(e) => handleSubmit(e)}>
                 Submit Review
             </button>
         </form>
