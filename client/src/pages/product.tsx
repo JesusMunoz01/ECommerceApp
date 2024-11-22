@@ -69,6 +69,8 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             </div>
             <div className="flex flex-col self-center w-2/3">
                 <ReviewForm productId={product.id}/>
+            </div>
+            <div className="flex flex-col border-white border m-2 p-2">
                 {reviewsQuery.data.reviews && reviewsQuery.data.reviews.map((review: Review & {id: number}) => <Reviews key={review.id} review={review}/>)}
             </div>
         </div>

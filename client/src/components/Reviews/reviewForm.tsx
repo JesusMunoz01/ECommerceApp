@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 export type Review = {
@@ -12,7 +12,7 @@ type ReviewForm = {
 }
 
 const ReviewForm = ({productId} : ReviewForm) => {
-    //const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
     const { getAccessTokenSilently } = useAuth0()
     const [reviewData, setReviewData] = useState<Review>({rating: 0, reviewText: ""})
     const [hoverRating, setHoverRating] = useState(0);
@@ -36,13 +36,11 @@ const ReviewForm = ({productId} : ReviewForm) => {
             return response.json();
         },
         // TODO: Update once review fetching is implemented
-        // onSuccess: () => {
-        //     queryClient.invalidateQueries({
-        //         queryKey: ["reviews"]
-        //     });
-        //     console.log('Brand created successfully');
-        //     navigate('/account');
-        // },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["reviews" + productId]
+            });
+        },
     })
     const stars = [1, 2, 3, 4, 5]
 
