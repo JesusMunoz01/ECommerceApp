@@ -6,6 +6,9 @@ type UserType = {
     brands: { name: string, description: string, image: string, id: number, brandOwner?: string }[];
     subEndDate: string | null;
     subActive: boolean | null;
+    reviews?: {
+      productId: number
+    }[];
 } | null;
 
 const UserContext = createContext<{ 
