@@ -179,8 +179,11 @@ export class UsersService {
             const results = await queryAsync(`SELECT sname, endingDate, sactive FROM users WHERE id = ?`, [userData.identities[0].user_id]);
             const brands = await queryAsync(`SELECT * FROM brands WHERE brandOwner = ?`, [userData.identities[0].user_id]);
 
+            // Fetch user reviews
+            const reviews = await queryAsync(`SELECT productId FROM reviews WHERE ownerId = ?`, [userData.identities[0].user_id])
+
             if (results && results.length > 0) {
-                const subData = { plan: results[0].sname, subEndDate: results[0].endingDate, subActive: results[0].sactive };
+                const subData = { plan: results[0].sname, subEndDate: results[0].endingDate, subActive: results[0].sactive, reviews};
                 return { message: "User fetched successfully", brands: brands, ...subData };
             } else {
                 return { message: "User not found" };
