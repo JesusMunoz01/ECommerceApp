@@ -299,6 +299,8 @@ describe('Account Tests', () => {
         cy.contains('Test Chair').should('not.exist');
     })
 
+    // TODO: Create A Review
+
     // TODO: Cancel subscription
     // SKIP FOR NOW: Issue with stripe redirect
 
