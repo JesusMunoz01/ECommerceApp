@@ -41,4 +41,13 @@ describe('Account Tests', () => {
         cy.get('a').contains('Sell').click();
         cy.url().should('include', '/sell');
     });
+
+    it("should display order history", () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/account');
+        cy.get('a').contains('Settings').click();
+        cy.get('button').contains('Order History').click();
+        cy.contains('Your Orders').should('be.visible');
+    });
 });
