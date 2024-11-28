@@ -70,5 +70,16 @@ describe('Account Tests', () => {
         cy.contains('Leave a Review').should('not.be.visible');
     });
     
-    // Check for Reviews
+    it('should go to the product page of a reviewed product', () => {
+        cy.login();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/');
+        cy.get('a').contains('Wooden Desk').click();
+        cy.url().should('include', '/product/1');
+        cy.contains('Wooden Desk').should('be.visible');
+        cy.contains('Price: $199.9').should('be.visible');
+        cy.contains('A wooden desk that can fit two monitors, a laptop, a mousepad, and a keyboard').should('be.visible');
+        cy.contains('Leave a Review').should('be.visible');
+        cy.contains('Reviews:').should('be.visible');
+    });
 });
