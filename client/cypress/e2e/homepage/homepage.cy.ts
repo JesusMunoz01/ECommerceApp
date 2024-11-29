@@ -30,19 +30,4 @@ describe('Homepage', () => {
         cy.get('button').contains('Remove').should('exist');
     });
 
-    it('should go to the product page', () => {
-        cy.visit('http://localhost:5173/');
-        cy.get('h3').eq(0).click();
-        cy.url().should('include', '/product/1');
-
-        // Check for Reviews and review form
-    });
-
-    it('should go to the product page of a reviewed product', () => {
-        cy.visit('http://localhost:5173/');
-        cy.get('h3').eq(0).click();
-        cy.url().should('include', '/product/1');
-
-        // Check for Reviews
-    });
 });

@@ -58,7 +58,7 @@ const UserOrders = () => {
                     />
                 </div>
                 
-                {orderFilter(ordersQuery.data.fullOrders, filter).map((order: Orders) => (
+                {ordersQuery.data ? orderFilter(ordersQuery.data.fullOrders, filter).map((order: Orders) => (
                     <div key={order.id} className="border-t flex flex-col gap-2 mb-2">
                         <Link to={`/order/${order.id}`} className="w-fit"><h2 className="mt-2 underline hover:text-blue-500">Order ID: {order.id}</h2></Link>
                         <p>Total: ${order.total}</p>
@@ -75,7 +75,11 @@ const UserOrders = () => {
                             </ul>
                         </div>
                     </div>
-                ))}
+                    )):
+                    <h2>
+                        No order history
+                    </h2>
+                }
             </div>
         </div>
     );
