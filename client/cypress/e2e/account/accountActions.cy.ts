@@ -299,7 +299,26 @@ describe('Account Tests', () => {
         cy.contains('Test Chair').should('not.exist');
     })
 
-    // TODO: Create A Review
+    it("should be able to create a review", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/');
+        cy.get('a').contains('Wooden Desk').click();
+        cy.url().should('include', '/product/1');
+
+        // Click on a star and check functionality
+        cy.get('[data-testid="star-3"]').click();
+
+        cy.get('[data-testid="star-3"]').should("have.class", "text-yellow-500");
+        cy.get('[data-testid="star-1"]').should("have.class", "text-yellow-500");
+        cy.get('[data-testid="star-2"]').should("have.class", "text-yellow-500");
+
+        cy.get('[data-testid="star-4"]').should("not.have.class", "text-yellow-500");
+        cy.get('[data-testid="star-5"]').should("not.have.class", "text-yellow-500");
+
+        cy.get('textarea[name="reviewText"]').type('This product is amazing!');
+        cy.get('button[name="submitReview"]').click();
+    })
 
     // TODO: Cancel subscription
     // SKIP FOR NOW: Issue with stripe redirect

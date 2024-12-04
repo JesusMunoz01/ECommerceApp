@@ -253,7 +253,7 @@ export class ProductsService {
         }
     }
 
-    async deleteReview(userId: string, itemID: string, reviewData: ReviewDto): Promise<{ message: string; }> {
+    async deleteReview(userId: string, itemID: string): Promise<{ message: string; }> {
         try{
             // Search to see if there is already a review
             const existingReview = await new Promise<ReviewDto>((resolve, reject) => {

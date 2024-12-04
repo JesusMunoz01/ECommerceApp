@@ -46,9 +46,9 @@ export class ProductsController {
 
     @UseGuards(AuthGuard("jwt"))
     @Delete(":id/reviews")
-    async deleteReview(@Param("id") itemID: string, @Body() reviewData: ReviewDto, @Request() req) : Promise<{ message: string; }> {
+    async deleteReview(@Param("id") itemID: string, @Request() req) : Promise<{ message: string; }> {
       const userId = req.user.sub
-      return this.productsService.createReview(userId, itemID, reviewData);
+      return this.productsService.deleteReview(userId, itemID);
     }
 
     @UseGuards(AuthGuard("jwt"))

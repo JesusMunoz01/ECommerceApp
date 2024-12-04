@@ -62,6 +62,7 @@ const ReviewForm = ({productId} : ReviewForm) => {
                     {stars.map((star) => (
                         <span
                         key={star}
+                        data-testid={`star-${star}`}
                         className={`cursor-pointer font-semibold ${star <= (hoverRating || reviewData.rating) ? "text-yellow-500" : "text-gray-600"}`}
                         onClick={() => setReviewData((prev: Review) => ({...prev, rating: star}))}
                         onMouseEnter={() => setHoverRating(star)}
@@ -76,13 +77,14 @@ const ReviewForm = ({productId} : ReviewForm) => {
                 <label>Review:</label>
                 <textarea 
                     className="p-1"
+                    name="reviewText"
                     rows={5}
                     value={reviewData.reviewText}
                     onChange={(e) => {setReviewData((prev) => ({...prev, reviewText: e.target.value}))}}
                 />
             </div>
             <button className="bg-green-600 text-white text-sm sm:text-base p-1 md:p-2 rounded-lg w-fit sm:w-1/4 md:w-2/4 self-center" 
-                onClick={(e) => handleSubmit(e)}>
+                name="submitReview" onClick={(e) => handleSubmit(e)}>
                 Submit Review
             </button>
         </form>
