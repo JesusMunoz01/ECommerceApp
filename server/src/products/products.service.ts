@@ -252,4 +252,41 @@ export class ProductsService {
             return { message: "Error creating review" };
         }
     }
+
+    async deleteReview(userId: string, itemID: string): Promise<{ message: string; }> {
+        try{
+            // Search to see if there is already a review
+            const existingReview = await new Promise<ReviewDto>((resolve, reject) => {
+                this.connection.query(
+                    `SELECT * FROM reviews WHERE productId = ? AND ownerId = ?`,
+                    [itemID, userId.split("|")[1]],
+                    (err, results) => {
+                        if (err) {
+                            reject(err); // Handle error
+                        } else {
+                            resolve(results[0]); // Resolve results
+                        }
+                    }
+                );
+            });
+
+            if (!existingReview) {
+                return { message: "No reviews to delete" };
+            }
+
+            // Delete Review
+            await this.connection.query(`DELETE FROM reviews WHERE productId = ? AND ownerId = ?`, [itemID, userId.split("|")[1]], (err, results) => {
+                if(err) {
+                    console.log(err);
+                    return { message: "Error creating review" };
+                }
+                console.log(results);
+                return { message: "Review deleted successfully" };
+            });
+        }
+        catch(err) {
+            console.log(err);
+            return { message: "Error creating review" };
+        }
+    }
 }

@@ -45,6 +45,13 @@ export class ProductsController {
     }
 
     @UseGuards(AuthGuard("jwt"))
+    @Delete(":id/reviews")
+    async deleteReview(@Param("id") itemID: string, @Request() req) : Promise<{ message: string; }> {
+      const userId = req.user.sub
+      return this.productsService.deleteReview(userId, itemID);
+    }
+
+    @UseGuards(AuthGuard("jwt"))
     @Patch(":id")
     async updateProduct(@Param("id") itemID: string, @Body() updateProduct: UpdateProductDto): Promise<{ message: string; }> {
       return this.productsService.updateProduct(itemID, updateProduct);
