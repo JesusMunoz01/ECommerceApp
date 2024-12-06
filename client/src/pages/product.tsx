@@ -3,7 +3,7 @@ import { Product } from "../components/Products/productCard";
 import { CartItem } from "./cart";
 import { useState } from "react";
 import ReviewForm, { Review } from "../components/Reviews/reviewForm";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Reviews from "../components/Reviews/reviews";
 import { useUser } from "../utils/userContext";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -15,6 +15,7 @@ type ProductPageProps = {
 
 const ProductPage = ({setCart, products}: ProductPageProps) => {
     const { getAccessTokenSilently } = useAuth0();
+    const queryClient = useQueryClient();
     const { userData } = useUser()
     const { id } = useParams();
     const [quantity, setQuantity] = useState(1);
@@ -49,7 +50,12 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             const data = await response.json();
             console.log(data)
             return data
-        }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["reviews" + id]
+            });
+        },
     })
 
     const product = id ? products.find(p => p.id === parseInt(id)) : null;
@@ -107,7 +113,7 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
                     <div>
                         <Reviews key={review.id} review={review}/>
                         {userData?.reviews?.find(userReview => userReview.productId === review.id) &&
-                        <button>Delete</button>}
+                        <button onClick={() => deleteQuery.mutate()}>Delete</button>}
                     </div>
                 )}
             </div>
