@@ -3,9 +3,10 @@ import { Product } from "../components/Products/productCard";
 import { CartItem } from "./cart";
 import { useState } from "react";
 import ReviewForm, { Review } from "../components/Reviews/reviewForm";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Reviews from "../components/Reviews/reviews";
 import { useUser } from "../utils/userContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type ProductPageProps = {
     setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
@@ -13,6 +14,8 @@ type ProductPageProps = {
 }
 
 const ProductPage = ({setCart, products}: ProductPageProps) => {
+    const { getAccessTokenSilently } = useAuth0();
+    const queryClient = useQueryClient();
     const { userData } = useUser()
     const { id } = useParams();
     const [quantity, setQuantity] = useState(1);
@@ -27,6 +30,32 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             console.log(data)
             return data
         }
+    })
+
+    const deleteQuery = useMutation({
+        mutationKey: ["reviews" + id],
+        mutationFn: async () => {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/products/${id}/reviews`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to delete review');
+            }
+
+            const data = await response.json();
+            console.log(data)
+            return data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["reviews" + id]
+            });
+        },
     })
 
     const product = id ? products.find(p => p.id === parseInt(id)) : null;
@@ -80,7 +109,13 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             }
             <div className="flex flex-col border-white border m-2 p-2 gap-4">
                 <h2 className="text-xl md:text-3xl">Reviews:</h2>
-                {reviewsQuery.data.reviews && reviewsQuery.data.reviews.map((review: Review & {id: number}) => <Reviews key={review.id} review={review}/>)}
+                {reviewsQuery.data.reviews && reviewsQuery.data.reviews.map((review: Review & {id: number}) => 
+                    <div>
+                        <Reviews key={review.id} review={review}/>
+                        {userData?.reviews?.find(userReview => userReview.productId === review.id) &&
+                        <button onClick={() => deleteQuery.mutate()}>Delete</button>}
+                    </div>
+                )}
             </div>
         </div>
     )
