@@ -93,13 +93,14 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
                                     Overall Rating:
                                 </span>
                                 {[1, 2, 3, 4, 5].map((star) => (
-                                    <span key={star} 
+                                    <span key={star}
+                                    data-overallStars={`star-${star}`}
                                     className={`${star <= reviewsQuery.data.reviews.reduce((overall: number, review: Review) => (overall + review.rating), 0) / reviewsQuery.data.reviews.length ? "text-yellow-500" : "text-gray-600"}`}>
                                         ★
                                     </span>
                                 ))}
                                 <span className="text-sm text-gray-300 pl-2">
-                                    {reviewsQuery.data.reviews.length}  Review
+                                    {reviewsQuery.data.reviews.length} Reviews
                                 </span>
                             </p>
                         }
