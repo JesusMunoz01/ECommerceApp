@@ -305,6 +305,7 @@ describe('Account Tests', () => {
         cy.visit('http://localhost:5173/');
         cy.get('a').contains('Wooden Desk').click();
         cy.url().should('include', '/product/1');
+        cy.contains('Leave a Review').should("exist");
 
         // Click on a star and check functionality
         cy.get('[data-testid="star-3"]').click();
@@ -318,6 +319,19 @@ describe('Account Tests', () => {
 
         cy.get('textarea[name="reviewText"]').type('This product is amazing!');
         cy.get('button[name="submitReview"]').click();
+    })
+
+    it("should be check for new review", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/');
+        cy.get('a').contains('Wooden Desk').click();
+        cy.url().should('include', '/product/1');
+
+        cy.contains('Leave a Review').should("not.exist");
+        cy.get('[data-overallStars="star-4"]').should("have.class", "text-yellow-500");
+        cy.get('[data-overallStars="star-5"]').should("not.have.class", "text-yellow-500");
+        cy.contains('2 Reviews').should("exist");
     })
 
     // TODO: Cancel subscription

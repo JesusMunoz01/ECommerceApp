@@ -87,6 +87,23 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
                 </div>
                 <div className="md:w-1/2 flex flex-col gap-2 p-3 justify-between">
                     <div className="flex flex-col gap-2 p-3 h-3/4">
+                        {reviewsQuery.data.reviews &&
+                            <p>
+                                <span className="pr-2">
+                                    Overall Rating:
+                                </span>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <span key={star}
+                                    data-overallStars={`star-${star}`}
+                                    className={`${star <= reviewsQuery.data.reviews.reduce((overall: number, review: Review) => (overall + review.rating), 0) / reviewsQuery.data.reviews.length ? "text-yellow-500" : "text-gray-600"}`}>
+                                        ★
+                                    </span>
+                                ))}
+                                <span className="text-sm text-gray-300 pl-2">
+                                    {reviewsQuery.data.reviews.length} Reviews
+                                </span>
+                            </p>
+                        }
                         <p className="text-2xl">Price: ${product.price}</p>
                         <p className="text-lg">{product.description}</p>
                     </div>
