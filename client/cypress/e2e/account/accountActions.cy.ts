@@ -343,12 +343,22 @@ describe('Account Tests', () => {
         cy.get('button[name="deleteReview0"]').click();
     })
 
+    it("should be check for deleted review", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/');
+        cy.get('a').contains('Wooden Desk').click();
+        cy.url().should('include', '/product/1');
+
+        cy.contains('Leave a Review').should("exist");
+        cy.get('[data-overallStars="star-5"]').should("have.class", "text-yellow-500"); 
+        cy.contains('1 Reviews').should("exist");
+    })
+
     // TODO: Cancel subscription
     // SKIP FOR NOW: Issue with stripe redirect
 
     // TODO: Order Items
     // Stripe redirect
-
-    // TODO: View Order History
 
 });
