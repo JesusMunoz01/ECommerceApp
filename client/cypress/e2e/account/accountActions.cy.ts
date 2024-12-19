@@ -334,6 +334,15 @@ describe('Account Tests', () => {
         cy.contains('2 Reviews').should("exist");
     })
 
+    it("should be able to delete a review", () => {
+        cy.login2();
+        cy.wait(1000);
+        cy.visit('http://localhost:5173/');
+        cy.get('a').contains('Wooden Desk').click();
+        cy.url().should('include', '/product/1');
+        cy.get('button[name="deleteReview0"]').click();
+    })
+
     // TODO: Cancel subscription
     // SKIP FOR NOW: Issue with stripe redirect
 
