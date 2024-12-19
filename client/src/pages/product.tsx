@@ -126,11 +126,11 @@ const ProductPage = ({setCart, products}: ProductPageProps) => {
             }
             <div className="flex flex-col border-white border m-2 p-2 gap-4">
                 <h2 className="text-xl md:text-3xl">Reviews:</h2>
-                {reviewsQuery.data.reviews && reviewsQuery.data.reviews.map((review: Review & {id: number}) => 
+                {reviewsQuery.data.reviews && reviewsQuery.data.reviews.map((review: Review & {id: number}, index: number) => 
                     <div>
                         <Reviews key={review.id} review={review}/>
                         {userData?.reviews?.find(userReview => userReview.productId === review.id) &&
-                        <button onClick={() => deleteQuery.mutate()}>Delete</button>}
+                        <button name={`deleteReview${index}`} onClick={() => deleteQuery.mutate()}>Delete</button>}
                     </div>
                 )}
             </div>

@@ -42,7 +42,7 @@ describe('Account Tests', () => {
         cy.url().should('include', '/sell');
     });
 
-    it("should display order history", () => {
+    it("should display order history without items", () => {
         cy.login();
         cy.wait(1000);
         cy.visit('http://localhost:5173/account');
@@ -51,6 +51,8 @@ describe('Account Tests', () => {
         cy.contains('Your Orders').should('be.visible');
         cy.contains('No order history').should('be.visible');
     });
+
+    // TODO: View Order History with items
 
     it('should go to the product page', () => {
         cy.visit('http://localhost:5173/');
@@ -82,4 +84,5 @@ describe('Account Tests', () => {
         cy.contains('Leave a Review').should('be.visible');
         cy.contains('Reviews:').should('be.visible');
     });
+
 });
